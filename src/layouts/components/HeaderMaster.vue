@@ -35,7 +35,7 @@ const logout = () => {
             <q-img src="src/assets/logo_easy.png" width="122px" height="30px" />
           </div>
 
-          <RateBar />
+          <RateBar :rate="getRate()" />
         </div>
         <NavBar />
       </div>

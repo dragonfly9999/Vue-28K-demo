@@ -23,6 +23,48 @@ const routes: RouteRecordRaw[] = [
         path: 'dashboard',
         component: () => import('pages/dashboard/DashboardPage.vue'),
         name: 'dashboard'
+      },
+      {
+        path: 'transaction',
+        component: () => import('layouts/TransactionLayout.vue'),
+        name: 'transaction',
+        children: [
+          {
+            path: 'buy',
+            component: () => import('pages/transaction/buy/BuyPage.vue'),
+            name: 'buy'
+          },
+          {
+            path: 'sell',
+            component: () => import('pages/transaction/sell/SellPage.vue'),
+            name: 'sell'
+          }
+        ]
+      },
+      {
+        path: 'transfer',
+        component: () => import('pages/transfer/TransferPage.vue'),
+        name: 'transfer'
+      },
+      {
+        path: 'wallet',
+        component: () => import('pages/wallet/WalletPage.vue'),
+        name: 'wallet'
+      },
+      {
+        path: 'history',
+        component: () => import('pages/history/HistoryPage.vue'),
+        name: 'history'
+      },
+      {
+        path: 'account',
+        component: () => import('pages/account/AccountPage.vue'),
+        name: 'account'
+      },
+      {
+        path: 'account_create',
+        component: () => import('pages/account/CreatePage.vue'),
+        name: 'account_create'
       }
     ],
     meta: {

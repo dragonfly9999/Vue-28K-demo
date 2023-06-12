@@ -1,0 +1,1 @@
+export { usePay } from './usePay';

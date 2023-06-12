@@ -28,4 +28,11 @@ const thousandInput = (num: NumOptions): string | null => {
   return result.join('.');
 };
 
+export enum MasterTypeNum {
+  Buy,
+  Sell,
+  TransOut,
+  TransIn
+}
+
 export { thousandTool, numberTool, thousandInput };

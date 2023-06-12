@@ -1,0 +1,208 @@
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+import { onBeforeUnmount, onMounted, reactive, ref } from 'vue';
+import { getLeaseTime, maskString } from 'src/utils/TimeMaster';
+import { thousandTool } from 'src/utils/NumberTool';
+import { OrderStatusNum } from 'src/stores/live';
+import StepperMaster from 'src/components/StepperMaster.vue';
+import PriceInfo from 'src/components/PriceInfo.vue';
+import BuyConfirm from './BuyConfirm.vue';
+import { usePay } from '../api';
+import { useRoute } from 'vue-router';
+import CancelConfirm from 'src/components/CancelConfirm.vue';
+import { handleBoforeUpload } from 'src/utils/ImageManager';
+import { useThirdStore } from 'src/stores';
+import PunctuationMaster from 'src/components/PunctuationMaster.vue';
+defineProps<{ order?: OrderStatus }>();
+//
+const route = useRoute();
+const { t } = useI18n();
+const { run: pay } = usePay();
+const { getWebSocket } = useThirdStore();
+// DOM
+let TimeInterval: NodeJS.Timeout;
+const deltaTime = ref(0);
+const filePicker = ref();
+const file = ref();
+const visible = reactive({
+  payWarn: false,
+  cancelWarn: false
+});
+
+// handlers
+const handleUpload = async (info: File) => {
+  const base64 = await handleBoforeUpload(info);
+  const sendObj = {
+    Message: base64,
+    Message_Type: 2
+  };
+  getWebSocket(route.query.token as string).send(JSON.stringify(sendObj));
+  pay({
+    Token: route?.query.token as string
+  });
+};
+// cycle
+onMounted(() => {
+  TimeInterval = setInterval(() => {
+    deltaTime.value += 1;
+  }, 1000);
+});
+onBeforeUnmount(() => {
+  clearInterval(TimeInterval);
+});
+</script>
+<template>
+  <!-- 步驟 -->
+  <div class="full-width col-auto">
+    <StepperMaster :order="order" />
+  </div>
+
+  <div class="full-width col-auto">
+    <!-- 購買資訊 Header -->
+    <div class="flex no-wrap items-end justify-between">
+      <!--購買USDT  -->
+      <div style="min-width: fit-content" class="q-mr-xl">
+        {{ t('buy.buy_usdt') }}
+      </div>
+      <!-- 訂單號 -->
+      <PunctuationMaster :label="order?.Tx_HASH" />
+    </div>
+
+    <!-- 購買資訊 Body -->
+    <PriceInfo :order="order" />
+    <div class="flex items-start text-grey-8 q-mb-lg no-wrap">
+      <q-icon name="error_outline" color="orange-9" size="xs" class="q-mr-sm" />
+      <!-- 為確保交易雙方帳戶安全請於交易對話窗上傳 -->
+      <div>
+        {{ t('warn.hint_cny_6') }}
+        <!-- 【24小時內銀行流水帳截圖】 -->
+        <span class="text-weight-bold">【{{ t('warn.hint_cny_8') }}】。</span>
+        <!-- 提供後，交易方將提供完整轉帳資料 -->
+        {{ t('warn.hint_cny_7') }}
+      </div>
+    </div>
+
+    <!-- 轉帳資訊 Header -->
+    <div class="flex justify-between">
+      <div class="text-h6 text-weight-bold q-mx-sm text-primary">
+        <!-- 轉帳資料 -->
+        {{ t('buy.transfer_info') }}
+      </div>
+      <div class="flex items-center">
+        <!-- 付款時間 -->
+        <q-icon name="schedule" color="primary" />
+        <div class="text-caption">
+          {{ t('transaction.payment_time') }}:
+          {{
+            getLeaseTime(order?.CreateDate, (order?.DeltaTime ?? 0) + deltaTime)
+          }}
+        </div>
+      </div>
+    </div>
+    <!-- 轉帳資訊 Body -->
+    <div class="mycolor1 q-pa-sm info td">
+      <table class="q-pa-xs">
+        <tr
+          v-for="(information, index) in [
+            {
+              title: t('buy.bankInformation.amount'),
+              content: thousandTool(order?.D2, 1)
+            },
+            {
+              title: t('transaction.payee'),
+              content:
+                order?.Currency === 'CNY' ? maskString(order?.P2, 1) : order?.P2
+            },
+            {
+              title: t('transaction.account_number'),
+              content:
+                order?.Currency === 'CNY' ? maskString(order?.P1, 4) : order?.P1
+            },
+            {
+              title: t(`transaction.bank_name`),
+              content: order?.P3
+            },
+            {
+              title: t(`transaction.code.${order?.Currency}`),
+              content: order?.P4
+            }
+          ]"
+          :key="index"
+        >
+          <td class="text-body1 text-grey-8">{{ information.title }}:</td>
+          <td class="text-body1 text-weight-bold text-dark">
+            {{ information.content }}
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="full-width col-auto column justify-center">
+    <div class="text-center q-mt-md q-gutter-xs row">
+      <!--已完成付款btn  -->
+      <q-btn
+        class="full-width"
+        glossy
+        color="primary"
+        :label="
+          order?.Order_StatusID === OrderStatusNum.Appeal
+            ? t('transaction.appeal')
+            : t('transaction.payment_completed')
+        "
+        :disable="order?.Order_StatusID === OrderStatusNum.Appeal"
+        @click="() => (visible.payWarn = true)"
+      />
+      <!-- 取消訂單 -->
+      <q-btn
+        flat
+        class="full-width"
+        color="primary"
+        v-close-popup
+        :label="t('transaction.deal_canceled')"
+        @click="() => (visible.cancelWarn = true)"
+      />
+    </div>
+  </div>
+
+  <!-- PayMent Confirm -->
+  <q-dialog
+    trnasition-show="fade"
+    trnasition-hide="fade"
+    v-model="visible.payWarn"
+  >
+    <BuyConfirm
+      :order="order"
+      @upload="
+        () => {
+          filePicker?.pickFiles();
+        }
+      "
+      @skip="
+      () =>
+        pay({
+          Token: route?.query.token as string
+        })
+    "
+    />
+  </q-dialog>
+  <!-- Cancel confirm -->
+  <q-dialog
+    trnasition-show="fade"
+    trnasition-hide="fade"
+    v-model="visible.cancelWarn"
+  >
+    <CancelConfirm />
+  </q-dialog>
+
+  <q-file
+    @update:model-value="handleUpload"
+    accept="image/*"
+    v-show="false"
+    :multiple="false"
+    :model-value="file"
+    ref="filePicker"
+  />
+</template>
+
+<style scoped></style>

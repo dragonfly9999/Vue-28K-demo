@@ -4,7 +4,8 @@ import { ref } from 'vue';
 export const useAccessyStore = defineStore('accessy', () => {
   const notify = ref(false);
   const hint = ref(false);
-  const auto = ref(false);
-
-  return { notify, hint, auto };
+  const getAccess = () => {
+    return { notify: notify.value, hint: hint.value };
+  };
+  return { notify, hint, getAccess };
 });

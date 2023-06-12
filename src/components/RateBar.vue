@@ -1,5 +1,5 @@
 <script setup lang="ts">
-defineProps<{ rate?: RateRes }>();
+defineProps<{ rate: RateRes | undefined }>();
 </script>
 
 <template>

@@ -6,7 +6,9 @@ const axiosProvider = axios.create({
   baseURL: '/j'
 });
 
-axiosProvider.interceptors.response.use(({ data }) => data);
+axiosProvider.interceptors.response.use(({ data }) => {
+  return data ?? '';
+});
 
 axiosProvider.interceptors.request.use((config) => {
   const loginSession = storage.getStorageSync('login_session');

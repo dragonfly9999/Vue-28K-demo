@@ -23,6 +23,7 @@ export const useLogin = ({ onSuccess }: UseProps) =>
     reqFn: (props) => axiosProvider.post('/login.aspx', props),
     isManual: true,
     onSuccess: (res) => {
+      storage.setStorageSync('isAgent', res?.data.isAgent);
       storage.setStorageSync('login_session', res?.data.login_session);
       onSuccess();
     }

@@ -11,6 +11,7 @@ type ProviderProps<DATA, Params = unknown> = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   config?: any;
   onSuccess?: (args?: VirgilRes<DATA>) => void;
+  onAfter?: (args?: Params[]) => void;
   onError?: () => void;
 };
 
@@ -19,7 +20,8 @@ export const requestProvider = <DATA, Params = unknown>({
   isManual,
   config,
   onSuccess,
-  onError
+  onError,
+  onAfter
 }: ProviderProps<DATA, Params>) => {
   const { t } = useI18n();
   const requestInstance = useRequest(reqFn, {
@@ -54,6 +56,9 @@ export const requestProvider = <DATA, Params = unknown>({
         });
       }
       if (onSuccess) onSuccess(res);
+    },
+    onAfter: (params) => {
+      !!onAfter && onAfter(params);
     },
     manual: isManual
   });

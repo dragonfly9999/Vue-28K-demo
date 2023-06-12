@@ -1,13 +1,64 @@
-/* eslint-disable */
-
-// Forces TS to apply `@quasar/app-vite` augmentations of `quasar` package
-// Removing this would break `quasar/wrappers` imports as those typings are declared
-//  into `@quasar/app-vite`
-// As a side effect, since `@quasar/app-vite` reference `quasar` to augment it,
-//  this declaration also apply `quasar` own
-//  augmentations (eg. adds `$q` into Vue component context)
 /// <reference types="@quasar/app-vite" />
 
+interface OrderStatus {
+  CreateDate: string;
+  Currency: string;
+  D1: number; // 匯率
+  D2: number; // 金額
+  D3: number; // 手續費
+  D4: null; // 這啥?
+  D5: null; // 這啥?
+  Date: string;
+  DeltaTime: number; // 經過毫秒
+  MasterType: number;
+  Order_StatusID: number;
+  Order_TypeID: number;
+  P1: string; // 銀行帳號
+  P2: string; // 姓名
+  P3: string; // 銀行名稱
+  P4: string; // 省分
+  P5: string; // 付款人資訊
+  P6: null; // 這啥?
+  Tx_HASH: string;
+  UsdtAmt: number;
+}
+
+interface ChatRes {
+  Message: string;
+  Message_Role: number;
+  Message_Type: number;
+  SysDate: string;
+  SysID: number;
+}
+
+interface OrderRecord {
+  MasterType: number;
+  Date: string;
+  Tx_HASH: string;
+  D1: number; // 匯率
+  D2: number; // 金額
+  UsdtAmt: number;
+  Balance: number;
+  P1: string; // 銀行帳號
+  P2: string; // 姓名
+  P3: string; // 銀行名稱
+  P4: string; // 省分
+  P5: string; // 會員資訊
+  token: string;
+}
+
+interface LiveOrder {
+  Order_StatusID: number;
+  MType: number;
+  DeltaTime: number;
+  UsdtAmt: number;
+  D1: number; //匯率
+  D2: number; // 金額
+  CreateDate: string;
+  P5: string; // 銀行資訊
+  extraInfo: null | string; // 備註
+  token: string; //
+}
 interface RateRes {
   RMB_BUY: string;
   RMB_SELL: string;
@@ -31,5 +82,6 @@ interface VirgilRes<DATA> {
 type WebsocketOptions = {
   reconnectEnabled: boolean;
   reconnectInterval: number;
+  isChat: boolean;
+  order_token?: string;
 };
-

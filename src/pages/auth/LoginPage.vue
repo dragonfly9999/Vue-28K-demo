@@ -11,6 +11,7 @@ const storage = useStorage();
 const { run: login } = useLogin({
   onSuccess: () => {
     storage.setStorageSync('phone', phone_number.value);
+    storage.setStorageSync('password', password.value);
     router.push({ name: 'dashboard' });
   }
 });
@@ -18,8 +19,8 @@ const { run: login } = useLogin({
 // DOM
 const isTest = import.meta.env.DEV;
 const countryCode = ref(isTest ? 886 : null);
-const phone_number = ref(isTest ? 905684349 : null);
-const password = ref(isTest ? 123456 : null);
+const phone_number = ref(isTest ? 938265860 : null);
+const password = ref(isTest ? 'dls24068812' : null);
 const isVisibleSetting = ref(false);
 
 // handlers
