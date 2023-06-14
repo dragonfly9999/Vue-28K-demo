@@ -3,7 +3,7 @@ import RecordItem from 'src/components/RecordItem.vue';
 import { MasterTypeNum } from 'src/utils/NumberTool';
 import { computed, ref } from 'vue';
 defineProps<{
-  orders: Array<OrderRecord> | undefined;
+  orders: Array<OrderRecord | ExpiredOrder> | undefined;
   loading: boolean;
   type: MasterTypeNum | 5;
 }>();

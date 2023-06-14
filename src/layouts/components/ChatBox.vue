@@ -8,26 +8,32 @@ import messageSound from 'src/assets/sound/message2.mp3';
 import dayjs from 'dayjs';
 const { getWebSocket, getChatList, setOnMessage } = useThirdStore();
 const route = useRoute();
-const show_btn = ref(false);
+const btnIcon = ref<'arrow_drop_down' | 'arrow_drop_up'>('arrow_drop_up');
 const text = ref<string>();
-const hint = ref(false);
+const hint = ref(true);
 const filePicker = ref();
 const file = ref();
 const scrollArea = ref();
 const messageAudio = ref();
 const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
 // handlers
-const handleShow = () => {
-  var element = document.getElementById('fade-in');
-  if (element) {
-    element.style.height = 'calc(100vh - 40px)';
+const handleSwitch = () => {
+  switch (btnIcon.value) {
+    case 'arrow_drop_down':
+      var element = document.getElementById('fade-in');
+      if (element) {
+        element.style.height = '60px';
+      }
+      btnIcon.value = 'arrow_drop_up';
+      break;
+    case 'arrow_drop_up':
+      var element = document.getElementById('fade-in');
+      if (element) {
+        element.style.height = 'calc(100vh - 40px)';
+      }
+      btnIcon.value = 'arrow_drop_down';
+      break;
   }
-  show_btn.value = true;
-};
-const handleHide = () => {
-  var element = document.getElementById('fade-in');
-  if (element) element.style.height = '60px';
-  show_btn.value = false;
 };
 
 const handleUpload = async (info: File) => {
@@ -70,28 +76,18 @@ setOnMessage(route.query.token as string, (msg) => {
     <q-toolbar class="flex q-mb-sm toolbar">
       <!-- 交易對話窗btn -->
       <q-icon name="chat" color="blue-13" size="24px" class="gt-md" />
+
       <q-btn
         class="lt-lg col-6 text-body1 text-weight-bold"
         align="left"
-        v-if="show_btn"
         flat
         dense
         color="blue-13"
-        icon="arrow_drop_down"
+        :icon="btnIcon"
         :label="$t('transaction.transaction_dialog_window')"
-        @click="handleHide"
+        @click="handleSwitch"
       />
-      <q-btn
-        class="lt-lg col-6 text-body1 text-weight-bold"
-        align="left"
-        v-else
-        flat
-        dense
-        color="blue-13"
-        icon="arrow_drop_up"
-        :label="$t('transaction.transaction_dialog_window')"
-        @click="handleShow"
-      />
+
       <!-- title 交易對話窗-->
       <div class="gt-md">
         {{ $t('transaction.transaction_dialog_window') }}
@@ -140,6 +136,7 @@ setOnMessage(route.query.token as string, (msg) => {
         :label="$t('transaction.input_message')"
         class="col-grow"
         @keyup.enter="handleSent"
+        @focus="handleSwitch"
       >
         <template v-slot:prepend>
           <q-icon
@@ -160,6 +157,7 @@ setOnMessage(route.query.token as string, (msg) => {
       </q-input>
     </q-card-section>
   </q-card>
+
   <q-file
     @update:model-value="handleUpload"
     v-show="false"
@@ -193,6 +191,7 @@ setOnMessage(route.query.token as string, (msg) => {
     margin-left: 0px;
     min-height: 0px;
     max-height: 100vh;
+    transition: height 0.3141592s;
   }
 }
 .toolbar {

@@ -30,7 +30,7 @@ defineProps<{ order?: OrderStatus }>();
         {{ $t('transaction.total_amount') }}
       </div>
       <div class="text-blue-13 text-weight-bold text-h6">
-        {{ thousandTool(order?.D2, 1) + ' ' + order?.Currency }}
+        {{ thousandTool(order?.D2, 2) + ' ' + order?.Currency }}
       </div>
     </div>
   </div>

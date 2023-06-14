@@ -57,6 +57,22 @@ const statusInfo = computed(() => {
       return t('label.undefined');
   }
 });
+const premium = computed(() => {
+  const usdt = props.order?.UsdtAmt ?? 0;
+  const premiumRate = props.order?.D5 === 0.5 ? 1.2 : props.order?.D5 ?? 0;
+
+  switch (props.order?.MasterType) {
+    case MasterTypeNum.Buy: {
+      const originUsdt = usdt / (1 - premiumRate / 100);
+      return thousandTool((originUsdt * premiumRate) / 100, 3);
+    }
+    case MasterTypeNum.Sell: {
+      const originUsdt = usdt / (1 + premiumRate / 100);
+      return thousandTool((originUsdt * premiumRate) / 100, 3);
+    }
+  }
+  return premiumRate;
+});
 </script>
 <template>
   <q-card class="q-pa-md" style="width: 380px">
@@ -90,7 +106,7 @@ const statusInfo = computed(() => {
             {{ $t('transaction.amount') }}(CNY)
           </q-item-section>
           <q-item-section avatar class="text-body1">
-            {{ thousandTool(order?.D2, 1) }}
+            {{ thousandTool(order?.D2, 2) }}
           </q-item-section>
         </q-item>
         <q-separator />
@@ -109,7 +125,7 @@ const statusInfo = computed(() => {
             {{ $t('transaction.rate') }}
           </q-item-section>
           <q-item-section avatar>
-            {{ thousandTool(order?.D1, 1) }}
+            {{ thousandTool(order?.D1, 2) }}
           </q-item-section>
         </q-item>
         <!-- 手續費 -->
@@ -118,7 +134,7 @@ const statusInfo = computed(() => {
             {{ $t('transaction.handling_fee') }}
           </q-item-section>
           <q-item-section avatar>
-            {{ thousandTool(order?.D5, 3) }}
+            {{ premium }}
           </q-item-section>
         </q-item>
         <!-- 收款方 -->

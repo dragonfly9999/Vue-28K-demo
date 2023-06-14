@@ -2,6 +2,7 @@
 import { thousandTool } from 'src/utils/NumberTool';
 import { maskString } from 'src/utils/TimeMaster';
 import { useI18n } from 'vue-i18n';
+import { useStorage } from 'vue3-storage';
 defineProps<{ order: OrderStatus | undefined }>();
 const emit = defineEmits(['upload', 'skip']);
 
@@ -31,16 +32,23 @@ const { t } = useI18n();
           v-for="(information, index) in [
             {
               title: t('transaction.amount'),
-              content: thousandTool(order?.D2, 1)
+              content: thousandTool(order?.D2, 2)
             },
             {
               title: t('transaction.payee'),
-              content: maskString(order?.P2, 1)
+              content:
+                order?.Currency === 'CNY' &&
+                !useStorage().getStorageSync('isAgent')
+                  ? order?.P2.slice(0, 1) + maskString(order?.P2, 1)
+                  : order?.P2
             },
             {
               title: t('transaction.account_number'),
               content:
-                order?.Currency === 'CNY' ? maskString(order?.P1, 4) : order?.P1
+                order?.Currency === 'CNY' &&
+                !useStorage().getStorageSync('isAgent')
+                  ? maskString(order?.P1, 4)
+                  : order?.P1
             },
             {
               title: t(`transaction.bank_name`),

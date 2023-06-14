@@ -4,7 +4,7 @@ import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import dayjs from 'dayjs';
 import RecordDetail from './RecordDetail.vue';
-const props = defineProps<{ order: OrderRecord }>();
+const props = defineProps<{ order: OrderRecord | ExpiredOrder }>();
 
 //
 const { t } = useI18n();
@@ -61,7 +61,10 @@ const recordInfo = computed(() => {
         <q-space />
 
         <!-- 數量 -->
-        <div class="items-center text-right" v-show="order?.UsdtAmt">
+        <div
+          class="items-center text-right"
+          v-if="'UsdtAmt' in order && order?.UsdtAmt"
+        >
           <div class="text-caption text-grey-6">
             {{ $t('transaction.quantity') }}(USDT)
           </div>
@@ -70,7 +73,7 @@ const recordInfo = computed(() => {
           </div>
         </div>
         <!-- 結餘 -->
-        <div class="items-center text-right">
+        <div class="items-center text-right" v-if="'Balance' in order">
           <div class="text-caption text-grey-6">
             {{ $t('label.real_balance') }}(USDT)
           </div>
@@ -96,13 +99,14 @@ const recordInfo = computed(() => {
               {{ $t('transaction.amount') }}(CNY)
             </div>
             <div class="text-caption">
-              {{ thousandTool(order?.D2, 1) }}
+              {{ thousandTool(order?.D2, 2) }}
             </div>
           </div>
           <!-- 交易方姓名 -->
           <div
             class="flex"
-            v-show="
+            v-if="
+              'P2' in order &&
               [MasterTypeNum.Buy, MasterTypeNum.Sell].includes(
                 order?.MasterType
               )
@@ -125,7 +129,7 @@ const recordInfo = computed(() => {
               {{ $t('transaction.time') }}
             </div>
             <div class="text-caption">
-              {{ dayjs(order.Date).format('YYYY-MM-DD') }}
+              {{ dayjs(order.Date).format('YYYY-MM-DD HH:mm:ss') }}
             </div>
           </div>
         </div>

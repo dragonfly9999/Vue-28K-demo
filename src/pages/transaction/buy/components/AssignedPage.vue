@@ -13,6 +13,7 @@ import CancelConfirm from 'src/components/CancelConfirm.vue';
 import { handleBoforeUpload } from 'src/utils/ImageManager';
 import { useThirdStore } from 'src/stores';
 import PunctuationMaster from 'src/components/PunctuationMaster.vue';
+import { useStorage } from 'vue3-storage';
 defineProps<{ order?: OrderStatus }>();
 //
 const route = useRoute();
@@ -111,12 +112,18 @@ onBeforeUnmount(() => {
             {
               title: t('transaction.payee'),
               content:
-                order?.Currency === 'CNY' ? maskString(order?.P2, 1) : order?.P2
+                order?.Currency === 'CNY' &&
+                !useStorage().getStorageSync('isAgent')
+                  ? order?.P2.slice(0, 1) + maskString(order?.P2, 1)
+                  : order?.P2
             },
             {
               title: t('transaction.account_number'),
               content:
-                order?.Currency === 'CNY' ? maskString(order?.P1, 4) : order?.P1
+                order?.Currency === 'CNY' &&
+                !useStorage().getStorageSync('isAgent')
+                  ? maskString(order?.P1, 4)
+                  : order?.P1
             },
             {
               title: t(`transaction.bank_name`),

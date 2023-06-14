@@ -149,7 +149,7 @@ onBeforeUnmount(() => {
     <q-card class="q-pa-lg" align="center" style="width: 360px">
       <q-icon name="check_circle" color="green-8" size="lg" />
       <!-- 提交成功 -->
-      <div class="text-h6 text-weight-bold">{{ $t('kyc.label.success') }}</div>
+      <div class="text-h6 text-weight-bold">{{ $t('account.success') }}</div>
       <div class="flex justify-center q-gutter-x-sm q-mt-lg text-grey-5">
         <!-- 等待跳轉 -->
         <div>{{ $t('label.jump') }}</div>

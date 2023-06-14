@@ -2,7 +2,7 @@
 import { computed, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import { useHistory, useProgress } from './api';
+import { useExpired, useHistory, useProgress } from './api';
 import DateMasterOne from 'src/components/DateMasterOne.vue';
 import dayjs from 'dayjs';
 import HistoryList from './components/HistoryList.vue';
@@ -12,6 +12,7 @@ const { t } = useI18n();
 const router = useRouter();
 const { data: history, loading, refresh: reStory } = useHistory();
 const { data: progress, refresh: reProgress } = useProgress();
+const { data: expireds, refresh: reExpired } = useExpired();
 // DOM
 const dateRange = reactive({
   from: dayjs().startOf('week').format('YYYY-MM-DD HH:mm'),
@@ -19,7 +20,7 @@ const dateRange = reactive({
 });
 const current = ref(1);
 const useOrders = computed(() => {
-  let useOrders: Array<OrderRecord> | undefined;
+  let useOrders: Array<OrderRecord | ExpiredOrder> | undefined;
   switch (tab.value) {
     case 'finish': {
       useOrders = history.value;
@@ -27,6 +28,10 @@ const useOrders = computed(() => {
     }
     case 'someProgress': {
       useOrders = progress.value;
+      break;
+    }
+    case 'fail': {
+      useOrders = expireds.value;
       break;
     }
     default:
@@ -126,10 +131,13 @@ const type = ref(5);
             </q-badge>
           </q-tab>
           <!-- 未完成tab -->
-          <q-tab name="fail" :label="t('transaction_history.label.fail')" />
+          <q-tab
+            @click="() => reExpired()"
+            name="fail"
+            :label="t('transaction_history.label.fail')"
+          />
         </q-tabs>
       </div>
-
       <!-- Status Panel -->
       <q-tab-panels v-model="tab" animated>
         <q-tab-panel

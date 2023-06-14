@@ -7,6 +7,13 @@ export const useRate = () => {
   return requestProvider<RateRes>({
     reqFn: () => axiosProvider.get('/ChkExRate.aspx'),
     isManual: false,
-    onSuccess: (res) => res?.data && store.setRate(res?.data)
+    onSuccess: (res) => res?.data && store.setRate(res?.data),
+    config: {
+      cacheKey: 'rate',
+      pollingInterval: 1000 * 10 * 60,
+      pollingWhenHidden: true,
+      refreshOnWindowFocus: true,
+      refocusTimespan: 1000 * 3 * 60
+    }
   });
 };

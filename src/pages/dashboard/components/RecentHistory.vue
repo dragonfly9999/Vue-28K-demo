@@ -24,7 +24,7 @@ const { data: history, loading } = useHisotry();
 
     <!-- list -->
     <q-list bordered separator>
-      <q-item v-if="loading" class="q-ma-xl" clickable v-ripple>
+      <q-item v-if="loading && !history" class="q-ma-xl" clickable v-ripple>
         <q-spinner-gears color="blue-13" size="5em" />
       </q-item>
       <RecordItem

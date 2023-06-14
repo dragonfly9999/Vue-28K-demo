@@ -63,7 +63,11 @@ export default {
   chatName: {
     1: '會員A',
     2: '客服',
-    3: '會員A'
+    3: ''
+  },
+
+  account: {
+    success: '資料提交成功'
   },
 
   transaction: {

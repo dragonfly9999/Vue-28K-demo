@@ -7,6 +7,7 @@ import { onBeforeUnmount, onMounted, reactive, ref } from 'vue';
 import SellConfirm from './SellConfirm.vue';
 import AppealConfirm from 'src/components/AppealConfirm.vue';
 import PunctuationMaster from 'src/components/PunctuationMaster.vue';
+import PriceInfo from 'src/components/PriceInfo.vue';
 defineProps<{ order: OrderStatus | undefined }>();
 const { t } = useI18n();
 const timeInterval = ref<NodeJS.Timeout>();
@@ -35,6 +36,7 @@ onBeforeUnmount(() => clearInterval(timeInterval.value));
       <PunctuationMaster :label="order?.Tx_HASH" />
     </div>
 
+    <PriceInfo :order="order" />
     <!-- hint -->
     <div class="flex items-start text-grey-8 q-mb-lg no-wrap">
       <q-icon name="error_outline" color="orange-9" size="xs" class="q-mr-sm" />

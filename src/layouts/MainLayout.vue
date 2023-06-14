@@ -97,8 +97,11 @@ import paymentSound from 'src/assets/sound/payment2.mp3';
 import appealSound from 'src/assets/sound/owl.mp3';
 import { MtTypeNum, OrderStatusNum } from 'src/stores/live';
 
-const { hint } = toRefs(useAccessyStore());
+useRate();
 const { data: balance, loading: balanceLoading } = useBalance();
+
+//
+const { hint } = toRefs(useAccessyStore());
 const { setOrders, addOrders } = useLiveStore();
 const { setProgress, addProgress } = useProgressStore();
 const { setChats, addChats } = useCsStore();
@@ -134,7 +137,6 @@ const defaultOptions = {
 };
 
 onMounted(() => {
-  useRate();
   // live order
   const liveURL = '/ws_liveorders.ashx';
   const liveWS = new WebSocketClient(liveURL, {

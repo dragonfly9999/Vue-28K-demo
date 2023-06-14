@@ -13,5 +13,9 @@ export const useAuto = () =>
       axiosProvider.post('/Req_AutoPick.aspx', {
         mode: mode === undefined ? -1 : mode
       }),
-    isManual: false
+    isManual: false,
+    config: {
+      pollingInterval: -1,
+      refreshOnWindowFocus: false
+    }
   });

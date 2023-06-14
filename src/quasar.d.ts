@@ -7,7 +7,7 @@ interface OrderStatus {
   D2: number; // 金額
   D3: number; // 手續費
   D4: null; // 這啥?
-  D5: null; // 這啥?
+  D5: null | number; // 這啥?
   Date: string;
   DeltaTime: number; // 經過毫秒
   MasterType: number;
@@ -29,6 +29,16 @@ interface ChatRes {
   Message_Type: number;
   SysDate: string;
   SysID: number;
+}
+
+interface ExpiredOrder {
+  MasterType: number;
+  Date: string;
+  D1: number; // 匯率
+  D2: number; // 金額
+  Order_StatusID: number;
+  token: string;
+  UsdtAmt: number;
 }
 
 interface OrderRecord {

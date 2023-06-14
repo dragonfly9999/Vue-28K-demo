@@ -5,7 +5,7 @@ import { computed, ref } from 'vue';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
 import WebSocketClient from 'src/utils/WebsocketClient';
-const props = defineProps<{ record: OrderRecord }>();
+const props = defineProps<{ record: OrderRecord | ExpiredOrder }>();
 //
 const { t } = useI18n();
 // DOM
@@ -35,32 +35,53 @@ const recordInfo = computed(() => {
   }
 });
 const payerInfo = computed(() => {
-  switch (props.record?.MasterType) {
-    case MasterTypeNum.Buy: {
-      const name = props?.record?.P5;
-      const bank = props?.record?.P3;
-      const code = props?.record?.P4;
-      const account = props?.record?.P1;
-      return {
-        name,
-        bank,
-        code,
-        account
-      };
-    }
-    case MasterTypeNum.Sell: {
-      const [name, bank, code, account] = props.record?.P5?.split('|');
-      return {
-        name,
-        bank,
-        code,
-        account
-      };
-    }
-    default: {
-      return { label: t('label.undefined'), color: 'purple' };
+  if ('P5' in props.record) {
+    switch (props.record?.MasterType) {
+      case MasterTypeNum.Buy: {
+        const name = props?.record?.P5;
+        const bank = props?.record?.P3;
+        const code = props?.record?.P4;
+        const account = props?.record?.P1;
+        return {
+          name,
+          bank,
+          code,
+          account
+        };
+      }
+      case MasterTypeNum.Sell: {
+        const [name, bank, code, account] = props.record?.P5?.split('|');
+        return {
+          name,
+          bank,
+          code,
+          account
+        };
+      }
+      default: {
+        return { label: t('label.undefined'), color: 'purple' };
+      }
     }
   }
+  return { label: t('label.undefined'), color: 'purple' };
+});
+const premium = computed(() => {
+  const usdt = orderStatus?.value?.UsdtAmt ?? 0;
+  const premiumRate =
+    (orderStatus?.value?.D5 ?? orderStatus?.value?.D3) === 0.5
+      ? 1.2
+      : orderStatus?.value?.D5 ?? orderStatus?.value?.D3 ?? 1.2;
+  switch (orderStatus?.value?.MasterType) {
+    case MasterTypeNum.Buy: {
+      const originUsdt = usdt / (1 - premiumRate / 100);
+      return thousandTool((originUsdt * premiumRate) / 100, 3);
+    }
+    case MasterTypeNum.Sell: {
+      const originUsdt = usdt / (1 + premiumRate / 100);
+      return thousandTool((originUsdt * premiumRate) / 100, 3);
+    }
+  }
+  return 0;
 });
 
 // WS
@@ -93,6 +114,10 @@ const statusInfo = computed(() => {
           return t('transaction.appeal');
         case OrderStatusNum.Complete:
           return t('transaction.complete');
+        case OrderStatusNum.Cancel:
+          return t('transaction.deal_canceled');
+        case OrderStatusNum.TimeOut:
+          return t('transaction.deal_canceled');
         default:
           return t('label.undefined');
       }
@@ -108,6 +133,10 @@ const statusInfo = computed(() => {
           return t('transaction.appeal');
         case OrderStatusNum.Complete:
           return t('transaction.complete');
+        case OrderStatusNum.Cancel:
+          return t('transaction.deal_canceled');
+        case OrderStatusNum.TimeOut:
+          return t('transaction.deal_canceled');
         default:
           return t('label.undefined');
       }
@@ -148,12 +177,12 @@ const statusInfo = computed(() => {
             {{ $t('transaction.amount') }}(CNY)
           </q-item-section>
           <q-item-section avatar class="text-body1">
-            {{ thousandTool(record?.D2, 1) }}
+            {{ thousandTool(record?.D2, 2) }}
           </q-item-section>
         </q-item>
         <q-separator />
         <!-- 結餘 -->
-        <q-item style="min-height: 32px">
+        <q-item style="min-height: 32px" v-if="'Balance' in record">
           <q-item-section class="text-grey-6 text-caption">
             {{ $t('label.real_balance') }}(USDT)</q-item-section
           >
@@ -167,7 +196,10 @@ const statusInfo = computed(() => {
             {{ $t('transaction.status') }}
           </q-item-section>
           <q-item-section avatar>
-            {{ statusInfo }}
+            <div v-if="!!orderStatus">
+              {{ statusInfo }}
+            </div>
+            <q-spinner v-else />
           </q-item-section>
         </q-item>
         <!-- 匯率 -->
@@ -185,11 +217,14 @@ const statusInfo = computed(() => {
             {{ $t('transaction.handling_fee') }}
           </q-item-section>
           <q-item-section avatar>
-            {{ thousandTool(orderStatus?.D3, 3) }}
+            <div v-if="!!orderStatus">
+              {{ premium }}
+            </div>
+            <q-spinner v-else />
           </q-item-section>
         </q-item>
         <!-- 收款方 -->
-        <q-item style="min-height: 32px" v-if="!!record?.P2">
+        <q-item style="min-height: 32px" v-if="'P2' in record && !!record?.P2">
           <q-item-section class="text-grey-6 text-caption">
             {{ $t('transaction.payee') }}
           </q-item-section>
@@ -202,7 +237,7 @@ const statusInfo = computed(() => {
           </q-item-section>
         </q-item>
         <!-- 付款方名 -->
-        <q-item style="min-height: 32px" v-if="!!record?.P2">
+        <q-item style="min-height: 32px" v-if="'P2' in record && !!record?.P2">
           <q-item-section class="text-grey-6 text-caption">
             {{ $t('transaction.payer') }}
           </q-item-section>
@@ -237,17 +272,21 @@ const statusInfo = computed(() => {
             {{ payerInfo?.account }}
           </q-item-section>
         </q-item>
+        <!--完成時間 或 時間 -->
         <q-item style="min-height: 32px">
-          <!--完成時間 -->
           <q-item-section class="text-grey-6 text-caption"
-            >{{ $t('transaction.complete_time') }}
+            >{{
+              'Balance' in record
+                ? $t('transaction.complete_time')
+                : $t('transaction_history.label.time')
+            }}
           </q-item-section>
           <q-item-section avatar>
             {{ dayjs(record?.Date).format('YYYY-MM-DD HH:mm:ss') }}
           </q-item-section>
         </q-item>
-        <q-item style="min-height: 32px">
-          <!--訂單號 -->
+        <!--訂單號 -->
+        <q-item style="min-height: 32px" v-if="'Tx_HASH' in record">
           <q-item-section class="text-grey-6 text-caption">
             {{ $t('transaction.order_number') }}</q-item-section
           >
@@ -259,8 +298,8 @@ const statusInfo = computed(() => {
             </div>
           </q-item-section>
         </q-item>
-        <q-item style="min-height: 32px">
-          <!--合約書編號 -->
+        <!--合約書編號 -->
+        <q-item style="min-height: 32px" v-if="'Balance' in record">
           <q-item-section class="text-grey-6 text-caption">
             {{ $t('transaction.contract_number') }}
           </q-item-section>
@@ -271,8 +310,8 @@ const statusInfo = computed(() => {
             content(fake)
           </q-item-section>
         </q-item>
-        <q-item style="min-height: 32px">
-          <!--備註 -->
+        <!--備註 -->
+        <q-item style="min-height: 32px" v-if="'Balance' in record">
           <q-item-section class="text-grey-6 text-caption">
             {{ $t('transaction.remark') }}</q-item-section
           >
