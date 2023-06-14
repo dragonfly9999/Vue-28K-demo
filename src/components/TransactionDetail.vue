@@ -118,7 +118,7 @@ const statusInfo = computed(() => {
             {{ $t('transaction.handling_fee') }}
           </q-item-section>
           <q-item-section avatar>
-            {{ thousandTool(order?.D3, 3) }}
+            {{ thousandTool(order?.D5, 3) }}
           </q-item-section>
         </q-item>
         <!-- 收款方 -->

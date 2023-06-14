@@ -55,6 +55,7 @@ watch(
           "
         />
       </div>
+
       <!-- Transaction Status -->
       <div class="col-12 column justify-between">
         <TradeComplete

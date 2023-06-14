@@ -57,8 +57,8 @@ setOnMessage(route.query.token as string, (msg) => {
     messageAudio.value.currentTime = 0;
     if (
       hint.value &&
-      ((useStorage().getStorageSync('isAgent') && msg?.Message_Role === 3) ||
-        msg?.Message_Role === 1)
+      ((useStorage().getStorageSync('isAgent') && msg?.Message_Role !== 3) ||
+        (useStorage().getStorageSync('isAgent') && msg?.Message_Role === 1))
     ) {
       messageAudio.value?.play();
     }
@@ -113,7 +113,6 @@ setOnMessage(route.query.token as string, (msg) => {
         v-for="(msg, index) in getChatList(route.query.token as string)"
         :key="index"
       >
-        <!-- 文字對話框 -->
         <q-chat-message
           :name="$t(`chatName.${msg.Message_Role}`)"
           :sent="isAgent ? msg.Message_Role === 3 : msg.Message_Role === 1"
@@ -123,14 +122,18 @@ setOnMessage(route.query.token as string, (msg) => {
           :bg-color="isAgent && msg.Message_Role === 3 ? 'cyan-2' : 'grey-4'"
         >
           <div v-if="msg.Message_Type === 1">{{ msg.Message }}</div>
-          <q-img v-else width="240px" :src="msg.Message" />
+          <q-img
+            @click="() => fullScreen(msg.Message)"
+            v-else
+            width="240px"
+            :src="msg.Message"
+          />
         </q-chat-message>
       </div>
     </q-scroll-area>
 
     <!-- 輸入訊息input -->
     <q-card-section class="footer q-px-md row">
-      <!-- 輸入訊息input -->
       <q-input
         color="blue-13"
         v-model="text"
@@ -138,7 +141,6 @@ setOnMessage(route.query.token as string, (msg) => {
         class="col-grow"
         @keyup.enter="handleSent"
       >
-        <!-- 上傳圖片 -->
         <template v-slot:prepend>
           <q-icon
             class="send-image-btn cursor-pointer"
@@ -147,7 +149,6 @@ setOnMessage(route.query.token as string, (msg) => {
             @click="() => filePicker?.pickFiles()"
           />
         </template>
-        <!-- 發送訊息 -->
         <template v-slot:append>
           <q-icon
             @click="handleSent"

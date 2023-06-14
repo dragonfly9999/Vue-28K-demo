@@ -10,7 +10,7 @@ defineProps<{ order?: OrderStatus }>();
         {{ $t('label.rate') }}
       </div>
       <div class="text-weight-bold text-right">
-        {{ thousandTool(order?.D1, 1) }}
+        {{ thousandTool(order?.D1, 2) }}
       </div>
     </div>
     <q-separator vertical spaced="10px" inset />

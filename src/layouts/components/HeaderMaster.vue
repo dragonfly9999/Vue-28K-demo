@@ -8,6 +8,7 @@ import { useRouter } from 'vue-router';
 import { useStorage } from 'vue3-storage';
 import RateBar from 'src/components/RateBar.vue';
 import NavBar from 'src/components/NavBar.vue';
+import logo from 'src/assets/logo_easy.png';
 
 const { getRate } = useRateStore();
 const router = useRouter();
@@ -32,7 +33,7 @@ const logout = () => {
             class="flex items-center cursor-pointer q-mr-md no-wrap"
             @click="() => router.push({ name: 'dashboard' })"
           >
-            <q-img src="src/assets/logo_easy.png" width="122px" height="30px" />
+            <q-img :src="logo" width="122px" height="30px" />
           </div>
 
           <RateBar :rate="getRate()" />
@@ -79,7 +80,7 @@ const logout = () => {
           class="flex items-center cursor-pointer q-mr-md no-wrap"
           @click="() => router.push({ name: 'dashboard' })"
         >
-          <q-img src="src/assets/logo_easy.png" width="122px" height="30px" />
+          <q-img :src="logo" width="122px" height="30px" />
         </div>
       </div>
 

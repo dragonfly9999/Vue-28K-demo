@@ -13,7 +13,10 @@ const { data: wallet, loading } = useWallet();
 const tab = ref('TRC20');
 </script>
 <template>
-  <div style="max-width: 1024px; margin: auto; padding: 0 0.1rem">
+  <div
+    class="full-width"
+    style="max-width: 1024px; margin: auto; padding: 0 0.1rem"
+  >
     <div class="row">
       <!-- 返回 -->
       <div class="col-3">
@@ -30,15 +33,11 @@ const tab = ref('TRC20');
       </div>
       <div class="col-3"></div>
     </div>
-    <q-card
-      class="q-pa-sm q-mx-sm q-mt-md myshadow"
-      style="border-radius: 15px"
-    >
+    <q-card class="q-pa-sm q-mx-sm myshadow" style="border-radius: 15px">
       <BalanceComponent />
     </q-card>
 
     <q-card class="q-mx-sm q-mt-md q-mb-lg myshadow">
-      <!-- tabs -->
       <q-tabs
         v-model="tab"
         inline-label
@@ -52,9 +51,7 @@ const tab = ref('TRC20');
         <q-tab name="ERC20" label="ERC20" />
       </q-tabs>
       <q-separator />
-      <!-- body -->
       <q-tab-panels v-model="tab" animated>
-        <!-- trc -->
         <q-tab-panel name="TRC20" class="q-gutter-y-md">
           <QR
             :walletType="1"
@@ -63,7 +60,6 @@ const tab = ref('TRC20');
             :loading="loading"
           />
         </q-tab-panel>
-        <!-- erc -->
         <q-tab-panel name="ERC20" class="q-gutter-y-md">
           <QR
             :walletType="2"

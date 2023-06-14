@@ -14,16 +14,15 @@ const router = useRouter();
 </script>
 <template>
   <div>
+    <!-- 警示標題 -->
     <div class="flex no-wrap items-start bg-orange-1 q-pa-sm">
       <div style="color: orange; font-size: 24px" class="material-icons">
         warning
       </div>
       <div class="q-ml-sm">
-        <!-- 警示標題 -->
         <div class="text-subtitle1 text-weight-bold text-orange-9">
           {{ t('wallet.label.warning_title') }}
         </div>
-        <!-- 警示內文 -->
         <div>
           {{ t('wallet.label.warning_text_1') }}
           <br />
@@ -33,8 +32,8 @@ const router = useRouter();
     </div>
 
     <div class="row justify-center items-center">
+      <!-- body 錢包地址-->
       <div class="col-12 col-md">
-        <!-- body 錢包地址-->
         <div class="text-subtitle1 text-center q-my-md text-weight-bold">
           {{
             (walletType === 1 ? 'USDT-TRC20 ' : 'USDT-ERC20') +
@@ -42,7 +41,6 @@ const router = useRouter();
             t('wallet.label.address')
           }}
         </div>
-        <!-- QR code -->
 
         <div v-if="loading" class="q-ma-md justify-center flex">
           <q-spinner-cube color="blue-13" size="10em" />
@@ -55,21 +53,18 @@ const router = useRouter();
           />
         </div>
       </div>
+      <!-- 提示 -->
       <div class="col-12 col-md q-ma-md">
-        <div class="flex no-wrap item-center justify-center">
+        <div class="flex no-wrap items-center justify-center">
           <q-icon name="info" color="grey-6" class="q-pa-xs" />
-          <!-- 提示 -->
-          <div class="text-grey-6" style="width: 330px; width: 720px">
+          <div class="text-grey-6">
             {{ t('wallet.label.hint') }}
           </div>
         </div>
         <div class="flex justify-center items-center q-mt-sm q-gutter-x-xs">
           <div
             class="text-caption bg-grey-2 q-pa-sm flex justify-between items-center rounded-borders overflow-auto hide-scrollbar"
-            style="min-width: 330px; width: 720px"
           >
-            <!-- 錢包地址 -->
-
             <div v-if="loading">
               <q-spinner-cube color="blue-13" size="1.5em" />
             </div>

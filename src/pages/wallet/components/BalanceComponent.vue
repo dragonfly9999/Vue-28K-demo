@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useBalanceStore } from 'src/stores';
+import usdt from 'src/assets/USDT.png';
 
 const { getBalance } = useBalanceStore();
 </script>
@@ -7,7 +8,7 @@ const { getBalance } = useBalanceStore();
   <div>
     <div class="flex items-center justify-between q-pa-md q-ma-sm">
       <div class="flex items-center">
-        <img src="src/assets/USDT.png" style="margin: 0 0.3rem" />
+        <img :src="usdt" style="margin: 0 0.3rem" />
         <div class="text-h6 text-weight-bold">USDT</div>
       </div>
 

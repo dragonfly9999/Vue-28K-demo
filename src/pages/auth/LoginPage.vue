@@ -117,7 +117,6 @@ const handleSubmit = () => {
                 />
               </template>
             </q-input>
-            <!-- Ben mark:{{ password }} -->
           </div>
 
           <q-btn
@@ -127,15 +126,6 @@ const handleSubmit = () => {
             rounded
             type="submit"
             :label="$t('label.login')"
-          />
-
-          <q-btn
-            flat
-            class="q-mt-md"
-            color="blue-13"
-            icon="help"
-            :label="t('label.forget_password')"
-            @click="() => router.push({ name: 'forget' })"
           />
         </div>
       </q-form>

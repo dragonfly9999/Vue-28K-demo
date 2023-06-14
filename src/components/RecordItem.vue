@@ -87,7 +87,7 @@ const recordInfo = computed(() => {
               {{ $t('transaction.rate') }}
             </div>
             <div class="text-caption">
-              {{ thousandTool(order?.D1, 1) }}
+              {{ thousandTool(order?.D1, 2) }}
             </div>
           </div>
           <!-- 金額 -->

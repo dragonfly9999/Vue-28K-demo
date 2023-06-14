@@ -3,7 +3,7 @@ import { useStorage } from 'vue3-storage';
 
 const storage = useStorage();
 const axiosProvider = axios.create({
-  baseURL: '/j'
+  baseURL: import.meta.env.DEV ? '/j' : `https://${window.location.hostname}/j`
 });
 
 axiosProvider.interceptors.response.use(({ data }) => {

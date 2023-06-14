@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { useAccessyStore, useLiveStore, useProgressStore } from 'src/stores';
-import { ref, toRefs } from 'vue';
+import { ref, toRefs, watch } from 'vue';
 import InstantOrders from './components/InstantOrders.vue';
 import ProgressOrders from './components/ProgressOrders.vue';
 import RecentHistory from './components/RecentHistory.vue';
 import { useAuto } from 'src/layouts/api/useAuto';
+import progressPng from 'src/assets/in-progress.png';
 
 const { notify, hint } = toRefs(useAccessyStore());
 const { getProgress } = useProgressStore();
@@ -18,7 +19,7 @@ const tab = ref('1');
     <!-- 交易列表 -->
     <div class="flex items-center justify-between">
       <div class="flex items-center">
-        <img src="../../assets/in-progress.png" />
+        <q-img :src="progressPng" width="20px" />
         <div class="text-h6 text-weight-bold">
           {{ $t('label.instant_transaction') }}
         </div>

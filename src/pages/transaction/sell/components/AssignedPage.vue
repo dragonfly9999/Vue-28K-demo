@@ -23,9 +23,9 @@ onBeforeUnmount(() => clearInterval(timeInterval.value));
   </div>
 
   <div class="col-auto justify-center full-width column q-pa-sm">
-    <div class="flex items-center justify-between q-mb-lg">
-      <div class="text-bold">
-        <span class="text-h6 text-bold"> {{ t('label.sell') }}</span> USDT
+    <div class="flex no-wrap items-end justify-between q-mb-lg">
+      <div style="min-width: fit-content" class="q-mr-xl">
+        {{ t('label.sell') }} USDT
       </div>
       <PunctuationMaster :label="order?.Tx_HASH" />
     </div>

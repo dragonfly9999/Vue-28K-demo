@@ -216,7 +216,6 @@ export default {
     step_hint_sell_text_3: '對方已完成付款，請確認您的收款帳戶是否到帳',
     step_hint_sell_title_4: '交易完成',
     step_hint_sell_text_4: '此筆交易已完成',
-    //
     wallet_balance: '錢包餘額',
     enter_the_sale_quantity: '請輸入出售數量',
     i_want_to_sell: '我要出售',

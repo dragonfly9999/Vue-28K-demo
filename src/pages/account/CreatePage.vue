@@ -2,7 +2,6 @@
 import { onBeforeUnmount, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { AccNum, AccRes } from './api/useAccHistory';
-import CancelConfirm from 'src/components/CancelConfirm.vue';
 import { useRouter } from 'vue-router';
 import { useSetAcc } from './api';
 import CancelVerification from 'src/components/CancelVerification.vue';

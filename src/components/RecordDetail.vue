@@ -176,7 +176,7 @@ const statusInfo = computed(() => {
             {{ $t('transaction.rate') }}
           </q-item-section>
           <q-item-section avatar>
-            {{ thousandTool(record?.D1, 1) }}
+            {{ thousandTool(record?.D1, 2) }}
           </q-item-section>
         </q-item>
         <!-- 手續費 -->

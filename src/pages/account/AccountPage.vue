@@ -7,6 +7,7 @@ import { useSetAcc } from './api';
 import { useAcc } from './api';
 import { thousandTool } from 'src/utils/NumberTool';
 import CheckCard from 'src/components/CheckCard.vue';
+import Flag from 'src/assets/CNY.png';
 
 const { t } = useI18n();
 const router = useRouter();
@@ -64,7 +65,7 @@ const delID = ref<number>();
         <div class="flex">
           <q-item-section avatar class="q-pa-sm">
             <q-avatar size="sm">
-              <img src="src/assets/CNY.png" />
+              <img :src="Flag" />
             </q-avatar>
           </q-item-section>
           <!-- ()帳戶 -->

@@ -14,7 +14,9 @@ export default class WebSocketClient {
   onError: ((evt: Event) => void) | null = null;
   // constructor
   constructor(url: string, options: WebsocketOptions) {
-    const OrderURL = 'wss://demo.k100u.com/j';
+    const OrderURL = import.meta.env.DEV
+      ? 'wss://demo.k100u.com/j'
+      : `wss://${window.location.hostname}/j`;
     const ChatURL = 'wss://chat.u28exchange.com';
     const baseURL = options.isChat ? ChatURL : OrderURL;
     this.url =

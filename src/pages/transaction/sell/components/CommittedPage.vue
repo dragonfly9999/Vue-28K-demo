@@ -3,17 +3,23 @@ import { getLeaseTime } from 'src/utils/TimeMaster';
 import StepperMaster from 'src/components/StepperMaster.vue';
 import { useI18n } from 'vue-i18n';
 import { OrderStatusNum } from 'src/stores/live';
-import { reactive } from 'vue';
+import { onBeforeUnmount, onMounted, reactive, ref } from 'vue';
 import SellConfirm from './SellConfirm.vue';
 import AppealConfirm from 'src/components/AppealConfirm.vue';
 import PunctuationMaster from 'src/components/PunctuationMaster.vue';
 defineProps<{ order: OrderStatus | undefined }>();
 const { t } = useI18n();
+const timeInterval = ref<NodeJS.Timeout>();
+const deltaTime = ref(0);
 // DOM
 const visible = reactive({
   confirm: false,
   appeal: false
 });
+onMounted(() => {
+  timeInterval.value = setInterval(() => (deltaTime.value += 1), 1000);
+});
+onBeforeUnmount(() => clearInterval(timeInterval.value));
 </script>
 <template>
   <div class="full-width col-auto">
@@ -52,7 +58,9 @@ const visible = reactive({
         <!-- 付款時間 -->
         <div class="text-caption q-ml-xs">
           {{ t('transaction.payment_time') }}:
-          {{ getLeaseTime(order?.CreateDate, order?.DeltaTime) }}
+          {{
+            getLeaseTime(order?.CreateDate, (order?.DeltaTime ?? 0) + deltaTime)
+          }}
         </div>
       </div>
     </div>
@@ -119,7 +127,7 @@ const visible = reactive({
               <template v-slot:avatar>
                 <q-icon name="error" color="orange-9" />
               </template>
-              {{ t('transaction.label.sell.appeal_hint') }}
+              {{ t('sell.appeal_hint') }}
             </q-banner>
           </q-popup-proxy>
         </q-btn>

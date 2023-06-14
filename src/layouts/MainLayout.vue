@@ -45,7 +45,7 @@
           </div>
         </q-toolbar>
       </q-page-sticky>
-      <div class="flex justify-center q-pa-md q-mt-xl" style="width: 100%">
+      <div class="flex justify-center q-pa-md q-mt-xl" style="min-width: 100%">
         <router-view></router-view>
       </div>
     </q-page-container>
@@ -56,11 +56,7 @@
           <div class="flex">
             <div class="col-12 col-md">
               <div class="flex items-center">
-                <q-img
-                  src="src/assets/logo_easy.png"
-                  width="130px"
-                  class="q-mr-sm"
-                />
+                <q-img :src="logo" width="130px" class="q-mr-sm" />
               </div>
             </div>
             <div
@@ -75,18 +71,19 @@
   <div>
     <audio :volume="0.5" loop :src="instantSound" ref="instantAudio" />
     <audio :src="matchSound" ref="matchAudio" />
-    <audio :src="paymentSound" ref="paymentAudio" />
+    <audio loop :src="paymentSound" ref="paymentAudio" />
     <audio loop :src="appealSound" ref="appealAudio" />
   </div>
 </template>
 
 <script setup lang="ts">
+import logo from 'src/assets/logo_easy.png';
 import { thousandTool } from 'src/utils/NumberTool';
 import { useRouter } from 'vue-router';
 import { useBalance, useRate } from './api';
 import ProgressBtn from './components/ProgressBtn.vue';
 import HeaderMaster from './components/HeaderMaster.vue';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, toRefs, watch } from 'vue';
 import {
   useAccessyStore,
   useCsStore,
@@ -100,6 +97,7 @@ import paymentSound from 'src/assets/sound/payment2.mp3';
 import appealSound from 'src/assets/sound/owl.mp3';
 import { MtTypeNum, OrderStatusNum } from 'src/stores/live';
 
+const { hint } = toRefs(useAccessyStore());
 const { data: balance, loading: balanceLoading } = useBalance();
 const { setOrders, addOrders } = useLiveStore();
 const { setProgress, addProgress } = useProgressStore();
@@ -190,8 +188,8 @@ onMounted(() => {
             let flag = true;
 
             [
-              OrderStatusNum.Assigned,
               OrderStatusNum.Committed,
+              OrderStatusNum.Assigned,
               OrderStatusNum.Appeal
             ].forEach((statusID) => {
               progress?.forEach((order: LiveOrder) => {
@@ -240,6 +238,9 @@ onMounted(() => {
       }
     }
   };
+});
+watch(hint, (newValue) => {
+  if (!newValue) handleResetSound();
 });
 </script>
 
