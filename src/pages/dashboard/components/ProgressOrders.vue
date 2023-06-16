@@ -1,20 +1,20 @@
 <script setup lang="ts">
 import OrderItem from 'src/components/OrderItem.vue';
-import { useProgressStore } from 'src/stores';
+import { useLiveStore } from 'src/stores';
 import { useI18n } from 'vue-i18n';
 
-const { getProgress } = useProgressStore();
+const { getOrders } = useLiveStore();
 const { t } = useI18n();
 </script>
 <template>
   <q-list>
     <OrderItem
-      v-for="(order, index) in getProgress()"
+      v-for="(order, index) in getOrders('progress')"
       :key="index"
       :order="order"
       :is-instant="false"
     />
-    <q-item v-if="getProgress().length === 0">
+    <q-item v-if="getOrders('progress').length === 0">
       <div
         class="q-pa-md text-capitalize text-weight-medium text-caption text-blue-14"
       >

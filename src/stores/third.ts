@@ -12,6 +12,7 @@ export const useThirdStore = defineStore('third', () => {
   };
   const setWebSockets = (token: string) => {
     const tokenArray = Object.entries(webSockets?.value).map(([key]) => key);
+    const login_session = useStorage().getStorageSync('login_session');
     if (tokenArray.every((key) => key !== token)) {
       const isAgent = useStorage().getStorageSync('isAgent');
       const chatURL = isAgent ? '/ws_ChatOrder3.ashx' : '/WS_ChatOrder.ashx';
@@ -19,7 +20,8 @@ export const useThirdStore = defineStore('third', () => {
         reconnectEnabled: true,
         reconnectInterval: 2000,
         isChat: true,
-        order_token: token
+        order_token: token,
+        login_session
       });
       chatWS.connect();
       chatWS.onMessage = (msg) => {

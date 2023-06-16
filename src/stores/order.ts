@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import WebSocketClient from 'src/utils/WebsocketClient';
 import { ref } from 'vue';
 import { OrderStatusNum } from './live';
+import { useStorage } from 'vue3-storage';
 
 export const useOrderStore = defineStore('order', () => {
   const orderStatusObj = ref<{ [key: string]: OrderStatus }>({});
@@ -12,13 +13,15 @@ export const useOrderStore = defineStore('order', () => {
   };
   const setOrderWs = (token: string) => {
     const tokenArray = Object.entries(webSockets?.value).map(([key]) => key);
+    const login_session = useStorage().getStorageSync('login_session');
     if (tokenArray.every((key) => key !== token)) {
       const orderStatusUrl = '/ws_orderstatus.ashx';
       const orderWs = new WebSocketClient(orderStatusUrl, {
         reconnectEnabled: true,
         reconnectInterval: 2000,
         isChat: false,
-        order_token: token
+        order_token: token,
+        login_session
       });
       orderWs.connect();
       orderWs.onMessage = (msg) => {

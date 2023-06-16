@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import logo from 'src/assets/logo_easy.png';
+import I18nBtn from 'src/components/I18nBtn.vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();

@@ -1,5 +1,7 @@
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
+import WebSocketClient from 'src/utils/WebsocketClient';
+import { reactive } from 'vue';
+import { useStorage } from 'vue3-storage';
 
 enum MtTypeNum {
   Buy = 2,
@@ -14,18 +16,89 @@ enum OrderStatusNum {
   Cancel = 99,
   TimeOut = 98
 }
+type LiveType = 'instant' | 'progress';
 
 export const useLiveStore = defineStore('live', () => {
-  const liveOrders = ref<Array<LiveOrder>>([]);
+  const liveWs = reactive<{ [key in LiveType]: WebSocketClient | null }>({
+    instant: null,
+    progress: null
+  });
+  const liveOrders = reactive<{ [key in LiveType]: Array<LiveOrder> }>({
+    instant: [],
+    progress: []
+  });
+  const liveMessages = reactive<{
+    [key in LiveType]: (args?: Array<LiveOrder>) => void;
+  }>({
+    instant: () => {
+      console.log('instant on message');
+    },
+    progress: () => {
+      console.log('progress on message');
+    }
+  });
 
-  const setOrders = (args: Array<LiveOrder>) => (liveOrders.value = args);
-  const addOrders = (arg: LiveOrder) => liveOrders.value.push(arg);
-  const getOrders = () => liveOrders.value;
+  const setOrders = (login_session: string) => {
+    const defaultOptions = {
+      reconnectEnabled: true,
+      reconnectInterval: 2000,
+      isChat: false,
+      login_session
+    };
+    const isAgent = useStorage().getStorageSync('isAgent');
+    if (isAgent) {
+      if (!liveWs.instant) {
+        const instantURL = '/ws_liveorders.ashx';
+        liveWs.instant = new WebSocketClient(instantURL, defaultOptions);
+        liveWs.instant.connect();
+        liveWs.instant.onMessage = (msg) => {
+          if (msg?.data && typeof msg?.data === 'string') {
+            const newList: VirgilRes<Array<LiveOrder>> | VirgilRes<LiveOrder> =
+              JSON.parse(msg.data);
+            if (Array.isArray(newList.data)) {
+              liveOrders.instant = newList.data.reverse();
+              liveMessages.instant(newList.data);
+            } else {
+              liveOrders.instant.push(newList.data);
+            }
+          }
+        };
+      }
+      if (!liveWs.progress) {
+        const progressURL = '/WS_livePendingOrders.ashx';
+        liveWs.progress = new WebSocketClient(progressURL, defaultOptions);
+        liveWs.progress.connect();
+        liveWs.progress.onMessage = (msg) => {
+          if (msg?.data && typeof msg?.data === 'string') {
+            const newList: VirgilRes<Array<LiveOrder>> | VirgilRes<LiveOrder> =
+              JSON.parse(msg.data);
+            if (Array.isArray(newList.data)) {
+              liveOrders.progress = newList.data.reverse();
+              liveMessages.progress(newList.data);
+            } else {
+              liveOrders.progress.push(newList.data);
+            }
+          }
+        };
+      }
+    }
+  };
+  const getOrders = (arg: LiveType) => liveOrders[arg];
+
+  const setOnMessage = ({
+    type,
+    fn
+  }: {
+    type: LiveType;
+    fn: (args?: Array<LiveOrder> | undefined) => void;
+  }) => {
+    liveMessages[type] = fn;
+  };
 
   return {
     setOrders,
-    addOrders,
-    getOrders
+    getOrders,
+    setOnMessage
   };
 });
 export { MtTypeNum, OrderStatusNum };

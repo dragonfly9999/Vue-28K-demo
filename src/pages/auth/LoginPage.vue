@@ -4,12 +4,18 @@ import { ref } from 'vue';
 import { useLogin } from './api';
 import { useRouter } from 'vue-router';
 import { useStorage } from 'vue3-storage';
+import { useLiveStore } from 'src/stores';
 
 const { t } = useI18n();
 const router = useRouter();
 const storage = useStorage();
 const { run: login } = useLogin({
-  onSuccess: () => {
+  onSuccess: (res) => {
+    console.log('res:', res);
+    const { login_session } = res?.data || {};
+    if (login_session) {
+      useLiveStore().setOrders(login_session);
+    }
     storage.setStorageSync('phone', phone_number.value);
     storage.setStorageSync('password', password.value);
     router.push({ name: 'dashboard' });

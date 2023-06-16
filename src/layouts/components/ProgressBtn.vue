@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import OrderItem from 'src/components/OrderItem.vue';
-import { useProgressStore } from 'src/stores';
 import { useI18n } from 'vue-i18n';
-const { getProgress } = useProgressStore();
+import { useLiveStore } from 'src/stores';
+
+const { getOrders } = useLiveStore();
 
 const { t } = useI18n();
 </script>
@@ -15,10 +16,10 @@ const { t } = useI18n();
     :label="t('label.inProgress')"
     style="width: fit-content"
     class="lt-xs q-px-sm"
-    :disable="getProgress().length === 0"
+    :disable="getOrders('progress').length === 0"
   >
-    <q-badge color="red" floating v-if="getProgress().length > 0">
-      {{ getProgress().length }}
+    <q-badge color="red" floating v-if="getOrders('progress').length > 0">
+      {{ getOrders('progress').length }}
     </q-badge>
 
     <q-menu
@@ -32,7 +33,7 @@ const { t } = useI18n();
         style="min-width: fit-content"
       >
         <order-item
-          v-for="(order, index) in getProgress()"
+          v-for="(order, index) in getOrders('progress')"
           :key="index"
           :order="order"
           :is-instant="false"

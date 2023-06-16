@@ -16,7 +16,7 @@ type LoginRes = {
 const storage = useStorage();
 
 type UseProps = {
-  onSuccess: () => void;
+  onSuccess: (res: VirgilRes<LoginRes> | undefined) => void;
 };
 export const useLogin = ({ onSuccess }: UseProps) =>
   requestProvider<LoginRes, LoginProps>({
@@ -25,6 +25,6 @@ export const useLogin = ({ onSuccess }: UseProps) =>
     onSuccess: (res) => {
       storage.setStorageSync('isAgent', res?.data.isAgent);
       storage.setStorageSync('login_session', res?.data.login_session);
-      onSuccess();
+      onSuccess(res);
     }
   });
