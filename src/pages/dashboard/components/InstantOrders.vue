@@ -9,12 +9,12 @@ const { t } = useI18n();
 <template>
   <q-list>
     <OrderItem
-      v-for="(order, index) in getOrders()"
+      v-for="(order, index) in getOrders('instant')"
       :key="index"
       :order="order"
       :is-instant="true"
     />
-    <q-item v-if="getOrders().length === 0">
+    <q-item v-if="getOrders('instant').length === 0">
       <div
         class="q-pa-md text-capitalize text-weight-medium text-caption text-blue-14"
       >

@@ -136,7 +136,6 @@ setOnMessage(route.query.token as string, (msg) => {
         :label="$t('transaction.input_message')"
         class="col-grow"
         @keyup.enter="handleSent"
-        @focus="handleSwitch"
       >
         <template v-slot:prepend>
           <q-icon

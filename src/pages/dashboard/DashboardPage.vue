@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useAccessyStore, useLiveStore, useProgressStore } from 'src/stores';
+import { useAccessyStore, useLiveStore } from 'src/stores';
 import { ref, toRefs, watch } from 'vue';
 import InstantOrders from './components/InstantOrders.vue';
 import ProgressOrders from './components/ProgressOrders.vue';
@@ -8,7 +8,6 @@ import { useAuto } from 'src/layouts/api/useAuto';
 import progressPng from 'src/assets/in-progress.png';
 
 const { notify, hint } = toRefs(useAccessyStore());
-const { getProgress } = useProgressStore();
 const { getOrders } = useLiveStore();
 const { data: autoInfo, run: updateMode, loading: loadMode } = useAuto();
 // DOM
@@ -93,8 +92,8 @@ const tab = ref('1');
         <q-tab name="1" :label="$t('label.instant_transaction')">
           <q-badge
             color="red"
-            :label="getOrders()?.length"
-            v-if="getOrders()?.length > 0"
+            :label="getOrders('instant')?.length"
+            v-if="getOrders('instant')?.length > 0"
             floating
           />
         </q-tab>
@@ -102,8 +101,8 @@ const tab = ref('1');
         <q-tab name="2" :label="$t('label.inProgress')">
           <q-badge
             color="red"
-            :label="getProgress()?.length"
-            v-if="getProgress()?.length > 0"
+            :label="getOrders('progress')?.length"
+            v-if="getOrders('progress')?.length > 0"
             floating
           />
         </q-tab>

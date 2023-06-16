@@ -36,7 +36,5 @@ export { useUserStore } from './user';
 export { useBalanceStore } from './balance';
 export { useAccessyStore } from './accessories';
 export { useLiveStore } from './live';
-export { useProgressStore } from './progress';
-export { useCsStore } from './cs';
 export { useThirdStore } from './third';
 export { useOrderStore } from './order';

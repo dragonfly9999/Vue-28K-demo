@@ -84,27 +84,20 @@ import { useBalance, useRate } from './api';
 import ProgressBtn from './components/ProgressBtn.vue';
 import HeaderMaster from './components/HeaderMaster.vue';
 import { onMounted, ref, toRefs, watch } from 'vue';
-import {
-  useAccessyStore,
-  useCsStore,
-  useLiveStore,
-  useProgressStore
-} from 'src/stores';
-import WebSocketClient from 'src/utils/WebsocketClient';
+import { useAccessyStore, useLiveStore } from 'src/stores';
 import instantSound from 'src/assets/sound/instants5.mp3';
 import matchSound from 'src/assets/sound/match.mp3';
 import paymentSound from 'src/assets/sound/payment2.mp3';
 import appealSound from 'src/assets/sound/owl.mp3';
 import { MtTypeNum, OrderStatusNum } from 'src/stores/live';
+import { useStorage } from 'vue3-storage';
 
 useRate();
 const { data: balance, loading: balanceLoading } = useBalance();
 
 //
 const { hint } = toRefs(useAccessyStore());
-const { setOrders, addOrders } = useLiveStore();
-const { setProgress, addProgress } = useProgressStore();
-const { setChats, addChats } = useCsStore();
+const { setOnMessage, setOrders } = useLiveStore();
 const { getAccess } = useAccessyStore();
 const router = useRouter();
 // DOM
@@ -130,116 +123,71 @@ const handleResetSound = () => {
     appealAudio.value.currentTime = 0;
   }
 };
-// WS
-const defaultOptions = {
-  reconnectEnabled: true,
-  reconnectInterval: 2000
-};
 
 onMounted(() => {
-  // live order
-  const liveURL = '/ws_liveorders.ashx';
-  const liveWS = new WebSocketClient(liveURL, {
-    ...defaultOptions,
-    isChat: false
-  });
-  liveWS.connect();
-  liveWS.onMessage = (msg) => {
-    if (msg.data && typeof msg.data === 'string') {
-      const OrderFromServer:
-        | VirgilRes<Array<LiveOrder>>
-        | VirgilRes<LiveOrder> = JSON.parse(msg.data);
-      if (Array.isArray(OrderFromServer.data)) {
-        setOrders(OrderFromServer.data.reverse());
-        // sound
-        handleResetSound();
-        setTimeout(() => {
-          if (
-            Array.isArray(OrderFromServer.data) &&
-            OrderFromServer.data?.length > 0 &&
-            getAccess().hint &&
-            instantAudio.value
-          ) {
-            instantAudio.value.play();
-          }
-        }, 100);
-      } else {
-        addOrders(OrderFromServer.data);
-      }
+  const login_session = useStorage().getStorageSync('login_session');
+  setOrders(login_session);
+  // sound
+  setOnMessage({
+    type: 'instant',
+    fn: (OrderFromServer) => {
+      handleResetSound();
+      setTimeout(() => {
+        if (
+          OrderFromServer &&
+          OrderFromServer?.length > 0 &&
+          getAccess().hint &&
+          instantAudio.value
+        ) {
+          instantAudio.value.play();
+        }
+      }, 100);
     }
-  };
-  // progress order
-  const progressURL = '/WS_livePendingOrders.ashx';
-  const progressWS = new WebSocketClient(progressURL, {
-    ...defaultOptions,
-    isChat: false
   });
-  progressWS.connect();
-  progressWS.onMessage = (msg) => {
-    if (msg.data && typeof msg.data === 'string') {
-      const OrderFromServer:
-        | VirgilRes<Array<LiveOrder>>
-        | VirgilRes<LiveOrder> = JSON.parse(msg.data);
-      if (Array.isArray(OrderFromServer.data)) {
-        const progress = OrderFromServer.data;
-        setProgress(progress.reverse());
-        // sound
-        handleResetSound();
-        setTimeout(() => {
-          if (progress?.length > 0 && getAccess().hint) {
-            let flag = true;
-
-            [
-              OrderStatusNum.Committed,
-              OrderStatusNum.Assigned,
-              OrderStatusNum.Appeal
-            ].forEach((statusID) => {
-              progress?.forEach((order: LiveOrder) => {
-                console.log('on message');
-                if (flag && order.Order_StatusID === statusID) {
-                  switch (statusID) {
-                    case OrderStatusNum.Assigned:
-                      matchAudio.value?.play();
+  setOnMessage({
+    type: 'progress',
+    fn: (OrderFromServer) => {
+      handleResetSound();
+      setTimeout(() => {
+        if (
+          OrderFromServer &&
+          OrderFromServer?.length > 0 &&
+          getAccess().hint
+        ) {
+          let flag = true;
+          [
+            OrderStatusNum.Committed,
+            OrderStatusNum.Assigned,
+            OrderStatusNum.Appeal
+          ].forEach((statusID) => {
+            OrderFromServer?.forEach((order: LiveOrder) => {
+              if (flag && order.Order_StatusID === statusID) {
+                switch (statusID) {
+                  case OrderStatusNum.Assigned:
+                    matchAudio.value?.play();
+                    flag = false;
+                    break;
+                  case OrderStatusNum.Committed:
+                    if (order.MType === MtTypeNum.Sell) {
+                      paymentAudio.value?.play();
                       flag = false;
-                      break;
-                    case OrderStatusNum.Committed:
-                      if (order.MType === MtTypeNum.Sell) {
-                        paymentAudio.value?.play();
-                        flag = false;
-                      }
-                      break;
-                    case OrderStatusNum.Appeal:
-                      if (order.MType === MtTypeNum.Buy) {
-                        appealAudio.value?.play();
-                        flag = false;
-                        return;
-                      }
-                      break;
-                  }
+                    }
+                    break;
+                  case OrderStatusNum.Appeal:
+                    if (order.MType === MtTypeNum.Buy) {
+                      appealAudio.value?.play();
+                      flag = false;
+                      return;
+                    }
+                    break;
                 }
-              });
+              }
             });
-          }
-        }, 100);
-      } else {
-        addProgress(OrderFromServer.data);
-      }
+          });
+        }
+      }, 100);
     }
-  };
-  // CS chat
-  const CsURL = '/ws_chatuser.ashx';
-  const CsWS = new WebSocketClient(CsURL, { ...defaultOptions, isChat: true });
-  CsWS.connect();
-  CsWS.onMessage = (msg) => {
-    if (msg.data && typeof msg.data === 'string') {
-      const OrderFromServer: Array<ChatRes> | ChatRes = JSON.parse(msg.data);
-      if (Array.isArray(OrderFromServer)) {
-        setChats(OrderFromServer.reverse());
-      } else {
-        addChats(OrderFromServer);
-      }
-    }
-  };
+  });
 });
 watch(hint, (newValue) => {
   if (!newValue) handleResetSound();

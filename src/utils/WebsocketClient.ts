@@ -1,7 +1,3 @@
-import { useStorage } from 'vue3-storage';
-
-const login_session = useStorage().getStorageSync('login_session');
-
 export default class WebSocketClient {
   instance?: WebSocket;
   url: string;
@@ -23,7 +19,7 @@ export default class WebSocketClient {
       baseURL +
       url +
       '?login_session=' +
-      login_session +
+      options.login_session +
       '&order_token=' +
       options.order_token;
 

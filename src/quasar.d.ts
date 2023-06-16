@@ -94,4 +94,5 @@ type WebsocketOptions = {
   reconnectInterval: number;
   isChat: boolean;
   order_token?: string;
+  login_session: string;
 };
