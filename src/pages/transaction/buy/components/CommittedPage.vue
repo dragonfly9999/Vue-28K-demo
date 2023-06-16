@@ -19,22 +19,23 @@ const router = useRouter();
       <q-spinner-hourglass color="orange-14" size="5.5em" />
     </div>
 
-    <div class="text-h6 text-weight-bold text-center q-mx-sm text-primary">
+    <div class="text-h6 text-weight-bold text-center q-mx-sm text-blue-13">
       <!-- 已提交，等待確認中 -->
       {{ $t('buy.waiting_for_confirmation') }}
     </div>
 
     <div class="q-ma-sm text-body-1 text-center text-grey-8">
       {{ $t('label.order_number') }}
-      <PunctuationMaster :label="order?.Tx_HASH" />
+      <PunctuationMaster justify="center" :label="order?.Tx_HASH" />
     </div>
   </div>
   <div class="full-width col-auto">
     <!-- 返回主頁btn -->
     <q-btn
-      glossy
+      rounded
+      unelevated
       class="full-width"
-      color="primary"
+      color="blue-13"
       :label="t('label.back_front_page')"
       @click="() => router.push({ name: 'dashboard' })"
     />

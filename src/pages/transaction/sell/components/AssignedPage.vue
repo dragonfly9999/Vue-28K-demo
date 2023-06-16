@@ -27,7 +27,7 @@ onBeforeUnmount(() => clearInterval(timeInterval.value));
       <div style="min-width: fit-content" class="q-mr-xl">
         {{ t('label.sell') }} USDT
       </div>
-      <PunctuationMaster :label="order?.Tx_HASH" />
+      <PunctuationMaster  :label="order?.Tx_HASH" />
     </div>
     <PriceInfo :order="order" />
 

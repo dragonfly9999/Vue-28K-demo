@@ -58,9 +58,9 @@ onBeforeUnmount(() => {
     <StepperMaster :order="order" />
   </div>
 
-  <div class="full-width col-auto">
+  <div class="col-auto justify-center full-width column q-pa-sm">
     <!-- 購買資訊 Header -->
-    <div class="flex no-wrap items-end justify-between">
+    <div class="flex no-wrap items-start justify-between q-my-md">
       <!--購買USDT  -->
       <div style="min-width: fit-content" class="q-mr-xl">
         {{ t('buy.buy_usdt') }}
@@ -85,13 +85,13 @@ onBeforeUnmount(() => {
 
     <!-- 轉帳資訊 Header -->
     <div class="flex justify-between">
-      <div class="text-h6 text-weight-bold q-mx-sm text-primary">
+      <div class="text-h6 text-weight-bold q-mx-sm text-blue-13">
         <!-- 轉帳資料 -->
         {{ t('buy.transfer_info') }}
       </div>
       <div class="flex items-center">
         <!-- 付款時間 -->
-        <q-icon name="schedule" color="primary" />
+        <q-icon name="schedule" color="blue-13" />
         <div class="text-caption">
           {{ t('transaction.payment_time') }}:
           {{
@@ -146,12 +146,13 @@ onBeforeUnmount(() => {
   </div>
 
   <div class="full-width col-auto column justify-center">
-    <div class="text-center q-mt-md q-gutter-xs row">
+    <div class="text-center q-mt-md q-gutter-y-md row">
       <!--已完成付款btn  -->
       <q-btn
         class="full-width"
-        glossy
-        color="primary"
+        rounded
+        unelevated
+        color="blue-13"
         :label="
           order?.Order_StatusID === OrderStatusNum.Appeal
             ? t('transaction.appeal')
@@ -164,7 +165,7 @@ onBeforeUnmount(() => {
       <q-btn
         flat
         class="full-width"
-        color="primary"
+        color="blue-13"
         v-close-popup
         :label="t('transaction.deal_canceled')"
         @click="() => (visible.cancelWarn = true)"

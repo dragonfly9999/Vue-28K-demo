@@ -24,7 +24,7 @@ const informations = computed(() => [
 <template>
   <q-card class="q-pa-md q-gutter-y-sm" style="width: 380px">
     <!-- title-請確認以下資訊 -->
-    <div class="text-h6 text-center">
+    <div class="text-h6 text-center text-weight-bold">
       {{ $t('transaction.title_check_info') }}
     </div>
     <!-- hint -->

@@ -172,7 +172,7 @@ setOnMessage(route.query.token as string, (msg) => {
   border-top-left-radius: 30px;
   border-bottom-right-radius:0;
   border-bottom-left-radius:0;
-z-index:6;
+  z-index:6;
   box-shadow: 0px -1px 5px rgba(0, 27, 61, 0.158);
   margin-left: 15px;
   overflow: hidden;

@@ -1,9 +1,9 @@
 <template>
   <q-layout view="hHh lpr fff">
-    <HeaderMaster/>
+    <HeaderMaster />
     <!-- Body -->
     <q-page-container>
-      <q-page-sticky expand position="top" style="z-index:5">
+      <q-page-sticky expand position="top" style="z-index: 5">
         <q-toolbar class="bg-white myshadow">
           <ProgressBtn />
           <div
@@ -46,6 +46,10 @@
         </q-toolbar>
       </q-page-sticky>
       <div class="flex justify-center q-pa-md q-mt-xl" style="min-width: 100%">
+        <div>
+          {{ $t('翻譯') }}
+        </div>
+
         <router-view></router-view>
       </div>
     </q-page-container>
@@ -142,7 +146,7 @@ onMounted(() => {
           instantAudio.value.play();
         }
       }, 100);
-    }
+    },
   });
   setOnMessage({
     type: 'progress',
@@ -158,7 +162,7 @@ onMounted(() => {
           [
             OrderStatusNum.Committed,
             OrderStatusNum.Assigned,
-            OrderStatusNum.Appeal
+            OrderStatusNum.Appeal,
           ].forEach((statusID) => {
             OrderFromServer?.forEach((order: LiveOrder) => {
               if (flag && order.Order_StatusID === statusID) {
@@ -186,7 +190,7 @@ onMounted(() => {
           });
         }
       }, 100);
-    }
+    },
   });
 });
 watch(hint, (newValue) => {

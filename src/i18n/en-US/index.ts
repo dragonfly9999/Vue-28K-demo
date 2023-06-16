@@ -11,13 +11,16 @@ export default {
     password: '密碼',
     forget_password: '忘記密碼',
     welcome: '歡迎登入',
-    logout: '登出'
+    logout: '登出',
   },
   rate: {
     title: 'Reference exchange rate: ', // new
     update: 'update time',
     buy: '購買',
     sell: '出售',
-    exchange: '兌換匯率'
+    exchange: '兌換匯率',
   },
+  翻譯: 'transaction',
+
+  即時訂單: 'instant',
 };

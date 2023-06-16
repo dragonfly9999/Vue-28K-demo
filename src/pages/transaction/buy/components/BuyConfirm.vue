@@ -11,7 +11,7 @@ const { t } = useI18n();
 <template>
   <q-card class="q-pa-sm q-gutter-y-sm" style="width: 380px">
     <!-- title-請確認以下資訊 -->
-    <div class="text-h6 text-center">
+    <div class="text-h6 text-center text-weight-bold">
       {{ t('transaction.title_check_info') }}
     </div>
     <div>
@@ -22,7 +22,7 @@ const { t } = useI18n();
       </div>
     </div>
     <!-- 轉帳資料 -->
-    <div class="text-h6 text-weight-bold q-mx-sm text-primary">
+    <div class="text-h6 text-weight-bold q-mx-sm text-blue-13">
       {{ t('buy.transfer_info') }}
     </div>
     <div class="mycolor1 q-pa-sm info td">
@@ -73,12 +73,12 @@ const { t } = useI18n();
       {{ t('warn.hint_check_info_2') }}
     </div>
 
-    <q-card-actions align="right" class="text-primary row">
+    <q-card-actions align="right" class="text-blue-13 row">
       <!-- 上傳水單btn_選擇圖片 -->
       <q-btn
         class="col-12 col-md q-mt-md"
-        glossy
-        color="primary"
+        unelevated
+        color="blue-13"
         :label="t('label.upload_image')"
         @click="() => emit('upload')"
       />
@@ -86,7 +86,7 @@ const { t } = useI18n();
       <q-btn
         class="col-12 col-md q-mt-md"
         outline
-        color="primary"
+        color="blue-13"
         :label="t('label.skip')"
         @click="() => emit('skip')"
       />
