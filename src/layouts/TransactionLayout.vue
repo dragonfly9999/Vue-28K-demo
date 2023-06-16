@@ -38,7 +38,7 @@ watch(
 );
 </script>
 <template>
-  <div class="flex items-start justify-center" style="min-height: 60vh">
+  <div class="flex items-start justify-center" id="background">
     <q-card class="row q-pa-md" v-if="!!orderStatus">
       <div class="col-xs-12 col-lg-8 column items-center">
         <RouterView />
@@ -79,4 +79,14 @@ watch(
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+#background {
+  min-height: 100%;
+}
+
+@media screen and (max-width: 1439px) {
+  #background {
+    min-height:110vh
+  }
+}
+</style>

@@ -18,11 +18,11 @@ const isVisibleDetail = ref(false);
   </div>
 
   <div class="text-center col-auto column items-center justify-center">
-    <q-icon class="material-icons text-primary text-h1"
+    <q-icon class="material-icons text-blue-13 text-h1"
       >check_circle_outline</q-icon
     >
     <!-- 交易完成 -->
-    <div class="text-h6 text-weight-bold q-mx-sm text-primary">
+    <div class="text-h6 text-weight-bold q-mx-sm text-blue-13">
       {{ t('transaction.transaction_complete') }}
     </div>
     <!-- 訂單號 -->
@@ -32,19 +32,20 @@ const isVisibleDetail = ref(false);
     </div>
   </div>
 
-  <div class="text-center justify-center q-pa-md col-auto q-gutter-sm">
+  <div class="text-center justify-center q-pa-md col-auto q-gutter-md">
     <!--返回主頁 -->
     <q-btn
-      glossy
+      rounded
+      unelevated
       class="full-width"
-      color="primary"
+      color="blue-13"
       :label="t('label.back_front_page')"
       @click="() => router.push({ name: 'dashboard' })"
     />
     <!-- 交易明細-->
     <q-btn
       flat
-      color="primary"
+      color="blue-13"
       class="full-width"
       :label="t('transaction.transaction_details')"
       @click="() => (isVisibleDetail = true)"

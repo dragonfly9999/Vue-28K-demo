@@ -18,7 +18,7 @@ const tab = ref('1');
   <div style="max-width: 800px; min-width: 50%" class="q-gutter-sm q-mt-md">
     <!-- 交易列表 -->
     <div class="flex items-center justify-between">
-      <div class="flex items-center">
+      <div class="flex items-center q-mr-md">
         <q-img :src="progressPng" width="20px" />
         <div class="text-h6 text-weight-bold">
           {{ $t('label.instant_transaction') }}

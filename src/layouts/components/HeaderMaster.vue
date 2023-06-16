@@ -24,7 +24,7 @@ const logout = () => {
 };
 </script>
 <template>
-  <q-header reveal class="q-pa-md" style="background: #242e47">
+  <q-header reveal class="q-pa-md" style="background: #242e47;z-index:5">
     <!-- Large -->
     <q-toolbar class="gt-sm">
       <div class="flex q-gutter-x-sm">

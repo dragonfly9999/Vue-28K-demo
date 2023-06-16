@@ -59,21 +59,22 @@ const appealWarn = ref(false);
       <div class="text-center q-mt-md justify-center q-gutter-y-sm">
         <!-- 申訴btn -->
         <q-btn
-          glossy
+          rounded
+          unelevated
           @click="() => (appealWarn = true)"
           class="full-width"
-          color="primary"
+          color="blue-13"
           :label="$t('label.appeal')"
         />
         <!-- 返回主頁btn -->
         <q-btn
           flat
           @click="() => router.push({ name: 'dashboard' })"
-          color="primary"
+          color="blue-13"
           class="full-width"
           :label="$t('label.back_front_page')"
         />
-        <!-- <q-btn flat color="primary" label="交易明細" />  -->
+        <!-- <q-btn flat color="blue-13" label="交易明細" />  -->
       </div>
     </div>
   </div>

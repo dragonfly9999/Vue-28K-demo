@@ -23,7 +23,7 @@ onBeforeUnmount(() => clearInterval(timeInterval.value));
   </div>
 
   <div class="col-auto justify-center full-width column q-pa-sm">
-    <div class="flex no-wrap items-end justify-between q-mb-lg">
+    <div class="flex no-wrap items-start justify-between q-my-md">
       <div style="min-width: fit-content" class="q-mr-xl">
         {{ t('label.sell') }} USDT
       </div>
@@ -32,8 +32,8 @@ onBeforeUnmount(() => clearInterval(timeInterval.value));
     <PriceInfo :order="order" />
 
     <!-- hint -->
-    <div class="flex items-start text-grey-8 q-mb-lg">
-      <q-icon name="error_outline" color="orange-9" size="xs" class="q-mr-sm" />
+    <div class="flex items-start text-grey-8 q-mb-lg no-wrap">
+      <q-icon name="error_outline" color="orange-9" size="xs" class="q-mr-sm " />
       <!-- 為確保交易雙方帳戶安全請於交易對話窗上傳 -->
       <div class="text-blue-grey-10">
         {{ t('warn.hint_cny_6') }}

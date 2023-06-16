@@ -1,9 +1,9 @@
 <template>
   <q-layout view="hHh lpr fff">
-    <HeaderMaster />
+    <HeaderMaster/>
     <!-- Body -->
     <q-page-container>
-      <q-page-sticky expand position="top">
+      <q-page-sticky expand position="top" style="z-index:5">
         <q-toolbar class="bg-white myshadow">
           <ProgressBtn />
           <div
@@ -50,7 +50,7 @@
       </div>
     </q-page-container>
     <!-- footer -->
-    <q-footer class="text-white" style="background: #242e47">
+    <!-- <q-footer class="text-white q-pa-lg" style="background: #242e47">
       <div class="wrap">
         <div>
           <div class="flex">
@@ -65,7 +65,7 @@
           </div>
         </div>
       </div>
-    </q-footer>
+    </q-footer> -->
   </q-layout>
   <!-- sound -->
   <div>

@@ -178,8 +178,9 @@ const OrderStatus = computed(() => {
             <q-btn
               @click="handleMatch"
               rounded
+              unelevated
               icon="shopping_bag"
-              color="primary"
+              color="blue-13"
               >開始交易</q-btn
             >
           </div>

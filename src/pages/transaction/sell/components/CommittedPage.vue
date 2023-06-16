@@ -87,13 +87,14 @@ onBeforeUnmount(() => clearInterval(timeInterval.value));
     </div>
   </div>
 
-  <div class="full-width col-auto q-pa-sm">
+  <div class="full-width col-auto q-pa-sm ">
     <!-- 交易中 -->
-    <div v-if="order?.Order_StatusID === OrderStatusNum.Committed">
+    <div v-if="order?.Order_StatusID === OrderStatusNum.Committed" class="q-gutter-y-md">
       <q-btn
         class="full-width"
-        glossy
-        color="primary"
+        rounded
+        unelevated
+        color="blue-13"
         :label="t('sell.step_hint_sell_title_3')"
         @click="() => (visible.confirm = true)"
       />
@@ -101,18 +102,19 @@ onBeforeUnmount(() => clearInterval(timeInterval.value));
         class="full-width"
         dense
         flat
-        color="primary"
+        color="blue-13"
         @click="() => (visible.appeal = true)"
         :label="t('label.appeal')"
       />
     </div>
 
     <!-- 申訴中 -->
-    <div v-else class="text-center">
+    <div v-else class="text-center q-gutter-y-md">
       <q-btn
         class="full-width"
-        glossy
-        color="primary"
+        rounded
+        unelevated
+        color="blue-13"
         :label="t('sell.step_hint_sell_title_3')"
         @click="() => (visible.confirm = true)"
       />

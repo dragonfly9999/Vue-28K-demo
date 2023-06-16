@@ -72,7 +72,7 @@ setOnMessage(route.query.token as string, (msg) => {
 });
 </script>
 <template>
-  <q-card class="q-pa-sm justify-between z-top" id="fade-in">
+  <q-card class="q-pa-sm justify-between  " id="fade-in">
     <q-toolbar class="flex q-mb-sm toolbar">
       <!-- 交易對話窗btn -->
       <q-icon name="chat" color="blue-13" size="24px" class="gt-md" />
@@ -171,6 +171,9 @@ setOnMessage(route.query.token as string, (msg) => {
 <style scoped>
 #fade-in {
   border-top-left-radius: 30px;
+  border-bottom-right-radius:0;
+  border-bottom-left-radius:0;
+z-index:6;
   box-shadow: 0px -1px 5px rgba(0, 27, 61, 0.158);
   margin-left: 15px;
   overflow: hidden;
@@ -186,7 +189,7 @@ setOnMessage(route.query.token as string, (msg) => {
     position: fixed;
     bottom: 0px;
     height: 60px;
-    max-width: 90vw;
+    max-width: 100vw;
     min-width: 60vw;
     margin-left: 0px;
     min-height: 0px;
