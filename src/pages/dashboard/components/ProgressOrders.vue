@@ -13,6 +13,7 @@ const { t } = useI18n();
       :key="index"
       :order="order"
       :is-instant="false"
+      :is-clean-count="true"
     />
     <q-item v-if="getOrders('progress').length === 0">
       <div

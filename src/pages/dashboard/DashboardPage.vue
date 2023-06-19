@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { useAccessyStore, useLiveStore } from 'src/stores';
-import { ref, toRefs, watch } from 'vue';
+import { useLiveStore, useThirdStore } from 'src/stores';
+import { ref, toRefs } from 'vue';
 import InstantOrders from './components/InstantOrders.vue';
 import ProgressOrders from './components/ProgressOrders.vue';
 import RecentHistory from './components/RecentHistory.vue';
 import { useAuto } from 'src/layouts/api/useAuto';
 import progressPng from 'src/assets/in-progress.png';
 
-const { notify, hint } = toRefs(useAccessyStore());
+const { hint } = toRefs(useThirdStore());
 const { getOrders } = useLiveStore();
 const { data: autoInfo, run: updateMode, loading: loadMode } = useAuto();
 // DOM
@@ -33,7 +33,7 @@ const tab = ref('1');
           left-label
           checked-icon="notifications"
           unchecked-icon="notifications_off"
-          v-model="notify"
+          :model-value="false"
           disable
         >
           <q-tooltip>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { thousandTool } from 'src/utils/NumberTool';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { useStorage } from 'vue3-storage';
@@ -10,15 +10,20 @@ import { useBuyMatch, useSellMatch } from './api';
 import { useKeyStore, useOrderStore, useThirdStore } from 'src/stores';
 import { copyToClipboard, useQuasar } from 'quasar';
 const quasar = useQuasar();
-const props = defineProps<{ order: LiveOrder; isInstant: boolean }>();
+const props = defineProps<{
+  order: LiveOrder;
+  isInstant: boolean;
+  isCleanCount?: boolean;
+}>();
 
 //
+
 const { pressing } = useKeyStore();
 const { t } = useI18n();
 const router = useRouter();
 const storage = useStorage();
 const { setOrderWs } = useOrderStore();
-const { setWebSockets } = useThirdStore();
+const { setWebSockets, getCount, handleResetCount } = useThirdStore();
 const { run: matchBuy } = useBuyMatch({
   onTriger: () => {
     setWebSockets(props.order.token);
@@ -135,6 +140,7 @@ const OrderStatus = computed(() => {
             thousandTool(order.D2, 'CNY');
           handleCopy(copyStr);
         } else {
+          if (isCleanCount) handleResetCount();
           router.push({
             name: order?.MType === MtTypeNum.Buy ? 'buy' : 'sell',
             query: { token: order.token },
@@ -200,7 +206,8 @@ const OrderStatus = computed(() => {
         <q-space />
         <!-- 狀態  Order_StatusID: 32=> 等待配對中, 33 => 等待付款, 34 => 等待確認中, 35 => 申訴,-->
         <div class="q-gutter-sm">
-          <div class="flex justify-end">
+          <div class="q-gutter-sm column items-end justify-end">
+            <q-badge :label="$t('訊息:') + ' ' + getCount()" />
             <q-badge
               transparent
               rounded

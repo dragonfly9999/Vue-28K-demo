@@ -1,13 +1,20 @@
 <script setup lang="ts">
 import { useThirdStore } from 'src/stores';
-import { computed, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { useStorage } from 'vue3-storage';
-import { fullScreen, handleBoforeUpload } from 'src/utils/ImageManager';
+import { handleBoforeUpload } from 'src/utils/ImageManager';
 import messageSound from 'src/assets/sound/message2.mp3';
 import dayjs from 'dayjs';
 import ImageMaster from 'src/components/ImageMaster.vue';
-const { getWebSocket, getChatList, setOnMessage } = useThirdStore();
+const {
+  getWebSocket,
+  getChatList,
+  setOnMessage,
+  handleResetCount,
+  getCount,
+  resetOnMessage,
+} = useThirdStore();
 const route = useRoute();
 const btnIcon = ref<'arrow_drop_down' | 'arrow_drop_up'>('arrow_drop_up');
 const text = ref<string>();
@@ -19,6 +26,7 @@ const messageAudio = ref();
 const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
 // handlers
 const handleSwitch = () => {
+  handleResetCount();
   switch (btnIcon.value) {
     case 'arrow_drop_down':
       var element = document.getElementById('fade-in');
@@ -54,27 +62,45 @@ const handleSent = () => {
   text.value = undefined;
 };
 // WS
-setOnMessage(route.query.token as string, (msg) => {
-  setTimeout(
-    () => scrollArea.value?.setScrollPercentage('vertical', 1.1, 1000),
-    100
-  );
-  if (messageAudio.value) {
-    messageAudio.value?.pause();
-    messageAudio.value.currentTime = 0;
-    if (
-      hint.value &&
-      ((useStorage().getStorageSync('isAgent') && msg?.Message_Role !== 3) ||
-        (useStorage().getStorageSync('isAgent') && msg?.Message_Role === 1))
-    ) {
-      messageAudio.value?.play();
+onMounted(() => {
+  if (getChatList(route.query.token as string)?.length > 1) {
+    var element = document.getElementById('fade-in');
+    if (element) {
+      element.style.height = 'calc(100vh - 40px)';
     }
+    btnIcon.value = 'arrow_drop_down';
   }
+  setOnMessage(route.query.token as string, (msg) => {
+    setTimeout(
+      () => scrollArea.value?.setScrollPercentage('vertical', 1.1, 1000),
+      100
+    );
+    if (messageAudio.value) {
+      messageAudio.value?.pause();
+      messageAudio.value.currentTime = 0;
+      if (
+        hint.value &&
+        ((useStorage().getStorageSync('isAgent') && msg?.Message_Role !== 3) ||
+          (useStorage().getStorageSync('isAgent') && msg?.Message_Role === 1))
+      ) {
+        messageAudio.value?.play();
+      }
+    }
+  });
+});
+onBeforeUnmount(() => {
+  resetOnMessage(route.query.token as string);
 });
 </script>
 <template>
   <q-card class="q-pa-sm justify-between" id="fade-in">
     <q-toolbar class="flex q-mb-sm toolbar">
+      <q-badge
+        v-if="getCount() > 0"
+        color="red"
+        :label="getCount()"
+        class="absolute-top-right"
+      />
       <!-- 交易對話窗btn -->
       <q-icon name="chat" color="blue-13" size="24px" class="gt-md" />
 

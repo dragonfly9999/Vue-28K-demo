@@ -66,7 +66,7 @@ import { useBalance, useRate } from './api';
 import ProgressBtn from './components/ProgressBtn.vue';
 import HeaderMaster from './components/HeaderMaster.vue';
 import { onBeforeUnmount, onMounted, ref, toRefs, watch } from 'vue';
-import { useAccessyStore, useLiveStore } from 'src/stores';
+import { useLiveStore, useThirdStore } from 'src/stores';
 import instantSound from 'src/assets/sound/instants5.mp3';
 import matchSound from 'src/assets/sound/match.mp3';
 import paymentSound from 'src/assets/sound/payment2.mp3';
@@ -80,9 +80,8 @@ const { data: balance, loading: balanceLoading } = useBalance();
 
 //
 const { handleRemove, handelSet } = useKeyStore();
-const { hint } = toRefs(useAccessyStore());
+const { hint } = toRefs(useThirdStore());
 const { setOnMessage, setOrders } = useLiveStore();
-const { getAccess } = useAccessyStore();
 const router = useRouter();
 // DOM
 const instantAudio = ref();
@@ -120,7 +119,7 @@ onMounted(() => {
         if (
           OrderFromServer &&
           OrderFromServer?.length > 0 &&
-          getAccess().hint &&
+          hint &&
           instantAudio.value
         ) {
           instantAudio.value.play();
@@ -133,11 +132,7 @@ onMounted(() => {
     fn: (OrderFromServer) => {
       handleResetSound();
       setTimeout(() => {
-        if (
-          OrderFromServer &&
-          OrderFromServer?.length > 0 &&
-          getAccess().hint
-        ) {
+        if (OrderFromServer && OrderFromServer?.length > 0 && hint) {
           let flag = true;
           [
             OrderStatusNum.Committed,
