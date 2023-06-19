@@ -107,7 +107,7 @@ onBeforeUnmount(() => {
           v-for="(information, index) in [
             {
               title: t('buy.bankInformation.amount'),
-              content: thousandTool(order?.D2, 1)
+              content: thousandTool(order?.D2, 'CNY')
             },
             {
               title: t('transaction.payee'),

@@ -35,7 +35,7 @@ const appealWarn = ref(false);
         <div class="text-grey-6">
           {{ $t('transaction_history.label.quantity') }}：
         </div>
-        <div>{{ thousandTool(order?.['UsdtAmt'], 3) }} USDT</div>
+        <div>{{ thousandTool(order?.['UsdtAmt'], 'USDT') }} USDT</div>
       </div>
       <!-- 訂單建立時間 -->
       <div class="flex items-center">

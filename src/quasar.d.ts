@@ -27,7 +27,7 @@ interface ChatRes {
   Message: string;
   Message_Role: number;
   Message_Type: number;
-  SysDate: string;
+  Sysdate: string;
   SysID: number;
 }
 

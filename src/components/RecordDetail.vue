@@ -5,6 +5,7 @@ import { computed, ref } from 'vue';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
 import WebSocketClient from 'src/utils/WebsocketClient';
+import { useStorage } from 'vue3-storage';
 const props = defineProps<{ record: OrderRecord | ExpiredOrder }>();
 //
 const { t } = useI18n();
@@ -20,14 +21,14 @@ const recordInfo = computed(() => {
         label: t(
           `transaction_history.label.transaction_type.${MasterTypeNum.TransIn}`
         ),
-        color: 'purple'
+        color: 'purple',
       };
     case MasterTypeNum.TransOut:
       return {
         label: t(
           `transaction_history.label.transaction_type.${MasterTypeNum.TransOut}`
         ),
-        color: 'purple'
+        color: 'purple',
       };
     default: {
       return { label: t('label.undefined'), color: 'purple' };
@@ -46,7 +47,7 @@ const payerInfo = computed(() => {
           name,
           bank,
           code,
-          account
+          account,
         };
       }
       case MasterTypeNum.Sell: {
@@ -55,7 +56,7 @@ const payerInfo = computed(() => {
           name,
           bank,
           code,
-          account
+          account,
         };
       }
       default: {
@@ -87,11 +88,13 @@ const premium = computed(() => {
 // WS
 const orderStatus = ref<OrderStatus>();
 const statusURL = '/ws_orderstatus.ashx';
+const login_session = useStorage().getStorageSync('login_session');
 const statusWs = new WebSocketClient(statusURL, {
   reconnectEnabled: true,
   reconnectInterval: 2000,
   isChat: false,
-  order_token: props.record?.token
+  order_token: props.record?.token,
+  login_session,
 });
 statusWs.connect();
 statusWs.onMessage = (msg) => {
@@ -168,7 +171,7 @@ const statusInfo = computed(() => {
             avatar
             :class="'text-' + recordInfo.color + ' text-body1 text-weight-bold'"
           >
-            {{ thousandTool(record?.UsdtAmt, 3) }}
+            {{ thousandTool(record?.UsdtAmt, 'USDT') }}
           </q-item-section>
         </q-item>
         <!-- 金額 -->
@@ -177,7 +180,7 @@ const statusInfo = computed(() => {
             {{ $t('transaction.amount') }}(CNY)
           </q-item-section>
           <q-item-section avatar class="text-body1">
-            {{ thousandTool(record?.D2, 2) }}
+            {{ thousandTool(record?.D2, 'CNY') }}
           </q-item-section>
         </q-item>
         <q-separator />
@@ -187,7 +190,7 @@ const statusInfo = computed(() => {
             {{ $t('label.real_balance') }}(USDT)</q-item-section
           >
           <q-item-section avatar>
-            {{ thousandTool(record?.Balance, 3) }}
+            {{ thousandTool(record?.Balance, 'USDT') }}
           </q-item-section>
         </q-item>
         <!-- 狀態 -->
@@ -208,7 +211,7 @@ const statusInfo = computed(() => {
             {{ $t('transaction.rate') }}
           </q-item-section>
           <q-item-section avatar>
-            {{ thousandTool(record?.D1, 2) }}
+            {{ thousandTool(record?.D1, 'CNY') }}
           </q-item-section>
         </q-item>
         <!-- 手續費 -->

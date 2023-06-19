@@ -7,10 +7,13 @@ import { useStorage } from 'vue3-storage';
 import dayjs from 'dayjs';
 import { MtTypeNum, OrderStatusNum } from 'src/stores/live';
 import { useBuyMatch, useSellMatch } from './api';
-import { useOrderStore, useThirdStore } from 'src/stores';
+import { useKeyStore, useOrderStore, useThirdStore } from 'src/stores';
+import { copyToClipboard, useQuasar } from 'quasar';
+const quasar = useQuasar();
 const props = defineProps<{ order: LiveOrder; isInstant: boolean }>();
 
 //
+const { pressing } = useKeyStore();
 const { t } = useI18n();
 const router = useRouter();
 const storage = useStorage();
@@ -20,13 +23,13 @@ const { run: matchBuy } = useBuyMatch({
   onTriger: () => {
     setWebSockets(props.order.token);
     setOrderWs(props.order.token);
-  }
+  },
 });
 const { run: matchSell } = useSellMatch({
   onSuccess: () => {
     setWebSockets(props.order.token);
     setOrderWs(props.order.token);
-  }
+  },
 });
 // DOM
 const orderInfo = computed(() => {
@@ -45,13 +48,31 @@ const orderInfo = computed(() => {
 const handleMatch = () => {
   if (props.order.MType === MtTypeNum.Sell) {
     matchBuy({
-      Token: props.order.token
+      Token: props.order.token,
     });
   } else {
     matchSell({
-      Token: props.order.token
+      Token: props.order.token,
     });
   }
+};
+
+const handleCopy = (value: string) => {
+  copyToClipboard(value)
+    .then(() => {
+      quasar.notify({
+        position: 'top-right',
+        color: 'positive',
+        message: '已複製',
+      });
+    })
+    .catch(() => {
+      quasar.notify({
+        position: 'top-right',
+        color: 'negative',
+        message: '複製失敗',
+      });
+    });
 };
 
 const OrderStatus = computed(() => {
@@ -97,10 +118,28 @@ const OrderStatus = computed(() => {
     v-ripple
     @click="
       () => {
-        router.push({
-          name: order?.MType === MtTypeNum.Buy ? 'buy' : 'sell',
-          query: { token: order.token }
-        });
+        if (pressing() === 'Control') {
+          const copyStr =
+            '交易方姓名：' +
+            order?.P5?.split('|')?.[0] +
+            '\n' +
+            '金額: ' +
+            thousandTool(order.D2, 'CNY');
+          handleCopy(copyStr);
+        } else if (pressing() === 'c') {
+          const copyStr =
+            '交易方姓名：' +
+            order?.P5?.split('|')?.[0] +
+            '\n' +
+            '金額(CNY): ' +
+            thousandTool(order.D2, 'CNY');
+          handleCopy(copyStr);
+        } else {
+          router.push({
+            name: order?.MType === MtTypeNum.Buy ? 'buy' : 'sell',
+            query: { token: order.token },
+          });
+        }
       }
     "
   >
@@ -123,7 +162,7 @@ const OrderStatus = computed(() => {
             {{ $t('transaction.quantity') }}<span>(USDT)</span>
           </div>
           <div :class="'text-body1 text-weight-bold text-' + orderInfo.color">
-            {{ thousandTool(order.UsdtAmt, 3) }}
+            {{ thousandTool(order.UsdtAmt, 'USDT') }}
           </div>
         </div>
         <!-- 金額 -->
@@ -131,7 +170,7 @@ const OrderStatus = computed(() => {
           <div class="text-caption text-grey-7">
             {{ $t('transaction.amount') }}<span>(CNY)</span>
           </div>
-          <div class="text-body1">{{ thousandTool(order.D2, 3) }}</div>
+          <div class="text-body1">{{ thousandTool(order.D2, 'CNY') }}</div>
         </div>
       </div>
       <div class="flex no-wrap q-py-sm items-end">

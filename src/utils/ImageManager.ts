@@ -34,16 +34,15 @@ const processImage = async (file: File) => {
   canvas.width = width;
   canvas.height = height;
 
-  // 浮水印
   if (ctx) {
     ctx.drawImage(img, 0, 0, width, height);
 
-    const text = '好幣多 實名驗證';
-    ctx.font = '20px Arial';
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(text, 10, 20, maxWidth);
-
+    // 浮水印
+    // const text = '好幣多 實名驗證';
+    // ctx.font = '20px Arial';
+    // ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+    // ctx.textBaseline = 'middle';
+    // ctx.fillText(text, 10, 20, maxWidth);
     const dataUrl = canvas.toDataURL('image/jpeg', quality);
     return dataUrl;
   } else {

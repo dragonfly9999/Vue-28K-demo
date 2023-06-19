@@ -13,12 +13,12 @@ const remark = ref<string>();
 const informations = computed(() => [
   {
     title: t('transaction.amount'),
-    content: thousandTool(props.order?.D2, 3)
+    content: thousandTool(props.order?.D2, 'CNY'),
   },
   {
     title: t('transaction.payee'),
-    content: props?.order?.P5?.split('|')[0]
-  }
+    content: props?.order?.P5?.split('|')[0],
+  },
 ]);
 </script>
 <template>

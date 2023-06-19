@@ -16,7 +16,7 @@ const { data: expireds, refresh: reExpired } = useExpired();
 // DOM
 const dateRange = reactive({
   from: dayjs().startOf('week').format('YYYY-MM-DD HH:mm'),
-  to: dayjs().endOf('week').format('YYYY-MM-DD HH:mm')
+  to: dayjs().endOf('week').format('YYYY-MM-DD HH:mm'),
 });
 const current = ref(1);
 const useOrders = computed(() => {
@@ -61,7 +61,8 @@ const useOrders = computed(() => {
         date.isSame(to) ||
         (date.isAfter(from) && date.isBefore(to))
       );
-    });
+    })
+    .sort((a, b) => (dayjs(b.Date).isBefore(dayjs(a.Date)) ? -1 : 0));
   return useOrders;
 });
 const maxPaination = computed(() =>

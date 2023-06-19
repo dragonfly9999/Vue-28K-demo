@@ -23,7 +23,7 @@
                   v-if="balanceLoading"
                 />
                 <div class="text-green-9">
-                  {{ thousandTool(balance?.AgtBalance, 3) }} USDT
+                  {{ thousandTool(balance?.AgtBalance, 'USDT') }} USDT
                 </div>
               </div>
             </div>
@@ -38,7 +38,7 @@
                   v-if="balanceLoading"
                 />
                 <div class="text-green-9">
-                  {{ thousandTool(balance?.Avb_Balance, 3) }} USDT
+                  {{ thousandTool(balance?.Avb_Balance, 'USDT') }} USDT
                 </div>
               </div>
             </div>
@@ -46,30 +46,9 @@
         </q-toolbar>
       </q-page-sticky>
       <div class="flex justify-center q-pa-md q-mt-xl" style="min-width: 100%">
-        <div>
-          {{ $t('翻譯') }}
-        </div>
-
         <router-view></router-view>
       </div>
     </q-page-container>
-    <!-- footer -->
-    <!-- <q-footer class="text-white q-pa-lg" style="background: #242e47">
-      <div class="wrap">
-        <div>
-          <div class="flex">
-            <div class="col-12 col-md">
-              <div class="flex items-center">
-                <q-img :src="logo" width="130px" class="q-mr-sm" />
-              </div>
-            </div>
-            <div
-              class="col-12 col-md gt-sm flex justify-end text-subtitle1 text-right"
-            ></div>
-          </div>
-        </div>
-      </div>
-    </q-footer> -->
   </q-layout>
   <!-- sound -->
   <div>
@@ -81,13 +60,12 @@
 </template>
 
 <script setup lang="ts">
-import logo from 'src/assets/logo_easy.png';
 import { thousandTool } from 'src/utils/NumberTool';
 import { useRouter } from 'vue-router';
 import { useBalance, useRate } from './api';
 import ProgressBtn from './components/ProgressBtn.vue';
 import HeaderMaster from './components/HeaderMaster.vue';
-import { onMounted, ref, toRefs, watch } from 'vue';
+import { onBeforeUnmount, onMounted, ref, toRefs, watch } from 'vue';
 import { useAccessyStore, useLiveStore } from 'src/stores';
 import instantSound from 'src/assets/sound/instants5.mp3';
 import matchSound from 'src/assets/sound/match.mp3';
@@ -95,11 +73,13 @@ import paymentSound from 'src/assets/sound/payment2.mp3';
 import appealSound from 'src/assets/sound/owl.mp3';
 import { MtTypeNum, OrderStatusNum } from 'src/stores/live';
 import { useStorage } from 'vue3-storage';
+import { useKeyStore } from 'src/stores/key';
 
 useRate();
 const { data: balance, loading: balanceLoading } = useBalance();
 
 //
+const { handleRemove, handelSet } = useKeyStore();
 const { hint } = toRefs(useAccessyStore());
 const { setOnMessage, setOrders } = useLiveStore();
 const { getAccess } = useAccessyStore();
@@ -192,6 +172,10 @@ onMounted(() => {
       }, 100);
     },
   });
+  handelSet();
+});
+onBeforeUnmount(() => {
+  handleRemove();
 });
 watch(hint, (newValue) => {
   if (!newValue) handleResetSound();

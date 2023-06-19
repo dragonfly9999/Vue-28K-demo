@@ -5,37 +5,37 @@ defineProps<{ order?: OrderStatus }>();
 <template>
   <div class="flex items-center q-gutter-sm q-mb-md">
     <!-- 匯率 -->
-    <div class="flex items-baseline ">
+    <div class="flex items-baseline">
       <q-separator vertical spaced />
       <div>
         <div class="text-grey-6 text-caption">
           {{ $t('label.rate') }}
         </div>
         <div class="text-weight-bold text-right">
-          {{ thousandTool(order?.D1, 2) }}
+          {{ thousandTool(order?.D1, 'CNY') }}
         </div>
       </div>
     </div>
     <!-- 數量 -->
-    <div class="flex items-baseline ">
+    <div class="flex items-baseline">
       <q-separator vertical spaced />
       <div>
         <div class="text-grey-6 text-caption">
           {{ $t('transaction.quantity') }}
         </div>
         <div class="text-weight-bold text-right">
-          {{ thousandTool(order?.UsdtAmt, 3) }} USDT
+          {{ thousandTool(order?.UsdtAmt, 'USDT') }} USDT
         </div>
       </div>
     </div>
     <!-- 總金額 -->
-    <div class="flex items-baseline ">
+    <div class="flex items-baseline">
       <q-separator vertical spaced />
       <div class="text-blue-13 text-weight-bold q-mr-sm">
         {{ $t('transaction.total_amount') }}
       </div>
       <div class="text-blue-13 text-weight-bold text-h6">
-        {{ thousandTool(order?.D2, 2) + ' ' + order?.Currency }}
+        {{ thousandTool(order?.D2, 'CNY') + ' ' + order?.Currency }}
       </div>
     </div>
   </div>

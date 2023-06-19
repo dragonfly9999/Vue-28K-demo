@@ -19,7 +19,7 @@ const { run: checkErc } = useCheckErc({
   },
   onError: () => {
     address.verify = false;
-  }
+  },
 });
 const { run: checkTrc } = useCheckTrc({
   onSuccess: () => {
@@ -27,13 +27,13 @@ const { run: checkTrc } = useCheckTrc({
   },
   onError: () => {
     address.verify = false;
-  }
+  },
 });
 // DOM
 const agreement = ref();
 const address = reactive<{ value: string; verify: boolean }>({
   value: '',
-  verify: false
+  verify: false,
 });
 const remark = ref();
 const transAmt = ref();
@@ -41,20 +41,20 @@ const isPassTwenty = ref(false);
 const visible = reactive({
   warn: false,
   verify: false,
-  scanner: false
+  scanner: false,
 });
 //
 const isPass = computed(() => isPassTwenty.value && address.verify);
 const remain = computed(() => {
   const result = (getBalance()?.Avb_Balance ?? 0) - transAmt.value;
-  return thousandTool(result, 3);
+  return thousandTool(result, 'USDT');
 });
 const premium = computed(() => {
   switch (agreement.value) {
     case 'trc':
-      return thousandTool(getRate()?.TransferHandle2, 3);
+      return thousandTool(getRate()?.TransferHandle2, 'USDT');
     case 'erc':
-      return thousandTool(getRate()?.TransferHandle, 3);
+      return thousandTool(getRate()?.TransferHandle, 'USDT');
     default:
       return undefined;
   }
@@ -67,13 +67,13 @@ const handleSetAddress = (newAddress?: string) => {
     switch (agreement.value) {
       case 'trc': {
         checkTrc({
-          ToAddress: address.value
+          ToAddress: address.value,
         });
         break;
       }
       case 'erc': {
         checkErc({
-          ToAddress: address.value
+          ToAddress: address.value,
         });
         break;
       }
@@ -209,7 +209,7 @@ const handleSetAddress = (newAddress?: string) => {
                   {{ $t('transfer.label.balance') }}
                 </div>
                 <div class="text-green-9 q-ml-xs text-subtitle2">
-                  {{ thousandTool(getBalance()?.Avb_Balance, 3) }}
+                  {{ thousandTool(getBalance()?.Avb_Balance, 'USDT') }}
                 </div>
               </div>
             </div>
@@ -229,7 +229,7 @@ const handleSetAddress = (newAddress?: string) => {
                     (transAmt = thousandTool(
                       ((getBalance()?.Avb_Balance ?? 0) * percent) / 100
                     )),
-                    3
+                    'USDT'
                   )
                 "
               />
@@ -296,7 +296,10 @@ const handleSetAddress = (newAddress?: string) => {
                 </div>
                 <div class="text-blue-13 text-weight-bold text-body1">
                   {{
-                    thousandTool(numberTool(transAmt) - numberTool(premium), 3)
+                    thousandTool(
+                      numberTool(transAmt) - numberTool(premium),
+                      'USDT'
+                    )
                   }}
                   USDT
                 </div>

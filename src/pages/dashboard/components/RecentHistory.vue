@@ -16,7 +16,7 @@ const { data: history, loading } = useHisotry();
         flat
         color="blue-13"
         :label="$t('transaction.all_transaction_history') + '>'"
-        to="transaction-history"
+        to="history"
         style="text-decoration: none"
       />
     </div>

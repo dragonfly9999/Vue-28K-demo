@@ -1,11 +1,24 @@
 type NumOptions = string | number | null | undefined;
 
-const thousandTool = (num?: NumOptions, digits?: number): string => {
+type DigitTypes = 'USDT' | 'CNY';
+
+const thousandTool = (num?: NumOptions, digits?: DigitTypes): string => {
   if (!num) return '0';
 
   const pureNumber = numberTool(num);
 
-  const result = pureNumber.toFixed(digits).split('.');
+  const useDigits = () => {
+    switch (digits) {
+      case 'CNY':
+        return 2;
+      case 'USDT':
+        return 3;
+      default:
+        return 1;
+    }
+  };
+
+  const result = pureNumber.toFixed(useDigits()).split('.');
   result[0] = result[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   return result.join('.');
 };
@@ -32,7 +45,7 @@ export enum MasterTypeNum {
   Buy,
   Sell,
   TransOut,
-  TransIn
+  TransIn,
 }
 
 export { thousandTool, numberTool, thousandInput };

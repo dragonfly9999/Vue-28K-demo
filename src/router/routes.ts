@@ -8,7 +8,7 @@ declare module 'vue-router' {
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    redirect: '/main'
+    redirect: '/main',
   },
   {
     name: 'main',
@@ -16,13 +16,13 @@ const routes: RouteRecordRaw[] = [
     component: () => import('layouts/MainLayout.vue'),
     children: [
       {
-        path: '',
-        redirect: '/main/dashboard'
+        path: '/main',
+        redirect: '/main/dashboard',
       },
       {
         path: 'dashboard',
         component: () => import('pages/dashboard/DashboardPage.vue'),
-        name: 'dashboard'
+        name: 'dashboard',
       },
       {
         path: 'transaction',
@@ -32,44 +32,44 @@ const routes: RouteRecordRaw[] = [
           {
             path: 'buy',
             component: () => import('pages/transaction/buy/BuyPage.vue'),
-            name: 'buy'
+            name: 'buy',
           },
           {
             path: 'sell',
             component: () => import('pages/transaction/sell/SellPage.vue'),
-            name: 'sell'
-          }
-        ]
+            name: 'sell',
+          },
+        ],
       },
       {
         path: 'transfer',
         component: () => import('pages/transfer/TransferPage.vue'),
-        name: 'transfer'
+        name: 'transfer',
       },
       {
         path: 'wallet',
         component: () => import('pages/wallet/WalletPage.vue'),
-        name: 'wallet'
+        name: 'wallet',
       },
       {
         path: 'history',
         component: () => import('pages/history/HistoryPage.vue'),
-        name: 'history'
+        name: 'history',
       },
       {
         path: 'account',
         component: () => import('pages/account/AccountPage.vue'),
-        name: 'account'
+        name: 'account',
       },
       {
         path: 'account_create',
         component: () => import('pages/account/CreatePage.vue'),
-        name: 'account_create'
-      }
+        name: 'account_create',
+      },
     ],
     meta: {
-      requiresAuth: true
-    }
+      requiresAuth: true,
+    },
   },
   {
     path: '/auth',
@@ -79,19 +79,19 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'login',
         component: () => import('pages/auth/LoginPage.vue'),
-        name: 'login'
+        name: 'login',
       },
       {
-        path: '',
-        redirect: '/auth/login'
-      }
-    ]
+        path: '/auth',
+        redirect: '/auth/login',
+      },
+    ],
   },
 
   {
     path: '/:catchAll(.*)*',
-    component: () => import('pages/ErrorNotFound.vue')
-  }
+    component: () => import('pages/ErrorNotFound.vue'),
+  },
 ];
 
 export default routes;

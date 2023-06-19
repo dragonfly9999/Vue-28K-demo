@@ -6,6 +6,7 @@ import { useStorage } from 'vue3-storage';
 import { fullScreen, handleBoforeUpload } from 'src/utils/ImageManager';
 import messageSound from 'src/assets/sound/message2.mp3';
 import dayjs from 'dayjs';
+import ImageMaster from 'src/components/ImageMaster.vue';
 const { getWebSocket, getChatList, setOnMessage } = useThirdStore();
 const route = useRoute();
 const btnIcon = ref<'arrow_drop_down' | 'arrow_drop_up'>('arrow_drop_up');
@@ -40,14 +41,14 @@ const handleUpload = async (info: File) => {
   const base64 = await handleBoforeUpload(info);
   const sendObj = {
     Message: base64,
-    Message_Type: 2
+    Message_Type: 2,
   };
   getWebSocket(route.query.token as string).send(JSON.stringify(sendObj));
 };
 const handleSent = () => {
   const sendObj = {
     Message: text.value,
-    Message_Type: 1
+    Message_Type: 1,
   };
   getWebSocket(route.query.token as string).send(JSON.stringify(sendObj));
   text.value = undefined;
@@ -72,7 +73,7 @@ setOnMessage(route.query.token as string, (msg) => {
 });
 </script>
 <template>
-  <q-card class="q-pa-sm justify-between  " id="fade-in">
+  <q-card class="q-pa-sm justify-between" id="fade-in">
     <q-toolbar class="flex q-mb-sm toolbar">
       <!-- 交易對話窗btn -->
       <q-icon name="chat" color="blue-13" size="24px" class="gt-md" />
@@ -112,18 +113,14 @@ setOnMessage(route.query.token as string, (msg) => {
         <q-chat-message
           :name="$t(`chatName.${msg.Message_Role}`)"
           :sent="isAgent ? msg.Message_Role === 3 : msg.Message_Role === 1"
-          :stamp="dayjs(msg.SysID).format('YYYY-MM-DD HH:mm:ss')"
+          :stamp="dayjs(msg.Sysdate).format('YYYY-MM-DD HH:mm:ss')"
           :key="msg.SysID"
           class="q-my-lg"
           :bg-color="isAgent && msg.Message_Role === 3 ? 'cyan-2' : 'grey-4'"
         >
           <div v-if="msg.Message_Type === 1">{{ msg.Message }}</div>
-          <q-img
-            @click="() => fullScreen(msg.Message)"
-            v-else
-            width="240px"
-            :src="msg.Message"
-          />
+
+          <image-master v-else width="240px" :src="msg.Message" />
         </q-chat-message>
       </div>
     </q-scroll-area>
@@ -170,9 +167,9 @@ setOnMessage(route.query.token as string, (msg) => {
 <style scoped>
 #fade-in {
   border-top-left-radius: 30px;
-  border-bottom-right-radius:0;
-  border-bottom-left-radius:0;
-  z-index:6;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+  z-index: 6;
   box-shadow: 0px -1px 5px rgba(0, 27, 61, 0.158);
   margin-left: 15px;
   overflow: hidden;

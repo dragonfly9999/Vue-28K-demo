@@ -33,14 +33,14 @@ const handleVerifyPassword = () => {
     case 'trc': {
       transTrc({
         ToAddress: props.address as string,
-        UsdtAmt: numberTool(props.transAmt)
+        UsdtAmt: numberTool(props.transAmt),
       });
       break;
     }
     case 'erc': {
       transErc({
         ToAddress: props.address as string,
-        UsdtAmt: numberTool(props.transAmt)
+        UsdtAmt: numberTool(props.transAmt),
       });
       break;
     }
@@ -136,7 +136,9 @@ const handleVerifyPassword = () => {
             {{ $t('transfer.check.expect') }}
           </q-item-section>
           <q-item-section avatar class="text-weight-bold">
-            {{ thousandTool(numberTool(transAmt) - numberTool(premium), 3) }}
+            {{
+              thousandTool(numberTool(transAmt) - numberTool(premium), 'USDT')
+            }}
           </q-item-section>
         </q-item>
         <!-- 輸入密碼 -->

@@ -5,7 +5,7 @@ import { useRouter } from 'vue-router';
 import { useAccHistory, AccNum, useDelAcc } from './api';
 import { useSetAcc } from './api';
 import { useAcc } from './api';
-import { thousandTool } from 'src/utils/NumberTool';
+import { thousandInput } from 'src/utils/NumberTool';
 import CheckCard from 'src/components/CheckCard.vue';
 import Flag from 'src/assets/CNY.png';
 
@@ -17,14 +17,14 @@ const { run: set } = useSetAcc({
   onSuccess: () => {
     reStory();
     reAcc();
-  }
+  },
 });
 const { run: del } = useDelAcc({
   onSuccess: () => {
     reStory();
     reAcc();
     delID.value = undefined;
-  }
+  },
 });
 
 const delID = ref<number>();
@@ -75,7 +75,7 @@ const delID = ref<number>();
           <!-- ()帳戶數量 -->
           <div class="q-pa-md flex justify-end">
             <div class="text-subtitle2 text-grey-6">
-              {{ $t('transaction.quantity') + thousandTool(accs?.length) }}
+              {{ $t('transaction.quantity') + thousandInput(accs?.length) }}
             </div>
           </div>
         </div>
@@ -112,10 +112,10 @@ const delID = ref<number>();
                               [AccNum.Name]: Acc[AccNum.Name],
                               [AccNum.BankID]: Acc[AccNum.BankID],
                               [AccNum.Branch]: Acc[AccNum.Branch],
-                              [AccKey]: value
+                              [AccKey]: value,
                             });
                             del({
-                              H_id: Acc.H_id
+                              H_id: Acc.H_id,
                             });
                           }
                         }
@@ -162,7 +162,7 @@ const delID = ref<number>();
                           [AccNum.Account]: Acc[AccNum.Account],
                           [AccNum.Name]: Acc[AccNum.Name],
                           [AccNum.BankID]: Acc[AccNum.BankID],
-                          [AccNum.Branch]: Acc[AccNum.Branch]
+                          [AccNum.Branch]: Acc[AccNum.Branch],
                         })
                     "
                   >

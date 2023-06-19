@@ -31,7 +31,7 @@ const router = useRouter();
       <div class="flex items-center">
         <div class="text-grey-6">{{ t('transaction.quantity') }}：</div>
         <div>
-          {{ thousandTool(order?.UsdtAmt, 3) }}
+          {{ thousandTool(order?.UsdtAmt, 'USDT') }}
           USDT
         </div>
       </div>

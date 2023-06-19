@@ -17,28 +17,28 @@ const recordInfo = computed(() => {
         label: t(
           `transaction_history.label.transaction_type.${MasterTypeNum.Buy}`
         ),
-        color: 'blue-13'
+        color: 'blue-13',
       };
     case MasterTypeNum.Sell:
       return {
         label: t(
           `transaction_history.label.transaction_type.${MasterTypeNum.Sell}`
         ),
-        color: 'red'
+        color: 'red',
       };
     case MasterTypeNum.TransIn:
       return {
         label: t(
           `transaction_history.label.transaction_type.${MasterTypeNum.TransIn}`
         ),
-        color: 'purple'
+        color: 'purple',
       };
     case MasterTypeNum.TransOut:
       return {
         label: t(
           `transaction_history.label.transaction_type.${MasterTypeNum.TransOut}`
         ),
-        color: 'purple'
+        color: 'purple',
       };
     default: {
       return { label: t('label.undefined'), color: 'purple' };
@@ -69,7 +69,7 @@ const recordInfo = computed(() => {
             {{ $t('transaction.quantity') }}(USDT)
           </div>
           <div :class="'text-body1 text-weight-bold text-' + recordInfo.color">
-            {{ thousandTool(order?.UsdtAmt, 3) }}
+            {{ thousandTool(order?.UsdtAmt, 'USDT') }}
           </div>
         </div>
         <!-- 結餘 -->
@@ -78,7 +78,7 @@ const recordInfo = computed(() => {
             {{ $t('label.real_balance') }}(USDT)
           </div>
           <div class="text-body1 text-green-9">
-            {{ thousandTool(order?.Balance, 3) }}
+            {{ thousandTool(order?.Balance, 'USDT') }}
           </div>
         </div>
       </div>
@@ -90,7 +90,7 @@ const recordInfo = computed(() => {
               {{ $t('transaction.rate') }}
             </div>
             <div class="text-caption">
-              {{ thousandTool(order?.D1, 2) }}
+              {{ thousandTool(order?.D1, 'CNY') }}
             </div>
           </div>
           <!-- 金額 -->
@@ -99,7 +99,7 @@ const recordInfo = computed(() => {
               {{ $t('transaction.amount') }}(CNY)
             </div>
             <div class="text-caption">
-              {{ thousandTool(order?.D2, 2) }}
+              {{ thousandTool(order?.D2, 'CNY') }}
             </div>
           </div>
           <!-- 交易方姓名 -->

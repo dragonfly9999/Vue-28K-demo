@@ -64,11 +64,11 @@ const premium = computed(() => {
   switch (props.order?.MasterType) {
     case MasterTypeNum.Buy: {
       const originUsdt = usdt / (1 - premiumRate / 100);
-      return thousandTool((originUsdt * premiumRate) / 100, 3);
+      return thousandTool((originUsdt * premiumRate) / 100, 'USDT');
     }
     case MasterTypeNum.Sell: {
       const originUsdt = usdt / (1 + premiumRate / 100);
-      return thousandTool((originUsdt * premiumRate) / 100, 3);
+      return thousandTool((originUsdt * premiumRate) / 100, 'USDT');
     }
   }
   return premiumRate;
@@ -97,7 +97,7 @@ const premium = computed(() => {
             avatar
             :class="'text-' + orderInfo.color + ' text-body1 text-weight-bold'"
           >
-            {{ thousandTool(order?.UsdtAmt, 3) }}
+            {{ thousandTool(order?.UsdtAmt, 'USDT') }}
           </q-item-section>
         </q-item>
         <!-- 金額 -->
@@ -106,7 +106,7 @@ const premium = computed(() => {
             {{ $t('transaction.amount') }}(CNY)
           </q-item-section>
           <q-item-section avatar class="text-body1">
-            {{ thousandTool(order?.D2, 2) }}
+            {{ thousandTool(order?.D2, 'CNY') }}
           </q-item-section>
         </q-item>
         <q-separator />
@@ -125,7 +125,7 @@ const premium = computed(() => {
             {{ $t('transaction.rate') }}
           </q-item-section>
           <q-item-section avatar>
-            {{ thousandTool(order?.D1, 2) }}
+            {{ thousandTool(order?.D1, 'CNY') }}
           </q-item-section>
         </q-item>
         <!-- 手續費 -->
@@ -200,7 +200,12 @@ const premium = computed(() => {
             >{{ $t('transaction.complete_time') }}
           </q-item-section>
           <q-item-section avatar>
-            {{ dayjs(order?.Date).format('YYYY-MM-DD HH:mm:ss') }}
+            {{
+              dayjs(
+                dayjs(order?.Date).toDate().getTime() +
+                  (order?.DeltaTime ?? 0) * 1000
+              ).format('YYYY-MM-DD HH:mm:ss')
+            }}
           </q-item-section>
         </q-item>
         <q-item style="min-height: 32px">

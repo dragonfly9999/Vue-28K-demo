@@ -32,7 +32,7 @@ const { t } = useI18n();
           v-for="(information, index) in [
             {
               title: t('transaction.amount'),
-              content: thousandTool(order?.D2, 2)
+              content: thousandTool(order?.D2, 'CNY')
             },
             {
               title: t('transaction.payee'),
