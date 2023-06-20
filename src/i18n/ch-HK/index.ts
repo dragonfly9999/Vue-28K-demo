@@ -247,7 +247,7 @@ export default {
     VND: '越南盾'
   },
   warn: {
-    login: '請確認您正在訪問 demo.k100.com',
+    login: '請確認您正在訪問 k100.com',
     hint_not_yet_verified: '請先完成以下帳戶驗證',
     hint_transaction_notes_1: 'ATM轉帳時請註記持有人的',
     hint_transaction_notes_2: '真實姓名',

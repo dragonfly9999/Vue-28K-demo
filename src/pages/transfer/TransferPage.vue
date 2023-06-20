@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { addressOptions } from './data';
 import { useBalanceStore, useRateStore } from 'src/stores';
-import { numberTool, thousandTool } from 'src/utils/NumberTool';
+import { numberTool, thousandInput, thousandTool } from 'src/utils/NumberTool';
 import { computed, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -39,12 +39,10 @@ const remark = ref();
 const transAmt = ref();
 const isPassTwenty = ref(false);
 const visible = reactive({
-  warn: false,
   verify: false,
   scanner: false,
 });
 //
-const isPass = computed(() => isPassTwenty.value && address.verify);
 const remain = computed(() => {
   const result = (getBalance()?.Avb_Balance ?? 0) - transAmt.value;
   return thousandTool(result, 'USDT');
@@ -64,22 +62,25 @@ const handleSetAddress = (newAddress?: string) => {
   visible.scanner = false;
   if (newAddress) {
     address.value = newAddress;
-    switch (agreement.value) {
-      case 'trc': {
-        checkTrc({
-          ToAddress: address.value,
-        });
-        break;
-      }
-      case 'erc': {
-        checkErc({
-          ToAddress: address.value,
-        });
-        break;
-      }
-      default:
-        return undefined;
+  }
+};
+const handleSubmit = () => {
+  console.log('on submit');
+  switch (agreement.value) {
+    case 'trc': {
+      checkTrc({
+        ToAddress: address.value,
+      });
+      break;
     }
+    case 'erc': {
+      checkErc({
+        ToAddress: address.value,
+      });
+      break;
+    }
+    default:
+      return undefined;
   }
 };
 </script>
@@ -88,7 +89,7 @@ const handleSetAddress = (newAddress?: string) => {
     <TransferTitle />
     <!-- Content -->
     <q-card class="q-pa-sm q-ma-sm q-mb-xl myshadow">
-      <q-form @submit="() => (visible.warn = true)">
+      <q-form @submit="handleSubmit">
         <div class="q-pa-md">
           <!--  -->
           <div class="q-mt-sm">
@@ -161,7 +162,6 @@ const handleSetAddress = (newAddress?: string) => {
             <q-input
               hide-bottom-space
               outlined
-              :disable="address.verify"
               :label="t('transfer.label.address')"
               v-model="address.value"
               :rules="[() => !!agreement || $t('transfer.label.agreement')]"
@@ -173,7 +173,6 @@ const handleSetAddress = (newAddress?: string) => {
                       visible.scanner = true;
                     }
                   "
-                  :disable="!agreement"
                   dense
                   flat
                   icon="qr_code_scanner"
@@ -221,7 +220,6 @@ const handleSetAddress = (newAddress?: string) => {
                 color="blue-13"
                 class="col-3"
                 :label="percent + '%'"
-                :disable="!address.verify"
                 v-for="(percent, index) in [25, 50, 75, 100]"
                 :key="index"
                 @click="
@@ -239,10 +237,10 @@ const handleSetAddress = (newAddress?: string) => {
               outlined
               :label="t('transfer.label.i_want_to_transfer')"
               v-model="transAmt"
-              :disable="!address.verify"
               :error-message="t('error.32')"
               @focus="() => transAmt === 0 && (transAmt = undefined)"
               :rules="[(val) => numberTool(val) > 1]"
+              @update:model-value="(value) => (transAmt = thousandInput(value))"
             >
               <template v-slot:append>
                 <div class="text-grey-5 text-subtitle2">USDT</div>
@@ -282,11 +280,12 @@ const handleSetAddress = (newAddress?: string) => {
               </div>
 
               <!-- 會員互轉免手續費 -->
-
-              <!-- <div class="flex items-baseline justify-between text-grey-7 text-caption">
-              <div>{{$t('transfer.label.premium')}}</div>
-              <div>{{$t('transfer.label.popularize')}}!</div>
-            </div> -->
+              <!-- <div
+                class="flex items-baseline justify-between text-grey-7 text-caption"
+              >
+                <div>{{ $t('transfer.label.premium') }}</div>
+                <div>{{ $t('transfer.label.popularize') }}!</div>
+              </div> -->
 
               <q-separator class="q-my-sm" />
               <div class="flex justify-between">
@@ -308,11 +307,7 @@ const handleSetAddress = (newAddress?: string) => {
           </div>
           <!--  -->
           <div class="flex no-wrap items-start q-my-md">
-            <q-checkbox
-              :disable="!address.verify"
-              v-model="isPassTwenty"
-              dense
-            />
+            <q-checkbox v-model="isPassTwenty" dense />
             <!-- 我已滿20歲已閱讀並同意 -->
             <div class="flex">
               <div class="text-body2 q-ml-sm">
@@ -346,19 +341,19 @@ const handleSetAddress = (newAddress?: string) => {
           </div>
           <!-- 下一步btn -->
           <q-btn
+            :disable="!isPassTwenty"
             rounded
             unelevated
             class="full-width"
             color="blue-13"
             :label="t('btn.next_step')"
             type="submit"
-            :disable="!isPass"
           />
         </div>
       </q-form>
     </q-card>
   </div>
-  <q-dialog v-model="visible.warn" persistent>
+  <q-dialog v-model="address.verify" persistent>
     <TransWarn
       :agreement="agreement"
       :address="address.value"

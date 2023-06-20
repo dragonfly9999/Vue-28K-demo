@@ -13,9 +13,9 @@ type UseProps = {
   onError: () => void;
 };
 
-export const useCheckTrc = (props: UseProps) =>
+export const useCheckTrc = (props?: UseProps) =>
   requestProvider<CheckRes, CheckProps>({
     reqFn: (props) => axiosProvider.post('/ChkToAddressValid2.aspx', props),
     isManual: true,
-    ...props
+    ...props,
   });
