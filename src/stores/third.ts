@@ -3,7 +3,6 @@ import WebSocketClient from 'src/utils/WebsocketClient';
 import { ref } from 'vue';
 import messageSound from 'src/assets/sound/message2.mp3';
 import { useStorage } from 'vue3-storage';
-import { MessageOptions } from 'child_process';
 
 export const useThirdStore = defineStore('third', () => {
   const hint = ref(true);

@@ -6,9 +6,13 @@ import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
 import WebSocketClient from 'src/utils/WebsocketClient';
 import { useStorage } from 'vue3-storage';
+import { useDetail } from 'src/pages/history/api';
 const props = defineProps<{ record: OrderRecord | ExpiredOrder }>();
 //
 const { t } = useI18n();
+const { data: detail } = useDetail({
+  Token: props.record.token,
+});
 // DOM
 const recordInfo = computed(() => {
   switch (props.record?.MasterType) {
@@ -66,47 +70,11 @@ const payerInfo = computed(() => {
   }
   return { label: t('label.undefined'), color: 'purple' };
 });
-const premium = computed(() => {
-  const usdt = orderStatus?.value?.UsdtAmt ?? 0;
-  const premiumRate =
-    (orderStatus?.value?.D5 ?? orderStatus?.value?.D3) === 0.5
-      ? 1.2
-      : orderStatus?.value?.D5 ?? orderStatus?.value?.D3 ?? 1.2;
-  switch (orderStatus?.value?.MasterType) {
-    case MasterTypeNum.Buy: {
-      const originUsdt = usdt / (1 - premiumRate / 100);
-      return thousandTool((originUsdt * premiumRate) / 100, 3);
-    }
-    case MasterTypeNum.Sell: {
-      const originUsdt = usdt / (1 + premiumRate / 100);
-      return thousandTool((originUsdt * premiumRate) / 100, 3);
-    }
-  }
-  return 0;
-});
 
-// WS
-const orderStatus = ref<OrderStatus>();
-const statusURL = '/ws_orderstatus.ashx';
-const login_session = useStorage().getStorageSync('login_session');
-const statusWs = new WebSocketClient(statusURL, {
-  reconnectEnabled: true,
-  reconnectInterval: 2000,
-  isChat: false,
-  order_token: props.record?.token,
-  login_session,
-});
-statusWs.connect();
-statusWs.onMessage = (msg) => {
-  if (msg?.data && typeof msg?.data === 'string') {
-    const orderFromServer: VirgilRes<OrderStatus> = JSON.parse(msg.data);
-    orderStatus.value = orderFromServer.data;
-  }
-};
 const statusInfo = computed(() => {
-  switch (Number(orderStatus?.value?.MasterType)) {
+  switch (Number(detail?.value?.MasterType)) {
     case MasterTypeNum.Buy:
-      switch (orderStatus.value?.Order_StatusID) {
+      switch (detail.value?.Order_StatusID) {
         case OrderStatusNum.Matching:
           return t('transaction.pairing');
         case OrderStatusNum.Assigned:
@@ -125,7 +93,7 @@ const statusInfo = computed(() => {
           return t('label.undefined');
       }
     case MasterTypeNum.Sell:
-      switch (orderStatus.value?.Order_StatusID) {
+      switch (detail.value?.Order_StatusID) {
         case OrderStatusNum.Matching:
           return t('transaction.pairing');
         case OrderStatusNum.Assigned:
@@ -199,7 +167,7 @@ const statusInfo = computed(() => {
             {{ $t('transaction.status') }}
           </q-item-section>
           <q-item-section avatar>
-            <div v-if="!!orderStatus">
+            <div v-if="!!detail">
               {{ statusInfo }}
             </div>
             <q-spinner v-else />
@@ -220,8 +188,8 @@ const statusInfo = computed(() => {
             {{ $t('transaction.handling_fee') }}
           </q-item-section>
           <q-item-section avatar>
-            <div v-if="!!orderStatus">
-              {{ premium }}
+            <div v-if="!!detail">
+              {{ thousandTool(detail?.D3, 'USDT') }}
             </div>
             <q-spinner v-else />
           </q-item-section>
@@ -331,12 +299,29 @@ const statusInfo = computed(() => {
         v-close-popup
       />
       <!--交易對話紀錄btn -->
-      <div class="flex justify-center" v-if="record?.MasterType < 3">
+      <div
+        class="flex justify-center"
+        v-if="record?.MasterType < 3 && 'Balance' in record"
+      >
         <q-btn
           flat
           color="blue-13"
           :label="t('transaction.conversation_record')"
           disable
+        />
+      </div>
+      <div class="flex justify-center" v-else>
+        <q-btn
+          @click="
+            () =>
+              $router.push({
+                name: record?.MasterType === MasterTypeNum.Buy ? 'buy' : 'sell',
+                query: { token: record.token },
+              })
+          "
+          flat
+          color="blue-13"
+          :label="t('返回交易')"
         />
       </div>
     </div>

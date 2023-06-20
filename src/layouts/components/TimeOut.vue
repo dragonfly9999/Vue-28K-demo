@@ -59,6 +59,7 @@ const appealWarn = ref(false);
       <div class="text-center q-mt-md justify-center q-gutter-y-sm">
         <!-- 申訴btn -->
         <q-btn
+          :disable="order?.MasterType === MasterTypeNum.Sell"
           rounded
           unelevated
           @click="() => (appealWarn = true)"

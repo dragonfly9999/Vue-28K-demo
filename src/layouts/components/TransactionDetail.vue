@@ -5,12 +5,16 @@ import { computed } from 'vue';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
 import { AccNum } from 'src/pages/account/api';
-const props = defineProps<{ order: OrderStatus | undefined }>();
+import { useDetail } from '../api';
+import { useRoute } from 'vue-router';
 //
 const { t } = useI18n();
+const { data: detail, loading } = useDetail({
+  Token: useRoute()?.query?.token as string,
+});
 // DOM
 const orderInfo = computed(() => {
-  switch (props.order?.MasterType) {
+  switch (detail.value?.MasterType) {
     case MasterTypeNum.Sell:
       return { label: t('label.buy'), color: 'blue-13' };
     case MasterTypeNum.Buy:
@@ -22,9 +26,9 @@ const orderInfo = computed(() => {
 });
 
 const statusInfo = computed(() => {
-  switch (Number(props.order?.MasterType)) {
+  switch (Number(detail.value?.MasterType)) {
     case MasterTypeNum.Sell:
-      switch (props.order?.Order_StatusID) {
+      switch (detail.value?.Order_StatusID) {
         case OrderStatusNum.Matching:
           return t('transaction.pairing');
         case OrderStatusNum.Assigned:
@@ -39,7 +43,7 @@ const statusInfo = computed(() => {
           return t('label.undefined');
       }
     case MasterTypeNum.Buy:
-      switch (props.order?.Order_StatusID) {
+      switch (detail.value?.Order_StatusID) {
         case OrderStatusNum.Matching:
           return t('transaction.pairing');
         case OrderStatusNum.Assigned:
@@ -57,25 +61,13 @@ const statusInfo = computed(() => {
       return t('label.undefined');
   }
 });
-const premium = computed(() => {
-  const usdt = props.order?.UsdtAmt ?? 0;
-  const premiumRate = props.order?.D5 === 0.5 ? 1.2 : props.order?.D5 ?? 0;
-
-  switch (props.order?.MasterType) {
-    case MasterTypeNum.Buy: {
-      const originUsdt = usdt / (1 - premiumRate / 100);
-      return thousandTool((originUsdt * premiumRate) / 100, 'USDT');
-    }
-    case MasterTypeNum.Sell: {
-      const originUsdt = usdt / (1 + premiumRate / 100);
-      return thousandTool((originUsdt * premiumRate) / 100, 'USDT');
-    }
-  }
-  return premiumRate;
-});
 </script>
 <template>
   <q-card class="q-pa-md" style="width: 380px">
+    <q-inner-loading :showing="loading">
+      <q-spinner-gears size="50px" color="primary" />
+    </q-inner-loading>
+
     <!-- title訂單資訊 -->
     <div class="text-h6 text-center text-weight-bold">
       {{ $t('transaction.detail') }}
@@ -97,7 +89,7 @@ const premium = computed(() => {
             avatar
             :class="'text-' + orderInfo.color + ' text-body1 text-weight-bold'"
           >
-            {{ thousandTool(order?.UsdtAmt, 'USDT') }}
+            {{ thousandTool(detail?.UsdtAmt, 'USDT') }}
           </q-item-section>
         </q-item>
         <!-- 金額 -->
@@ -106,7 +98,7 @@ const premium = computed(() => {
             {{ $t('transaction.amount') }}(CNY)
           </q-item-section>
           <q-item-section avatar class="text-body1">
-            {{ thousandTool(order?.D2, 'CNY') }}
+            {{ thousandTool(detail?.D2, 'CNY') }}
           </q-item-section>
         </q-item>
         <q-separator />
@@ -125,7 +117,7 @@ const premium = computed(() => {
             {{ $t('transaction.rate') }}
           </q-item-section>
           <q-item-section avatar>
-            {{ thousandTool(order?.D1, 'CNY') }}
+            {{ thousandTool(detail?.D1, 'CNY') }}
           </q-item-section>
         </q-item>
         <!-- 手續費 -->
@@ -134,7 +126,7 @@ const premium = computed(() => {
             {{ $t('transaction.handling_fee') }}
           </q-item-section>
           <q-item-section avatar>
-            {{ premium }}
+            {{ thousandTool(detail?.D3, 'CNY') }}
           </q-item-section>
         </q-item>
         <!-- 收款方 -->
@@ -144,9 +136,9 @@ const premium = computed(() => {
           </q-item-section>
           <q-item-section avatar>
             {{
-              order?.Order_StatusID === MasterTypeNum.Sell
-                ? order?.P2?.split('|')?.[0]
-                : order?.P5?.split('|')?.[0]
+              detail?.Order_StatusID === MasterTypeNum.Sell
+                ? detail?.P2?.split('|')?.[0]
+                : detail?.P5?.split('|')?.[0]
             }}
           </q-item-section>
         </q-item>
@@ -157,9 +149,9 @@ const premium = computed(() => {
           </q-item-section>
           <q-item-section avatar>
             {{
-              order?.Order_StatusID === MasterTypeNum.Sell
-                ? order?.P5?.split('|')?.[0]
-                : order?.P2?.split('|')?.[0]
+              detail?.Order_StatusID === MasterTypeNum.Sell
+                ? detail?.P5?.split('|')?.[0]
+                : detail?.P2?.split('|')?.[0]
             }}
           </q-item-section>
         </q-item>
@@ -169,7 +161,7 @@ const premium = computed(() => {
             {{ $t('transaction.bank_name') }}
           </q-item-section>
           <q-item-section avatar>
-            {{ order?.P3 }}
+            {{ detail?.P3 }}
           </q-item-section>
         </q-item>
         <q-item style="min-height: 32px">
@@ -178,7 +170,7 @@ const premium = computed(() => {
             {{ $t('transaction.city') }}
           </q-item-section>
           <q-item-section avatar>
-            {{ order?.P4 }}
+            {{ detail?.P4 }}
           </q-item-section>
         </q-item>
         <q-item style="min-height: 32px">
@@ -188,41 +180,41 @@ const premium = computed(() => {
           </q-item-section>
           <q-item-section avatar
             >{{
-              order?.Order_StatusID === MasterTypeNum.Sell
-                ? order[AccNum.Account]
-                : order?.P5?.split('|')?.[0]
+              detail?.Order_StatusID === MasterTypeNum.Sell
+                ? detail[AccNum.Account]
+                : detail?.P5?.split('|')?.[0]
             }}
           </q-item-section>
         </q-item>
+        <!--完成時間 -->
         <q-item style="min-height: 32px">
-          <!--完成時間 -->
           <q-item-section class="text-grey-6 text-caption"
             >{{ $t('transaction.complete_time') }}
           </q-item-section>
           <q-item-section avatar>
             {{
               dayjs(
-                dayjs(order?.Date).toDate().getTime() +
-                  (order?.DeltaTime ?? 0) * 1000
+                dayjs(detail?.Date).toDate().getTime() +
+                  (detail?.DeltaTime ?? 0) * 1000
               ).format('YYYY-MM-DD HH:mm:ss')
             }}
           </q-item-section>
         </q-item>
+        <!--訂單號 -->
         <q-item style="min-height: 32px">
-          <!--訂單號 -->
           <q-item-section class="text-grey-6 text-caption">
             {{ $t('transaction.order_number') }}</q-item-section
           >
           <q-item-section avatar class="text-right">
-            {{ order?.Tx_HASH?.substring(0, 21) }} <br />
+            {{ detail?.Tx_HASH?.substring(0, 21) }} <br />
             <div class="row">
-              <CopyButton :value="order?.Tx_HASH" />
-              {{ order?.Tx_HASH?.substring(21) }}
+              <CopyButton :value="detail?.Tx_HASH" />
+              {{ detail?.Tx_HASH?.substring(21) }}
             </div>
           </q-item-section>
         </q-item>
+        <!--合約書編號 -->
         <q-item style="min-height: 32px">
-          <!--合約書編號 -->
           <q-item-section class="text-grey-6 text-caption">
             {{ $t('transaction.contract_number') }}
           </q-item-section>

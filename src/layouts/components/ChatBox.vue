@@ -211,8 +211,8 @@ onBeforeUnmount(() => {
     position: fixed;
     bottom: 0px;
     height: 60px;
-    max-width: 100vw;
-    min-width: 60vw;
+    max-width: 96vw;
+    width: calc((1700px - 48vw) / 2);
     margin-left: 0px;
     min-height: 0px;
     max-height: 100vh;

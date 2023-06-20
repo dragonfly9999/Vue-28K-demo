@@ -50,7 +50,7 @@ watch(
             [
               OrderStatusNum.Assigned,
               OrderStatusNum.Appeal,
-              OrderStatusNum.Committed
+              OrderStatusNum.Committed,
             ].includes(orderStatus?.Order_StatusID ?? 0)
           "
         />
@@ -82,21 +82,20 @@ watch(
 <style scoped>
 #background {
   min-height: 100%;
-
 }
 
 @media screen and (max-width: 1439px) {
   #background {
-    min-height:110vh
+    min-height: 110vh;
   }
 }
 
-#background2{
-  width:60vw;
+#background2 {
+  width: 60vw;
 }
-@media screen and (max-width:1439px){
-  #background2{
-    width:100%
+@media screen and (max-width: 1439px) {
+  #background2 {
+    width: 100%;
   }
 }
 </style>

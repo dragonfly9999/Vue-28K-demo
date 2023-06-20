@@ -3,8 +3,8 @@ import { useI18n } from 'vue-i18n';
 import StepperMaster from 'src/components/StepperMaster.vue';
 import { useRouter } from 'vue-router';
 import { ref } from 'vue';
-import TransactionDetail from 'src/components/TransactionDetail.vue';
 import PunctuationMaster from 'src/components/PunctuationMaster.vue';
+import TransactionDetail from './TransactionDetail.vue';
 defineProps<{ order: OrderStatus | undefined }>();
 //
 const { t } = useI18n();
@@ -53,7 +53,7 @@ const isVisibleDetail = ref(false);
   </div>
 
   <q-dialog v-model="isVisibleDetail">
-    <TransactionDetail :order="order" />
+    <TransactionDetail />
   </q-dialog>
 </template>
 

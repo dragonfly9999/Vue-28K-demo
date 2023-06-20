@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { thousandTool } from 'src/utils/NumberTool';
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { useStorage } from 'vue3-storage';
@@ -207,7 +207,10 @@ const OrderStatus = computed(() => {
         <!-- 狀態  Order_StatusID: 32=> 等待配對中, 33 => 等待付款, 34 => 等待確認中, 35 => 申訴,-->
         <div class="q-gutter-sm">
           <div class="q-gutter-sm column items-end justify-end">
-            <q-badge :label="$t('訊息:') + ' ' + getCount()" />
+            <q-badge
+              :label="$t('訊息:') + ' ' + getCount()"
+              v-if="!isInstant"
+            />
             <q-badge
               transparent
               rounded

@@ -38,7 +38,7 @@ const router = useRouter();
       <!-- 訂單建立時間 -->
       <div class="flex items-center">
         <div class="text-grey-6">{{ t('transaction.order_time') }}：</div>
-        <div>{{ dayjs(order?.CreateDate).format('YYYY-MM-DD HH:mm') }}</div>
+        <div>{{ dayjs(order?.CreateDate).format('YYYY-MM-DD HH:mm:ss') }}</div>
       </div>
       <!-- 訂單號 -->
       <div class="flex items-center ellipsis">

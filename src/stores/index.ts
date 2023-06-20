@@ -34,7 +34,6 @@ export default store((/* { ssrContext } */) => {
 export { useRateStore } from './rate';
 export { useUserStore } from './user';
 export { useBalanceStore } from './balance';
-export { useAccessyStore } from './accessories';
 export { useLiveStore } from './live';
 export { useThirdStore } from './third';
 export { useOrderStore } from './order';
