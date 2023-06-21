@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import { OrderStatusNum } from 'src/stores/live';
 import { MasterTypeNum, thousandTool } from 'src/utils/NumberTool';
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
-import WebSocketClient from 'src/utils/WebsocketClient';
-import { useStorage } from 'vue3-storage';
 import { useDetail } from 'src/pages/history/api';
 const props = defineProps<{ record: OrderRecord | ExpiredOrder }>();
 //

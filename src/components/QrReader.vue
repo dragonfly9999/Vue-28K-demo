@@ -9,13 +9,15 @@ const video = ref();
 const scanner = ref<QrScanner>();
 
 const handleShow = () => {
+  console.log('handle show');
   QrScanner.WORKER_PATH = 'path-to-worker/qr-scanner-worker.min.js';
   scanner.value = new QrScanner(video.value, (result: string) => {
     if (result) {
       emit('onScan', result);
-      scanner.value?.pause();
+      scanner.value?.stop();
     }
   });
+
   scanner.value?.start().catch((error: Error) => {
     console.error('QR code scanner initialization failed:', error);
   });
@@ -27,10 +29,10 @@ const handleShow = () => {
     :model-value="modelValue"
     @update:model-value="(value) => emit('update:modelValue', value)"
     @show="handleShow"
-    @hide="() => scanner?.pause()"
+    @hide="() => scanner?.stop()"
   >
     <q-card class="flex justify-center q-pa-md">
-      <video class="qr-reader" ref="video"></video>
+      <video v-if="modelValue" class="qr-reader" ref="video"></video>
       <q-btn
         class="full-width q-mt-md"
         outline

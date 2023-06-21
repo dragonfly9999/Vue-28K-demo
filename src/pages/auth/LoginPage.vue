@@ -19,7 +19,7 @@ const { run: login } = useLogin({
     storage.setStorageSync('phone', phone_number.value);
     storage.setStorageSync('password', password.value);
     router.push({ name: 'dashboard' });
-  }
+  },
 });
 
 // DOM
@@ -37,7 +37,7 @@ const handleSubmit = () => {
   login({
     Login_countrycode: countryCode?.value?.toString() as string,
     Login_pwd: password.value?.toString() as string,
-    Login_tel: purePhone as string
+    Login_tel: purePhone as string,
   });
 };
 </script>
@@ -73,9 +73,9 @@ const handleSubmit = () => {
                 v-model="countryCode"
                 emit-value
                 :options="
-                  ['886', '852', '65', '86', '84']?.map((code) => ({
+                  ['886', '852', '65', '86', '84', '63']?.map((code) => ({
                     label: t(`country_code.${code}`),
-                    value: code
+                    value: code,
                   }))
                 "
                 :label="t('label.country_code')"
@@ -92,7 +92,7 @@ const handleSubmit = () => {
                     login({
                       Login_countrycode: '',
                       Login_pwd: '',
-                      Login_tel: ''
+                      Login_tel: '',
                     })
                 "
                 outlined
