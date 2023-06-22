@@ -26,7 +26,7 @@ const messageAudio = ref();
 const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
 // handlers
 const handleSwitch = () => {
-  handleResetCount();
+  handleResetCount(route?.query?.token as string);
   switch (btnIcon.value) {
     case 'arrow_drop_down':
       var element = document.getElementById('fade-in');
@@ -65,7 +65,7 @@ const handleSent = () => {
 onMounted(() => {
   if (getChatList(route.query.token as string)?.length > 1) {
     var element = document.getElementById('fade-in');
-    if (element) {
+    if (element && window.innerWidth < 1440) {
       element.style.height = 'calc(100vh - 40px)';
     }
     btnIcon.value = 'arrow_drop_down';
@@ -96,9 +96,9 @@ onBeforeUnmount(() => {
   <q-card class="q-pa-sm justify-between" id="fade-in">
     <q-toolbar class="flex q-mb-sm toolbar">
       <q-badge
-        v-if="getCount() > 0"
+        v-if="getCount(route?.query?.token as string) > 0"
         color="red"
-        :label="getCount()"
+        :label="getCount(route?.query?.token as string)"
         class="absolute-top-right"
       />
       <!-- 交易對話窗btn -->
@@ -142,7 +142,12 @@ onBeforeUnmount(() => {
           :stamp="dayjs(msg.Sysdate).format('YYYY-MM-DD HH:mm:ss')"
           :key="msg.SysID"
           class="q-my-lg"
-          :bg-color="isAgent && msg.Message_Role === 3 ? 'cyan-2' : 'grey-4'"
+          :bg-color="
+            (isAgent && msg.Message_Role === 3) ||
+            (!isAgent && msg.Message_Role === 1)
+              ? 'cyan-2'
+              : 'grey-4'
+          "
         >
           <div v-if="msg.Message_Type === 1">{{ msg.Message }}</div>
 

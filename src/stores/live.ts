@@ -100,10 +100,18 @@ export const useLiveStore = defineStore('live', () => {
     liveMessages[type] = fn;
   };
 
+  const cleanLive = () => {
+    liveWs.instant = null;
+    liveWs.progress = null;
+    liveOrders.instant = [];
+    liveOrders.progress = [];
+  };
+
   return {
     setOrders,
     getOrders,
     setOnMessage,
+    cleanLive,
   };
 });
 export { MtTypeNum, OrderStatusNum };

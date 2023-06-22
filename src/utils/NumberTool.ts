@@ -29,12 +29,11 @@ const numberTool = (num: NumOptions): number => {
   return Number(cleanComma);
 };
 
-const thousandInput = (num: NumOptions): string | null => {
-  if (num === null) return null;
+const thousandInput = (num: NumOptions): string => {
   if (!num) return '0';
   const pureNumber = numberTool(num);
 
-  if (isNaN(pureNumber)) return null;
+  if (isNaN(pureNumber)) return num as string;
 
   const result = pureNumber.toString().split('.');
   result[0] = result[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');

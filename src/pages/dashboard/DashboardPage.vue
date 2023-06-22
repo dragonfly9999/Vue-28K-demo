@@ -1,17 +1,26 @@
 <script setup lang="ts">
-import { useLiveStore, useThirdStore } from 'src/stores';
-import { ref, toRefs } from 'vue';
+import { useLiveStore, useStateStore, useThirdStore } from 'src/stores';
+import { computed, onMounted, ref, toRefs } from 'vue';
 import InstantOrders from './components/InstantOrders.vue';
 import ProgressOrders from './components/ProgressOrders.vue';
 import RecentHistory from './components/RecentHistory.vue';
-import { useAuto } from 'src/layouts/api/useAuto';
 import progressPng from 'src/assets/in-progress.png';
+import { useStorage } from 'vue3-storage';
+import PendingOrders from './components/PendingOrders.vue';
 
 const { hint } = toRefs(useThirdStore());
 const { getOrders } = useLiveStore();
-const { data: autoInfo, run: updateMode, loading: loadMode } = useAuto();
+const { getAuto, getAutoLoad, updateAuto } = useStateStore();
+const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
 // DOM
 const tab = ref('1');
+//
+onMounted(() => {
+  if (!isAgent.value) {
+    hint.value = false;
+    tab.value = '3';
+  }
+});
 </script>
 <template>
   <div style="max-width: 800px; min-width: 50%" class="q-gutter-sm q-mt-md">
@@ -20,10 +29,10 @@ const tab = ref('1');
       <div class="flex items-center q-mr-md">
         <q-img :src="progressPng" width="20px" />
         <div class="text-h6 text-weight-bold">
-          {{ $t('label.instant_transaction') }}
+          {{ isAgent ? $t('label.instant_transaction') : $t('交易進行中') }}
         </div>
       </div>
-      <div class="flex items-center">
+      <div class="flex items-center" v-if="isAgent">
         <!-- 通知 -->
         <q-toggle
           dense
@@ -63,14 +72,14 @@ const tab = ref('1');
           color="blue-13"
           left-label
           icon="hdr_auto"
-          :model-value="autoInfo?.AutoMode === 1"
+          :model-value="getAuto()?.AutoMode === 1"
           @click="
             () => {
-              if (autoInfo?.AutoMode === 0) updateMode(1);
-              else updateMode(0);
+              if (getAuto()?.AutoMode === 0) updateAuto(1);
+              else updateAuto(0);
             }
           "
-          v-if="!loadMode"
+          v-if="!getAutoLoad()"
         >
           <!-- hint -->
           <q-tooltip>
@@ -87,6 +96,7 @@ const tab = ref('1');
         active-color="blue-13"
         indicator-color="blue-13"
         align="left"
+        v-if="isAgent"
       >
         <!-- 即時訂單 -->
         <q-tab name="1" :label="$t('label.instant_transaction')">
@@ -108,7 +118,7 @@ const tab = ref('1');
         </q-tab>
       </q-tabs>
 
-      <q-separator />
+      <q-separator v-if="isAgent" />
 
       <q-tab-panels v-model="tab" animated>
         <q-tab-panel name="1" style="padding: 8px">
@@ -117,6 +127,10 @@ const tab = ref('1');
 
         <q-tab-panel name="2" style="padding: 8px">
           <ProgressOrders />
+        </q-tab-panel>
+        <!-- 會員的進行中訂單 -->
+        <q-tab-panel name="3" style="padding: 8px">
+          <PendingOrders />
         </q-tab-panel>
       </q-tab-panels>
     </q-card>

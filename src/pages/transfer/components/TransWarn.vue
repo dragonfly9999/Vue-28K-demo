@@ -6,6 +6,9 @@ import { ref } from 'vue';
 import { useStorage } from 'vue3-storage';
 import { useTransTrc } from '../api/useTransTrc';
 import { useTransErc } from '../api/useTransErc';
+import { useRouter } from 'vue-router';
+import { useStateStore } from 'src/stores';
+const emits = defineEmits(['success']);
 const props = defineProps<{
   agreement?: string;
   address?: string;
@@ -15,8 +18,14 @@ const props = defineProps<{
 }>();
 //
 const { t } = useI18n();
-const { run: transTrc } = useTransTrc();
-const { run: transErc } = useTransErc();
+const router = useRouter();
+const { updateState } = useStateStore();
+const onSuccess = () => {
+  updateState();
+  emits('success');
+};
+const { run: transTrc } = useTransTrc({ onSuccess });
+const { run: transErc } = useTransErc({ onSuccess });
 // DOM
 const password = ref();
 const isPassword = ref(true);

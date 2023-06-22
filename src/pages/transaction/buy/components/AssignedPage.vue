@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { onBeforeUnmount, onMounted, reactive, ref } from 'vue';
-import { getLeaseTime, maskString } from 'src/utils/TimeMaster';
+import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue';
+import { getLeaseTime } from 'src/utils/TimeMaster';
 import { thousandTool } from 'src/utils/NumberTool';
 import { OrderStatusNum } from 'src/stores/live';
 import StepperMaster from 'src/components/StepperMaster.vue';
 import PriceInfo from 'src/components/PriceInfo.vue';
 import BuyConfirm from './BuyConfirm.vue';
-import { usePay } from '../api';
+import { useBuy2, usePay } from '../api';
 import { useRoute } from 'vue-router';
 import CancelConfirm from 'src/components/CancelConfirm.vue';
 import { handleBoforeUpload } from 'src/utils/ImageManager';
@@ -19,15 +19,17 @@ defineProps<{ order?: OrderStatus }>();
 const route = useRoute();
 const { t } = useI18n();
 const { run: pay } = usePay();
+const { run: buy } = useBuy2();
 const { getWebSocket } = useThirdStore();
 // DOM
+const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
 let TimeInterval: NodeJS.Timeout;
 const deltaTime = ref(0);
 const filePicker = ref();
 const file = ref();
 const visible = reactive({
   payWarn: false,
-  cancelWarn: false
+  cancelWarn: false,
 });
 
 // handlers
@@ -35,12 +37,21 @@ const handleUpload = async (info: File) => {
   const base64 = await handleBoforeUpload(info);
   const sendObj = {
     Message: base64,
-    Message_Type: 2
+    Message_Type: 2,
   };
   getWebSocket(route.query.token as string).send(JSON.stringify(sendObj));
-  pay({
-    Token: route?.query.token as string
-  });
+  handleConfirm();
+};
+const handleConfirm = () => {
+  if (isAgent.value) {
+    pay({
+      Token: route?.query.token as string,
+    });
+  } else {
+    buy({
+      Token: route?.query.token as string,
+    });
+  }
 };
 // cycle
 onMounted(() => {
@@ -107,32 +118,24 @@ onBeforeUnmount(() => {
           v-for="(information, index) in [
             {
               title: t('buy.bankInformation.amount'),
-              content: thousandTool(order?.D2, 'CNY')
+              content: thousandTool(order?.D2, 'CNY'),
             },
             {
               title: t('transaction.payee'),
-              content:
-                order?.Currency === 'CNY' &&
-                !useStorage().getStorageSync('isAgent')
-                  ? order?.P2.slice(0, 1) + maskString(order?.P2, 1)
-                  : order?.P2
+              content: order?.P2,
             },
             {
               title: t('transaction.account_number'),
-              content:
-                order?.Currency === 'CNY' &&
-                !useStorage().getStorageSync('isAgent')
-                  ? maskString(order?.P1, 4)
-                  : order?.P1
+              content: order?.P1,
             },
             {
               title: t(`transaction.bank_name`),
-              content: order?.P3
+              content: order?.P3,
             },
             {
               title: t(`transaction.code.${order?.Currency}`),
-              content: order?.P4
-            }
+              content: order?.P4,
+            },
           ]"
           :key="index"
         >
@@ -186,12 +189,7 @@ onBeforeUnmount(() => {
           filePicker?.pickFiles();
         }
       "
-      @skip="
-      () =>
-        pay({
-          Token: route?.query.token as string
-        })
-    "
+      @skip="handleConfirm"
     />
   </q-dialog>
   <!-- Cancel confirm -->

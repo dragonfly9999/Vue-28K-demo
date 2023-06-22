@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ComputedRef, onMounted, watch } from 'vue';
+import WaitCard from 'src/pages/transaction/components/WaitCard.vue';
+import { onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
-import { useRouter } from 'vue-router';
 import { OrderStatusNum } from 'src/stores/live';
 import ChatBox from './components/ChatBox.vue';
 import TradeComplete from './components/TradeComplete.vue';
@@ -10,36 +10,37 @@ import { useOrderStore, useThirdStore } from 'src/stores';
 import { computed } from 'vue';
 import TimeOut from './components/TimeOut.vue';
 const route = useRoute();
-const token = computed(() => route.query?.token) as ComputedRef<string>;
-const router = useRouter();
 const { setWebSockets, removeChat } = useThirdStore();
 const { setOrderWs, getStatus, removeOrder } = useOrderStore();
+const token = computed(() => route.query?.token as string);
 const orderStatus = computed(() => getStatus(token.value));
+const watchTest = ref();
 //
 onMounted(() => {
-  if (!token.value) {
-    router.push({ name: 'dashboard' });
-  }
-  if (typeof token.value === 'string') {
-    setWebSockets(token.value);
-    setOrderWs(token.value);
+  // 清除多餘的交易
+  if (token.value) {
     const tokens = removeOrder();
     tokens?.forEach((token) => token && removeChat(token));
   }
 });
 watch(
-  () => token.value,
+  token,
   (newValue) => {
     if (newValue) {
-      setWebSockets(token.value);
-      setOrderWs(token.value);
+      setWebSockets(newValue);
+      setOrderWs(newValue);
     }
-  }
+  },
+  { immediate: true }
 );
+watch(watchTest, (newValue) => {
+  if (newValue) {
+  }
+});
 </script>
 <template>
   <div class="flex items-start justify-center" id="background">
-    <q-card class="row q-pa-md" v-if="!!orderStatus" id="background2">
+    <q-card class="row q-pa-md" id="background2">
       <div class="col-xs-12 col-lg-8 column items-center">
         <RouterView />
       </div>
@@ -64,15 +65,23 @@ watch(
         />
         <CancelSuccess
           v-else-if="
-            [OrderStatusNum.Cancel].includes(orderStatus?.Order_StatusID)
+            [OrderStatusNum.Cancel].includes(orderStatus?.Order_StatusID ?? -5)
           "
           :order="orderStatus"
         />
         <TimeOut
           v-else-if="
-            [OrderStatusNum.TimeOut].includes(orderStatus?.Order_StatusID)
+            [OrderStatusNum.TimeOut].includes(orderStatus?.Order_StatusID ?? -5)
           "
           :order="orderStatus"
+        />
+        <WaitCard
+          v-else-if="
+            [OrderStatusNum.Matching].includes(
+              orderStatus?.Order_StatusID ?? -5
+            )
+          "
+          :orderStatus="orderStatus"
         />
       </div>
     </q-card>

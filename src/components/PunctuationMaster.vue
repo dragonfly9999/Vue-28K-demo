@@ -19,7 +19,10 @@ const porps = defineProps<{
         {{ label?.slice(0, Math.ceil((label?.length * 2) / 3)) }}
       </div>
       <div :class="`text-${text_align ?? 'right'}`">
-        {{ label?.slice(Math.ceil((label?.length * 2) / 3) - label?.length) }}
+        {{
+          label?.slice(Math.ceil((label?.length * 2) / 3) - label?.length) ??
+          '--'
+        }}
       </div>
     </div>
   </div>

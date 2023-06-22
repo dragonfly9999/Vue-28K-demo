@@ -1,3 +1,4 @@
+import { usePendingStore } from './pending';
 import { store } from 'quasar/wrappers';
 import { createPinia } from 'pinia';
 import { Router } from 'vue-router';
@@ -31,10 +32,9 @@ export default store((/* { ssrContext } */) => {
   return pinia;
 });
 
-export { useRateStore } from './rate';
-export { useUserStore } from './user';
-export { useBalanceStore } from './balance';
 export { useLiveStore } from './live';
 export { useThirdStore } from './third';
 export { useOrderStore } from './order';
 export { useKeyStore } from './key';
+export { useStateStore } from './state';
+export { usePendingStore } from './pending';

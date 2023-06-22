@@ -4,6 +4,7 @@ import { AxiosError } from 'axios';
 import { Notify } from 'quasar';
 import { useI18n } from 'vue-i18n';
 import { useStorage } from 'vue3-storage';
+import { axiosProvider } from './axiosProvider';
 
 type ProviderProps<DATA, Params = unknown> = {
   reqFn: (args: Params) => Promise<VirgilRes<DATA>>;
@@ -21,7 +22,7 @@ export const requestProvider = <DATA, Params = unknown>({
   config,
   onSuccess,
   onError,
-  onAfter
+  onAfter,
 }: ProviderProps<DATA, Params>) => {
   const { t } = useI18n();
   const requestInstance = useRequest(reqFn, {
@@ -33,14 +34,19 @@ export const requestProvider = <DATA, Params = unknown>({
           type: 'negative',
           message: t(`error.${error.response?.data.code}`),
           position: 'top-right',
-          timeout: 2000
+          timeout: 2000,
         });
 
         switch (useCode.toString()) {
           case '91': {
-            const storage = useStorage();
-            storage.clearStorageSync();
-            window.location.pathname = '/';
+            // 強制登出，流程跟登出一樣，但使用ts的寫法。
+            axiosProvider.post('/Req_AutoPick.aspx', {
+              mode: 0,
+            });
+            setTimeout(() => {
+              useStorage().clearStorageSync();
+              window.location.pathname = '/';
+            }, 100);
           }
         }
       }
@@ -52,7 +58,7 @@ export const requestProvider = <DATA, Params = unknown>({
           type: 'positive',
           message: t('success'),
           position: 'top-right',
-          timeout: 500
+          timeout: 500,
         });
       }
       if (onSuccess) onSuccess(res);
@@ -60,7 +66,7 @@ export const requestProvider = <DATA, Params = unknown>({
     onAfter: (params) => {
       !!onAfter && onAfter(params);
     },
-    manual: isManual
+    manual: isManual,
   });
   const useData = computed(() => requestInstance.data.value?.data);
   return { ...requestInstance, data: useData };

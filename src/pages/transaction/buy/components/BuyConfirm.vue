@@ -32,32 +32,24 @@ const { t } = useI18n();
           v-for="(information, index) in [
             {
               title: t('transaction.amount'),
-              content: thousandTool(order?.D2, 'CNY')
+              content: thousandTool(order?.D2, 'CNY'),
             },
             {
               title: t('transaction.payee'),
-              content:
-                order?.Currency === 'CNY' &&
-                !useStorage().getStorageSync('isAgent')
-                  ? order?.P2.slice(0, 1) + maskString(order?.P2, 1)
-                  : order?.P2
+              content: order?.P2,
             },
             {
               title: t('transaction.account_number'),
-              content:
-                order?.Currency === 'CNY' &&
-                !useStorage().getStorageSync('isAgent')
-                  ? maskString(order?.P1, 4)
-                  : order?.P1
+              content: order?.P1,
             },
             {
               title: t(`transaction.bank_name`),
-              content: order?.P3
+              content: order?.P3,
             },
             {
               title: t(`transaction.code.${order?.Currency}`),
-              content: order?.P4
-            }
+              content: order?.P4,
+            },
           ]"
           :key="index"
         >

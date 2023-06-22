@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import langs from 'src/i18n';
-import { useRateStore } from 'src/stores';
+import { useStateStore } from 'src/stores';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
@@ -8,7 +8,7 @@ import { useStorage } from 'vue3-storage';
 const router = useRouter();
 const i18n = useI18n();
 const { t } = useI18n();
-const { getRate } = useRateStore();
+const { getRates } = useStateStore();
 const storage = useStorage();
 // DOM
 const drawerRight = ref(true);
@@ -42,7 +42,7 @@ const drawerRight = ref(true);
                 {{ t('rate.buy') }}
               </div>
               <div class="text-right text-weight-bold text-blue-13">
-                {{ getRate()?.RMB_BUY }}
+                {{ getRates()?.RMB_BUY }}
               </div>
             </div>
 
@@ -51,7 +51,7 @@ const drawerRight = ref(true);
                 {{ t('rate.sell') }}
               </div>
               <div class="text-right text-weight-bold text-red">
-                {{ getRate()?.RMB_SELL }}
+                {{ getRates()?.RMB_SELL }}
               </div>
             </div>
           </div>

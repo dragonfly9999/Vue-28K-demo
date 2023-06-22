@@ -10,12 +10,12 @@ type TransProps = {
 };
 
 type UseProps = {
-  onAfter: () => void;
+  onSuccess: () => void;
 };
 
 export const useTransTrc = (props?: UseProps) =>
   requestProvider<TransRes, TransProps>({
     reqFn: (props) => axiosProvider.post('/Req_Transfer2.aspx', props),
     isManual: true,
-    ...props
+    ...props,
   });

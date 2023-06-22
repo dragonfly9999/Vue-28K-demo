@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { useBalanceStore } from 'src/stores';
 import usdt from 'src/assets/USDT.png';
+import { useStateStore } from 'src/stores';
+import { thousandInput } from 'src/utils/NumberTool';
 
-const { getBalance } = useBalanceStore();
+const { getBalance } = useStateStore();
 </script>
 <template>
   <div>
@@ -20,7 +21,7 @@ const { getBalance } = useBalanceStore();
           <!-- 結餘 -->
           <div>{{ $t('wallet.label.real_balance') }}</div>
           <div class="text-body1 text-weight-bold text-green-9">
-            {{ getBalance()?.Real_Balance }}
+            {{ thousandInput(getBalance()?.Real_Balance) }}
           </div>
         </div>
 
@@ -28,7 +29,7 @@ const { getBalance } = useBalanceStore();
           <!-- 可提 -->
           <div>{{ $t('wallet.label.avb_balance') }}</div>
           <div class="text-body1 text-weight-bold text-green-9">
-            {{ getBalance()?.Avb_Balance }}
+            {{ thousandInput(getBalance()?.Avb_Balance) }}
           </div>
         </div>
       </div>

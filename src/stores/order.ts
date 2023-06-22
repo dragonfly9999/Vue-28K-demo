@@ -5,7 +5,7 @@ import { OrderStatusNum } from './live';
 import { useStorage } from 'vue3-storage';
 
 export const useOrderStore = defineStore('order', () => {
-  const orderStatusObj = ref<{ [key: string]: OrderStatus }>({});
+  const orderStatusObj = ref<{ [key: string]: OrderStatus | undefined }>({});
   const webSockets = ref<{ [key: string]: WebSocketClient }>({});
   const onMessages = ref<{ [key: string]: () => void }>({});
   const setOnMessage = (token: string, fn: () => void) => {
@@ -21,13 +21,12 @@ export const useOrderStore = defineStore('order', () => {
         reconnectInterval: 2000,
         isChat: false,
         order_token: token,
-        login_session
+        login_session,
       });
       orderWs.connect();
       orderWs.onMessage = (msg) => {
         if (msg?.data && typeof msg?.data === 'string') {
           const newOrderStatus: VirgilRes<OrderStatus> = JSON.parse(msg.data);
-          console.log('on Message:status:', newOrderStatus);
           orderStatusObj.value[token] = newOrderStatus.data;
         }
         if (onMessages?.value?.[token]) onMessages?.value?.[token]();
@@ -42,8 +41,8 @@ export const useOrderStore = defineStore('order', () => {
           [
             OrderStatusNum.Cancel,
             OrderStatusNum.TimeOut,
-            OrderStatusNum.Complete
-          ].includes(order.Order_StatusID)
+            OrderStatusNum.Complete,
+          ].includes(order?.Order_StatusID ?? -1)
         )
           return token;
       }
@@ -70,6 +69,6 @@ export const useOrderStore = defineStore('order', () => {
     gerOrderWs,
     getStatus,
     setOnMessage,
-    removeOrder
+    removeOrder,
   };
 });

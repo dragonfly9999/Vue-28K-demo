@@ -10,17 +10,18 @@ import PunctuationMaster from 'src/components/PunctuationMaster.vue';
 import PriceInfo from 'src/components/PriceInfo.vue';
 defineProps<{ order: OrderStatus | undefined }>();
 const { t } = useI18n();
-const timeInterval = ref<NodeJS.Timeout>();
-const deltaTime = ref(0);
 // DOM
+const deltaTime = ref(0);
+const timeInterval = ref<NodeJS.Timeout>();
 const visible = reactive({
   confirm: false,
-  appeal: false
+  appeal: false,
 });
 onMounted(() => {
   timeInterval.value = setInterval(() => (deltaTime.value += 1), 1000);
 });
 onBeforeUnmount(() => clearInterval(timeInterval.value));
+
 </script>
 <template>
   <div class="full-width col-auto">
@@ -73,8 +74,8 @@ onBeforeUnmount(() => clearInterval(timeInterval.value));
           v-for="(information, index) in [
             {
               title: t('sell.payer_account_name'),
-              content: order?.P5?.split('|')?.[0]
-            }
+              content: order?.P5?.split('|')?.[0],
+            },
           ]"
           :key="index"
         >
@@ -87,9 +88,12 @@ onBeforeUnmount(() => clearInterval(timeInterval.value));
     </div>
   </div>
 
-  <div class="full-width col-auto q-pa-sm ">
+  <div class="full-width col-auto q-pa-sm">
     <!-- 交易中 -->
-    <div v-if="order?.Order_StatusID === OrderStatusNum.Committed" class="q-gutter-y-md">
+    <div
+      v-if="order?.Order_StatusID === OrderStatusNum.Committed"
+      class="q-gutter-y-md"
+    >
       <q-btn
         class="full-width"
         rounded

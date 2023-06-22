@@ -140,7 +140,7 @@ const OrderStatus = computed(() => {
             thousandTool(order.D2, 'CNY');
           handleCopy(copyStr);
         } else {
-          if (isCleanCount) handleResetCount();
+          if (isCleanCount) handleResetCount(order.token);
           router.push({
             name: order?.MType === MtTypeNum.Buy ? 'buy' : 'sell',
             query: { token: order.token },
@@ -208,7 +208,7 @@ const OrderStatus = computed(() => {
         <div class="q-gutter-sm">
           <div class="q-gutter-sm column items-end justify-end">
             <q-badge
-              :label="$t('訊息:') + ' ' + getCount()"
+              :label="$t('訊息:') + ' ' + getCount(order.token)"
               v-if="!isInstant"
             />
             <q-badge

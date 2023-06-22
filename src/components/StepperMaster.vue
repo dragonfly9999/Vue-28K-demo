@@ -8,7 +8,7 @@ const props = defineProps<{ order?: OrderStatus }>();
 const { t } = useI18n();
 const stepFormat = computed(() => {
   switch (props.order?.Order_StatusID) {
-    case OrderStatusNum.Matching:
+    case undefined:
       return 1;
     case OrderStatusNum.Assigned:
       return 2;

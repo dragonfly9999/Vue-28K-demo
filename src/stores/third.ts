@@ -6,7 +6,7 @@ import { useStorage } from 'vue3-storage';
 
 export const useThirdStore = defineStore('third', () => {
   const hint = ref(true);
-  const unReadCount = ref(0);
+  const unReadCount = ref<{ [key: string]: number }>({});
   const chatListObj = ref<{ [key: string]: Array<ChatRes> }>({});
   const webSockets = ref<{ [key: string]: WebSocketClient }>({});
   const onMessages = ref<{ [key: string]: (args: ChatRes) => void }>({});
@@ -60,7 +60,9 @@ export const useThirdStore = defineStore('third', () => {
               (isAgent && newList?.Message_Role !== 3) ||
               (!isAgent && newList.Message_Role === 3)
             )
-              unReadCount.value += 1;
+              unReadCount.value[token] = unReadCount.value[token]
+                ? unReadCount.value[token] + 1
+                : 1;
           }
         }
       };
@@ -68,13 +70,14 @@ export const useThirdStore = defineStore('third', () => {
     }
   };
   //
-  const handleResetCount = () => (unReadCount.value = 0);
-  const getCount = () => unReadCount.value;
+  const handleResetCount = (token: string) => (unReadCount.value[token] = 0);
+  const getCount = (token: string) => unReadCount.value?.[token] ?? 0;
   //
   const removeChat = (token: string) => {
     delete chatListObj.value[token];
     delete webSockets.value[token];
     delete onMessages.value[token];
+    delete unReadCount.value[token];
   };
   const getWebSocket = (token: string) => {
     const result = webSockets?.value[token];

@@ -10,7 +10,7 @@ type TransProps = {
 };
 
 type UseProps = {
-  onAfter: () => void;
+  onSuccess: () => void;
 };
 
 export const useTransErc = (props?: UseProps) =>

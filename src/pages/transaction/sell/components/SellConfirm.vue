@@ -4,11 +4,15 @@ import { thousandTool } from 'src/utils/NumberTool';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
+import { useSell2 } from '../api';
+import { useStorage } from 'vue3-storage';
 const props = defineProps<{ order: OrderStatus | undefined }>();
 const { t } = useI18n();
 const { run: confirm } = useSellConfirm();
+const { run: sell } = useSell2();
 const route = useRoute();
 // DOM
+const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
 const remark = ref<string>();
 const informations = computed(() => [
   {
@@ -20,6 +24,18 @@ const informations = computed(() => [
     content: props?.order?.P5?.split('|')[0],
   },
 ]);
+// handler
+const handleConfirm = () => {
+  if (isAgent.value) {
+    confirm({
+      Token: route.query.token as string,
+    });
+  } else {
+    sell({
+      Token: route.query.token as string,
+    });
+  }
+};
 </script>
 <template>
   <q-card class="q-pa-md q-gutter-y-sm" style="width: 380px">
@@ -49,6 +65,7 @@ const informations = computed(() => [
     </div>
     <!-- input備註(非必填) -->
     <q-input
+      v-if="isAgent"
       v-model="remark"
       rounded
       color="blue-13"
@@ -61,12 +78,7 @@ const informations = computed(() => [
         color="blue-13"
         class="full-width q-mt-md"
         :label="$t('sell.step_hint_sell_title_3')"
-        @click="
-          () =>
-            confirm({
-              Token: route.query.token as string
-            })
-        "
+        @click="handleConfirm"
       />
       <!-- 返回btn-->
       <q-btn

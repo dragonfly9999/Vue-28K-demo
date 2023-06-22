@@ -20,10 +20,10 @@
                 <q-spinner-ios
                   color="blue-13"
                   size="1em"
-                  v-if="balanceLoading"
+                  v-if="getBalanceLoad()"
                 />
                 <div class="text-green-9">
-                  {{ thousandTool(balance?.AgtBalance, 'USDT') }} USDT
+                  {{ thousandTool(getBalance()?.Real_Balance, 'USDT') }} USDT
                 </div>
               </div>
             </div>
@@ -35,10 +35,10 @@
                 <q-spinner-ios
                   color="blue-13"
                   size="1em"
-                  v-if="balanceLoading"
+                  v-if="getBalanceLoad()"
                 />
                 <div class="text-green-9">
-                  {{ thousandTool(balance?.Avb_Balance, 'USDT') }} USDT
+                  {{ thousandTool(getBalance()?.Avb_Balance, 'USDT') }} USDT
                 </div>
               </div>
             </div>
@@ -62,11 +62,10 @@
 <script setup lang="ts">
 import { thousandTool } from 'src/utils/NumberTool';
 import { useRouter } from 'vue-router';
-import { useBalance, useRate } from './api';
 import ProgressBtn from './components/ProgressBtn.vue';
 import HeaderMaster from './components/HeaderMaster.vue';
 import { onBeforeUnmount, onMounted, ref, toRefs, watch } from 'vue';
-import { useLiveStore, useThirdStore } from 'src/stores';
+import { useLiveStore, useStateStore, useThirdStore } from 'src/stores';
 import instantSound from 'src/assets/sound/instants5.mp3';
 import matchSound from 'src/assets/sound/match.mp3';
 import paymentSound from 'src/assets/sound/payment2.mp3';
@@ -75,10 +74,8 @@ import { MtTypeNum, OrderStatusNum } from 'src/stores/live';
 import { useStorage } from 'vue3-storage';
 import { useKeyStore } from 'src/stores/key';
 
-useRate();
-const { data: balance, loading: balanceLoading } = useBalance();
-
 //
+const { getBalance, getBalanceLoad } = useStateStore();
 const { handleRemove, handelSet } = useKeyStore();
 const { hint } = toRefs(useThirdStore());
 const { setOnMessage, setOrders } = useLiveStore();
@@ -119,7 +116,7 @@ onMounted(() => {
         if (
           OrderFromServer &&
           OrderFromServer?.length > 0 &&
-          hint &&
+          hint.value &&
           instantAudio.value
         ) {
           instantAudio.value.play();
@@ -132,7 +129,7 @@ onMounted(() => {
     fn: (OrderFromServer) => {
       handleResetSound();
       setTimeout(() => {
-        if (OrderFromServer && OrderFromServer?.length > 0 && hint) {
+        if (OrderFromServer && OrderFromServer?.length > 0 && hint.value) {
           let flag = true;
           [
             OrderStatusNum.Committed,

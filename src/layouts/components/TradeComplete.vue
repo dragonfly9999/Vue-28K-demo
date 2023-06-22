@@ -2,15 +2,21 @@
 import { useI18n } from 'vue-i18n';
 import StepperMaster from 'src/components/StepperMaster.vue';
 import { useRouter } from 'vue-router';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import PunctuationMaster from 'src/components/PunctuationMaster.vue';
 import TransactionDetail from './TransactionDetail.vue';
+import { usePendingStore } from 'src/stores';
 defineProps<{ order: OrderStatus | undefined }>();
 //
 const { t } = useI18n();
 const router = useRouter();
+const { pendingInstant } = usePendingStore();
 // DOM
 const isVisibleDetail = ref(false);
+// Live
+onMounted(() => {
+  pendingInstant.refresh();
+});
 </script>
 <template>
   <div class="col-auto">

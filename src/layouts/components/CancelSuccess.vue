@@ -1,15 +1,16 @@
 <script setup lang="ts">
 import dayjs from 'dayjs';
 import PunctuationMaster from 'src/components/PunctuationMaster.vue';
-import { MasterTypeNum, thousandTool } from 'src/utils/NumberTool';
+import { thousandTool } from 'src/utils/NumberTool';
 import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 defineProps<{ order: OrderStatus | undefined }>();
 const { t } = useI18n();
 const router = useRouter();
+const route = useRoute();
 </script>
 <template>
-  <div class="q-mt-xl text-center">
+  <div class="q-mt-xl text-center container">
     <!-- title -->
     <q-icon class="material-icons text-red text-h1">cancel</q-icon>
     <div class="text-h6 text-weight-bold q-mx-sm">
@@ -18,11 +19,7 @@ const router = useRouter();
 
     <!-- order title -->
     <div class="text-left text-subtitle1 text-blue-13 q-mt-lg">
-      {{
-        order?.MasterType === MasterTypeNum.Buy
-          ? t('label.buy')
-          : t('label.sell')
-      }}
+      {{ t(`label.${route.name as string}`) }}
       USDT/ {{ order?.Currency }}
     </div>
     <!-- order info -->
@@ -64,4 +61,14 @@ const router = useRouter();
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.container {
+  min-width: 400px;
+}
+
+@media screen and (max-width: 1024px) {
+  .container {
+    min-width: 20px;
+  }
+}
+</style>

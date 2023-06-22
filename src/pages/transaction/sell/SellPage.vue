@@ -5,19 +5,22 @@ import AssignedPage from './components/AssignedPage.vue';
 import CommittedPage from './components/CommittedPage.vue';
 import { useOrderStore } from 'src/stores';
 import { computed } from 'vue';
+import CreatePage from './components/CreatePage.vue';
 const route = useRoute();
 const { getStatus } = useOrderStore();
 const orderStatus = computed(() => getStatus(route.query.token as string));
 </script>
 <template>
+  <CreatePage v-if="!orderStatus" />
+
   <AssignedPage
-    v-if="orderStatus?.Order_StatusID === OrderStatusNum.Assigned"
+    v-if="[OrderStatusNum.Assigned].includes(orderStatus?.Order_StatusID ?? -5)"
     :order="orderStatus"
   />
   <CommittedPage
     v-else-if="
       [OrderStatusNum.Committed, OrderStatusNum.Appeal].includes(
-        orderStatus?.Order_StatusID ?? 0
+        orderStatus?.Order_StatusID ?? -5
       )
     "
     :order="orderStatus"

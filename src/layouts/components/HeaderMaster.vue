@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import langs from 'src/i18n';
 import I18nBtn from 'src/components/I18nBtn.vue';
-import { useRateStore } from 'src/stores';
-import { ref } from 'vue';
+import { useLiveStore, useStateStore } from 'src/stores';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { useStorage } from 'vue3-storage';
@@ -10,21 +10,27 @@ import RateBar from 'src/components/RateBar.vue';
 import NavBar from 'src/components/NavBar.vue';
 import logo from 'src/assets/logo_easy.png';
 
-const { getRate } = useRateStore();
+const { updateAuto, getRates } = useStateStore();
 const router = useRouter();
 const { t } = useI18n();
 const storage = useStorage();
 const i18n = useI18n();
+const { cleanLive } = useLiveStore();
 // DOM
 const drawerRight = ref(false);
+const isAgent = computed(() => storage.getStorageSync('isAgent'));
 
 const logout = () => {
-  storage.clearStorageSync();
-  router.push({ name: 'login' });
+  updateAuto(0);
+  setTimeout(() => {
+    cleanLive();
+    storage.clearStorageSync();
+    router.push({ name: 'login' });
+  }, 100);
 };
 </script>
 <template>
-  <q-header reveal class="q-pa-md" style="background: #242e47;z-index:5">
+  <q-header reveal class="q-pa-md" style="background: #242e47; z-index: 5">
     <!-- Large -->
     <q-toolbar class="gt-sm">
       <div class="flex q-gutter-x-sm">
@@ -36,7 +42,7 @@ const logout = () => {
             <q-img :src="logo" width="122px" height="30px" />
           </div>
 
-          <RateBar :rate="getRate()" />
+          <RateBar :rate="getRates()" />
         </div>
         <NavBar />
       </div>
@@ -123,7 +129,7 @@ const logout = () => {
                 {{ t('rate.buy') }}
               </div>
               <div class="text-right text-weight-bold text-blue-13">
-                {{ getRate()?.RMB_BUY }}
+                {{ getRates()?.RMB_BUY }}
               </div>
             </div>
 
@@ -132,31 +138,52 @@ const logout = () => {
                 {{ t('rate.sell') }}
               </div>
               <div class="text-right text-weight-bold text-red">
-                {{ getRate()?.RMB_SELL }}
+                {{ getRates()?.RMB_SELL }}
               </div>
             </div>
           </div>
         </div>
         <q-separator spaced />
         <!-- Nav -->
+        <q-expansion-item
+          no-separator
+          icon="attach_money"
+          :label="t('交易')"
+          default-closed
+          v-if="!isAgent"
+        >
+          <q-list>
+            <q-item clickable @click="() => router.push({ name: 'buy' })">
+              <q-item-section>
+                <q-item-label class="q-px-md">{{ t('購買') }}</q-item-label>
+              </q-item-section>
+            </q-item>
+
+            <q-item
+              clickable
+              v-close-popup
+              @click="() => router.push({ name: 'sell' })"
+            >
+              <q-item-section>
+                <q-item-label class="q-px-md">{{ t('出售') }}</q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-expansion-item>
         <q-item
           v-for="(item, index) in [
             {
               name: 'transfer',
-              icon: 'move_up'
+              icon: 'move_up',
             },
             {
               name: 'wallet',
-              icon: 'account_balance_wallet'
+              icon: 'account_balance_wallet',
             },
             {
               name: 'history',
-              icon: 'receipt_long'
+              icon: 'receipt_long',
             },
-            {
-              name: 'account',
-              icon: 'credit_card'
-            }
           ]"
           :key="index"
           clickable
@@ -171,7 +198,28 @@ const logout = () => {
           <q-item-section avatar>
             <q-icon :name="item.icon" />
           </q-item-section>
-          <q-item-section> {{ t(`label.${item.name}`) }} </q-item-section>
+          <q-item-section>
+            {{ t(`label.${item.name}`) }}
+          </q-item-section>
+        </q-item>
+
+        <q-item
+          v-if="isAgent"
+          clickable
+          v-ripple
+          @click="
+            () => {
+              drawerRight = false;
+              router.push({ name: 'account' });
+            }
+          "
+        >
+          <q-item-section avatar>
+            <q-icon name="credit_card" />
+          </q-item-section>
+          <q-item-section>
+            {{ t(`label.account`) }}
+          </q-item-section>
         </q-item>
 
         <!-- 語言 -->
@@ -193,7 +241,7 @@ const logout = () => {
               }
             "
           >
-            <q-item-section> {{ lang.name }} </q-item-section>
+            <q-item-section class="q-px-md"> {{ lang.name }} </q-item-section>
           </q-item>
         </q-expansion-item>
       </q-list>
@@ -218,16 +266,7 @@ const logout = () => {
               </div>
             </div>
             <!-- 登出btn -->
-            <q-btn
-              @click="
-                () => {
-                  storage.clearStorageSync();
-                  router.push({ name: 'login' });
-                }
-              "
-              :label="$t('label.logout')"
-              icon="logout"
-            />
+            <q-btn @click="logout" :label="$t('label.logout')" icon="logout" />
           </div>
         </div>
       </div>

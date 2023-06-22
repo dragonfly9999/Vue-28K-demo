@@ -81,6 +81,16 @@ interface OrderRecord {
   token: string;
 }
 
+type PendingOrder = {
+  MasterType: number;
+  Date: string;
+  UsdtAmt: number;
+  D1: number; // 匯率
+  D2: number; // 金額
+  Order_StatusID: number;
+  token: string;
+};
+
 interface LiveOrder {
   Order_StatusID: number;
   MType: number;

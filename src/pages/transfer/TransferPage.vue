@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { addressOptions } from './data';
-import { useBalanceStore, useRateStore } from 'src/stores';
+import { useStateStore } from 'src/stores';
 import { numberTool, thousandInput, thousandTool } from 'src/utils/NumberTool';
 import { computed, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -9,10 +9,11 @@ import TransferTitle from './components/TransferTitle.vue';
 import QrReader from 'src/components/QrReader.vue';
 import { useCheckErc, useCheckTrc } from './api';
 import TransWarn from './components/TransWarn.vue';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const { t } = useI18n();
-const { getBalance } = useBalanceStore();
-const { getRate } = useRateStore();
+const { getRates, getBalance } = useStateStore();
 const { run: checkErc } = useCheckErc({
   onSuccess: () => {
     address.verify = true;
@@ -30,6 +31,7 @@ const { run: checkTrc } = useCheckTrc({
   },
 });
 // DOM
+const form = ref();
 const agreement = ref();
 const address = reactive<{ value: string; verify: boolean }>({
   value: '',
@@ -38,8 +40,9 @@ const address = reactive<{ value: string; verify: boolean }>({
 const remark = ref();
 const transAmt = ref();
 const isPassTwenty = ref(false);
+const timeInterval = ref<NodeJS.Timeout>();
+const duration = ref(0);
 const visible = reactive({
-  verify: false,
   scanner: false,
 });
 //
@@ -50,9 +53,9 @@ const remain = computed(() => {
 const premium = computed(() => {
   switch (agreement.value) {
     case 'trc':
-      return thousandTool(getRate()?.TransferHandle2, 'USDT');
+      return thousandTool(getRates()?.TransferHandle2, 'USDT');
     case 'erc':
-      return thousandTool(getRate()?.TransferHandle, 'USDT');
+      return thousandTool(getRates()?.TransferHandle, 'USDT');
     default:
       return undefined;
   }
@@ -83,13 +86,34 @@ const handleSubmit = () => {
       return undefined;
   }
 };
+const handleSuccess = () => {
+  timeInterval.value = setInterval(() => {
+    duration.value += 1;
+    if (duration.value > 4 && timeInterval.value) {
+      clearInterval(timeInterval.value as NodeJS.Timeout);
+      router.push({ name: 'dashboard' });
+    }
+  }, 1000);
+};
 </script>
 <template>
   <div style="max-width: 600px; margin: auto; padding: 0 0.1rem">
     <TransferTitle />
     <!-- Content -->
     <q-card class="q-pa-sm q-ma-sm q-mb-xl myshadow">
-      <q-form @submit="handleSubmit">
+      <q-form
+        @reset="
+          () => {
+            address.verify = false;
+            agreement = undefined;
+            address.value = '';
+            transAmt = undefined;
+            isPassTwenty = false;
+          }
+        "
+        ref="form"
+        @submit="handleSubmit"
+      >
         <div class="q-pa-md">
           <!--  -->
           <div class="q-mt-sm">
@@ -296,7 +320,7 @@ const handleSubmit = () => {
                 <div class="text-blue-13 text-weight-bold text-body1">
                   {{
                     thousandTool(
-                      numberTool(transAmt) - numberTool(premium),
+                      numberTool(transAmt) + numberTool(premium),
                       'USDT'
                     )
                   }}
@@ -353,8 +377,13 @@ const handleSubmit = () => {
       </q-form>
     </q-card>
   </div>
-  <q-dialog v-model="address.verify" persistent>
+  <q-dialog
+    @update:model-value="(val) => (address.verify = val)"
+    :model-value="address.verify && duration === 0"
+    persistent
+  >
     <TransWarn
+      @success="handleSuccess"
       :agreement="agreement"
       :address="address.value"
       :remark="remark"
@@ -362,6 +391,21 @@ const handleSubmit = () => {
       :premium="premium"
     />
   </q-dialog>
+  <!-- 跳轉前提示 -->
+  <q-dialog :model-value="!!timeInterval" persistent>
+    <q-card class="q-pa-lg" align="center" style="width: 360px">
+      <q-icon name="check_circle" color="green-8" size="lg" />
+      <!-- 提交成功 -->
+      <div class="text-h6 text-weight-bold">{{ $t('account.success') }}</div>
+      <div class="flex justify-center q-gutter-x-sm q-mt-lg text-grey-5">
+        <!-- 等待跳轉 -->
+        <div>{{ $t('label.jump') }}</div>
+        <q-spinner-dots size="1.5em" />
+        <div>{{ 5 - duration }}</div>
+      </div>
+    </q-card>
+  </q-dialog>
+
   <QrReader v-model="visible.scanner" @on-scan="handleSetAddress" />
 </template>
 
