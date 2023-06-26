@@ -14,38 +14,38 @@ const OrderStatus = computed(() => {
         case OrderStatusNum.Matching:
           return {
             label: t('transaction.pairing'),
-            text_color: 'orange-9',
-            bg_color: 'orange-1',
+            text_color: 'blue-13',
+            bg_color: 'grey-1',
           };
         case OrderStatusNum.Assigned:
           return {
             label: t('transaction.payment_required'),
-            text_color: 'red',
-            bg_color: 'orange-1',
+            text_color: 'blue-14',
+            bg_color: 'blue-1',
           };
         case OrderStatusNum.Committed:
           return {
             label: t('transaction.inProgress'),
-            text_color: 'orange-9 ',
-            bg_color: 'orange-1',
+            text_color: 'blue-grey-4',
+            bg_color: 'grey-1',
           };
         case OrderStatusNum.Appeal:
           return {
             label: t('transaction.appeal'),
-            text_color: 'blue-13 ',
+            text_color: 'orange-9 ',
             bg_color: 'orange-1',
           };
         case OrderStatusNum.Complete:
           return {
             label: t('transaction.complete'),
-            text_color: 'orange-9 ',
-            bg_color: 'orange-1',
+            text_color: 'green-10 ',
+            bg_color: 'green-1',
           };
         default:
           return {
             label: t('transaction.pairing'),
-            text_color: 'orange-9',
-            bg_color: 'orange-1',
+            text_color: 'blue-13',
+            bg_color: 'grey-1',
           };
       }
     case MtTypeNum.Sell:
@@ -53,20 +53,20 @@ const OrderStatus = computed(() => {
         case OrderStatusNum.Matching:
           return {
             label: t('transaction.pairing'),
-            text_color: 'orange-9',
-            bg_color: 'orange-1',
+            text_color: 'blue-13',
+            bg_color: 'grey-1',
           };
         case OrderStatusNum.Assigned:
           return {
             label: t('transaction.opponent_preparing'),
-            text_color: 'orange-9',
-            bg_color: 'orange-1',
+            text_color: 'blue-grey-4',
+            bg_color: 'grey-1',
           };
         case OrderStatusNum.Committed:
           return {
             label: t('transaction.need_confirm_payment'),
-            text_color: 'orange-9',
-            bg_color: 'orange-1',
+            text_color: 'red-14',
+            bg_color: 'red-1',
           };
         case OrderStatusNum.Appeal:
           return {
@@ -77,64 +77,89 @@ const OrderStatus = computed(() => {
         case OrderStatusNum.Complete:
           return {
             label: t('transaction.complete'),
-            text_color: 'orange-9 ',
-            bg_color: 'orange-1',
+            text_color: 'green-10 ',
+            bg_color: 'green-1',
           };
         default:
           return {
             label: t('transaction.pairing'),
-            text_color: 'orange-9',
-            bg_color: 'orange-1',
+            text_color: 'blue-13',
+            bg_color: 'grey-1',
           };
       }
     default:
       return {
         label: t('label.undefined'),
-        text_color: 'orange-9',
-        bg_color: 'orange-1',
+        text_color: 'dark',
+        bg_color: 'grey-1',
       };
   }
 });
 </script>
 <template>
   <q-badge
-    transparent
     rounded
     class="flex items-end items-center q-px-xs"
     :color="OrderStatus.bg_color"
   >
     <div v-if="[MtTypeNum.Buy].includes(numberTool(order?.MType))">
-      <q-spinner-hourglass
+      <q-spinner-ball
         v-if="
           [OrderStatusNum.Matching].includes(numberTool(order?.Order_StatusID))
         "
-        color="orange-9"
-        size="1.5em"
+        color="blue-13"
       />
-      <q-spinner-audio
-        v-if="
+      <q-spinner-puff
+        v-else-if="
+          [OrderStatusNum.Assigned].includes(numberTool(order?.Order_StatusID))
+        "
+        color="blue-14"
+        size="2em"
+      />
+      <q-spinner-hourglass
+        v-else-if="
+          [OrderStatusNum.Committed].includes(numberTool(order?.Order_StatusID))
+        "
+        color="blue-grey-4"
+      />
+      <q-spinner-comment
+        v-else-if="
           [OrderStatusNum.Appeal].includes(numberTool(order?.Order_StatusID))
         "
         color="orange-9"
-        size="1.5em"
+        size="2em"
       />
+      <q-spinner-ball v-else color="blue-13" />
     </div>
     <!--  -->
     <div v-else-if="[MtTypeNum.Sell].includes(numberTool(order?.MType))">
-      <q-spinner-hourglass
+      <q-spinner-ball
         v-if="
           [OrderStatusNum.Matching].includes(numberTool(order?.Order_StatusID))
         "
-        color="orange-9"
-        size="1.5em"
+        color="blue-13"
       />
-      <q-spinner-ball
-        v-if="
+      <q-spinner-hourglass
+        v-else-if="
+          [OrderStatusNum.Assigned].includes(numberTool(order?.Order_StatusID))
+        "
+        color="blue-grey-4"
+      />
+      <q-spinner-puff
+        v-else-if="
+          [OrderStatusNum.Committed].includes(numberTool(order?.Order_StatusID))
+        "
+        color="red-14"
+        size="2em"
+      />
+      <q-spinner-comment
+        v-else-if="
           [OrderStatusNum.Appeal].includes(numberTool(order?.Order_StatusID))
         "
         color="orange-9"
-        size="1.5em"
+        size="2em"
       />
+      <q-spinner-ball v-else color="blue-13" />
     </div>
     <div
       :class="`text-caption text-weight-bold text-${OrderStatus.text_color}`"
