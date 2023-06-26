@@ -11,20 +11,26 @@ const { getStatus } = useOrderStore();
 const orderStatus = computed(() => getStatus(route.query.token as string));
 </script>
 <template>
-  <CreatePage v-if="!orderStatus" />
+  <div class="col-12 column items-center" v-if="!orderStatus">
+    <CreatePage />
+  </div>
 
-  <AssignedPage
-    v-if="[OrderStatusNum.Assigned].includes(orderStatus?.Order_StatusID ?? -5)"
-    :order="orderStatus"
-  />
-  <CommittedPage
-    v-else-if="
-      [OrderStatusNum.Committed, OrderStatusNum.Appeal].includes(
-        orderStatus?.Order_StatusID ?? -5
-      )
-    "
-    :order="orderStatus"
-  />
+  <div class="col-xs-12 col-lg-8 column items-center">
+    <AssignedPage
+      v-if="
+        [OrderStatusNum.Assigned].includes(orderStatus?.Order_StatusID ?? -5)
+      "
+      :order="orderStatus"
+    />
+    <CommittedPage
+      v-else-if="
+        [OrderStatusNum.Committed, OrderStatusNum.Appeal].includes(
+          orderStatus?.Order_StatusID ?? -5
+        )
+      "
+      :order="orderStatus"
+    />
+  </div>
 </template>
 
 <style scoped></style>

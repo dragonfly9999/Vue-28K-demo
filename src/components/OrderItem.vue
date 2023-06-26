@@ -7,8 +7,14 @@ import { useStorage } from 'vue3-storage';
 import dayjs from 'dayjs';
 import { MtTypeNum, OrderStatusNum } from 'src/stores/live';
 import { useBuyMatch, useSellMatch } from './api';
-import { useKeyStore, useOrderStore, useThirdStore } from 'src/stores';
+import {
+  useKeyStore,
+  useOrderStore,
+  useStateStore,
+  useThirdStore,
+} from 'src/stores';
 import { copyToClipboard, useQuasar } from 'quasar';
+import StatusMaster from 'src/pages/transaction/components/StatusMaster.vue';
 const quasar = useQuasar();
 const props = defineProps<{
   order: LiveOrder;
@@ -17,7 +23,7 @@ const props = defineProps<{
 }>();
 
 //
-
+const { currency } = useStateStore();
 const { pressing } = useKeyStore();
 const { t } = useI18n();
 const router = useRouter();
@@ -48,37 +54,6 @@ const orderInfo = computed(() => {
     }
   }
 });
-
-// handler
-const handleMatch = () => {
-  if (props.order.MType === MtTypeNum.Sell) {
-    matchBuy({
-      Token: props.order.token,
-    });
-  } else {
-    matchSell({
-      Token: props.order.token,
-    });
-  }
-};
-
-const handleCopy = (value: string) => {
-  copyToClipboard(value)
-    .then(() => {
-      quasar.notify({
-        position: 'top-right',
-        color: 'positive',
-        message: '已複製',
-      });
-    })
-    .catch(() => {
-      quasar.notify({
-        position: 'top-right',
-        color: 'negative',
-        message: '複製失敗',
-      });
-    });
-};
 
 const OrderStatus = computed(() => {
   switch (Number(props.order.MType)) {
@@ -116,6 +91,37 @@ const OrderStatus = computed(() => {
       return t('label.undefined');
   }
 });
+
+// handler
+const handleMatch = () => {
+  if (props.order.MType === MtTypeNum.Sell) {
+    matchBuy({
+      Token: props.order.token,
+    });
+  } else {
+    matchSell({
+      Token: props.order.token,
+    });
+  }
+};
+
+const handleCopy = (value: string) => {
+  copyToClipboard(value)
+    .then(() => {
+      quasar.notify({
+        position: 'top-right',
+        color: 'positive',
+        message: '已複製',
+      });
+    })
+    .catch(() => {
+      quasar.notify({
+        position: 'top-right',
+        color: 'negative',
+        message: '複製失敗',
+      });
+    });
+};
 </script>
 <template>
   <q-item
@@ -158,7 +164,7 @@ const OrderStatus = computed(() => {
             {{ orderInfo.label }}
           </div>
           <!-- currency -->
-          <q-badge :color="orderInfo.color">USDT/CNY</q-badge>
+          <q-badge :color="orderInfo.color">USDT/{{ currency }}</q-badge>
         </div>
         <q-space />
 
@@ -211,17 +217,7 @@ const OrderStatus = computed(() => {
               :label="$t('訊息:') + ' ' + getCount(order.token)"
               v-if="!isInstant"
             />
-            <q-badge
-              transparent
-              rounded
-              class="flex items-end items-center q-px-xs"
-              color="orange-1"
-            >
-              <q-spinner-hourglass color="orange-9" size="1.5em" />
-              <div class="text-caption text-weight-bold text-orange-9">
-                {{ OrderStatus }}
-              </div>
-            </q-badge>
+            <status-master :order="order" />
           </div>
           <div v-if="isInstant">
             <q-btn

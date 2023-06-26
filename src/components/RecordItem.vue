@@ -4,10 +4,12 @@ import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import dayjs from 'dayjs';
 import RecordDetail from './RecordDetail.vue';
+import { useStateStore } from 'src/stores';
 const props = defineProps<{ order: OrderRecord | ExpiredOrder }>();
 
 //
 const { t } = useI18n();
+const { currency } = useStateStore();
 // DOM
 const detailVisible = ref(false);
 const recordInfo = computed(() => {
@@ -56,7 +58,15 @@ const recordInfo = computed(() => {
           >
             {{ recordInfo.label }}
           </div>
-          <q-badge :color="recordInfo.color">USDT/CNY</q-badge>
+          <q-badge
+            v-if="
+              [MasterTypeNum.Buy, MasterTypeNum.Sell].includes(
+                order?.MasterType
+              )
+            "
+            :color="recordInfo.color"
+            >USDT/{{ currency }}</q-badge
+          >
         </div>
         <q-space />
 

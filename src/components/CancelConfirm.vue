@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { useRoute } from 'vue-router';
 import { useCancel } from './api';
 const { t } = useI18n();
-const route = useRoute();
 const { run: cancel } = useCancel();
+defineProps<{ token: string }>();
 //
 </script>
 <template>
@@ -28,7 +27,7 @@ const { run: cancel } = useCancel();
         @click="
           () =>
             cancel({
-              Token: route.query.token as string
+              Token: token,
             })
         "
       />

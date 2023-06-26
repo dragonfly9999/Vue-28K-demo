@@ -2,6 +2,7 @@
 import OrderItem from 'src/components/OrderItem.vue';
 import { useLiveStore } from 'src/stores';
 import { useI18n } from 'vue-i18n';
+import dayjs from 'dayjs';
 
 const { getOrders } = useLiveStore();
 const { t } = useI18n();
@@ -9,7 +10,9 @@ const { t } = useI18n();
 <template>
   <q-list>
     <OrderItem
-      v-for="(order, index) in getOrders('progress')"
+      v-for="(order, index) in getOrders('progress')?.sort((a, b) =>
+        dayjs(b.CreateDate).isAfter(a.CreateDate) ? 0 : -1
+      )"
       :key="index"
       :order="order"
       :is-instant="false"

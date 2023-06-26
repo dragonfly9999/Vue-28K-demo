@@ -22,10 +22,10 @@ const { run: create } = useBuy1({
     const token = res?.data.order_token;
     pairWarn.value = false;
     pendingInstant.refresh();
+    useStateStore().refreshBalance();
     if (token) {
       setOrderWs(token);
       setWebSockets(token);
-      console.log('get token', token);
       router.push({ name: 'buy', query: { token } });
     }
   },
@@ -260,7 +260,7 @@ const flag = new URL(`../../../../assets/${currency}.png`, import.meta.url)
           unelevated
           rounded
           class="full-width"
-          color="primary"
+          color="blue-13"
           :label="$t('開始配對')"
           type="submit"
         />

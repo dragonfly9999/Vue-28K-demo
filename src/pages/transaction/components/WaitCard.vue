@@ -2,12 +2,13 @@
 import 'vue-i18n';
 import { useRoute } from 'vue-router';
 import { useStateStore } from 'src/stores';
-import { useCancel } from 'src/components/api';
 import { computed, ref } from 'vue';
+import { thousandTool } from 'src/utils/NumberTool';
+import { useCancel } from 'src/components/api';
 defineProps<{ orderStatus: OrderStatus | undefined }>();
 
-const { currency } = useStateStore();
 const { run: cancel } = useCancel();
+const { currency } = useStateStore();
 const route = useRoute();
 //
 const cancelConfirm = ref(false);
@@ -30,11 +31,11 @@ const token = computed(() => route?.query?.token as string);
       <table>
         <tr>
           <td>{{ $t('數量') }}</td>
-          <td>{{ orderStatus?.UsdtAmt }} USDT</td>
+          <td>{{ thousandTool(orderStatus?.UsdtAmt, 'USDT') }} USDT</td>
         </tr>
         <tr>
           <td>{{ $t('金額') }}</td>
-          <td>{{ orderStatus?.D2 }}{{ currency }}</td>
+          <td>{{ thousandTool(orderStatus?.D2, 'CNY') }}{{ currency }}</td>
         </tr>
       </table>
       <q-separator />
@@ -49,8 +50,8 @@ const token = computed(() => route?.query?.token as string);
     />
   </div>
 
-  <q-dialog v-model="cancelConfirm">
-    <q-card class="q-pa-md q-gutter-y-sm" style="width: 360px">
+  <q-dialog v-model="cancelConfirm"
+    ><q-card class="q-pa-md q-gutter-y-sm" style="width: 360px">
       <!-- title 是否要取消訂單-->
       <div>{{ $t('是否要取消訂單') }}</div>
       <div class="flex items-baseline no-wrap">
@@ -76,8 +77,7 @@ const token = computed(() => route?.query?.token as string);
                 Token: token,
               })
           "
-          glossy
-          color="primary"
+          color="blue-13"
           :label="$t('transaction.confirmCancel')"
         />
       </q-card-actions>

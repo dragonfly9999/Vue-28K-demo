@@ -58,7 +58,7 @@ export const useLiveStore = defineStore('live', () => {
             const newList: VirgilRes<Array<LiveOrder>> | VirgilRes<LiveOrder> =
               JSON.parse(msg.data);
             if (Array.isArray(newList.data)) {
-              liveOrders.instant = newList.data.reverse();
+              liveOrders.instant = newList.data;
               liveMessages.instant(newList.data);
             } else {
               liveOrders.instant.push(newList.data);

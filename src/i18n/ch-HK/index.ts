@@ -63,7 +63,7 @@ export default {
   chatName: {
     1: '會員A',
     2: '客服',
-    3: ''
+    3: '會員A'
   },
 
   account: {

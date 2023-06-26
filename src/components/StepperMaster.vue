@@ -32,7 +32,7 @@ const stepFormat = computed(() => {
     animated
     class="no-shadow q-mb-md"
     bordered
-    style="border-bottom-left-radius: 30px; width: 100%"
+    style="border-bottom-left-radius: 30px; width: 100%; min-width: 33vw"
   >
     <q-step :name="1" prefix="1" title="步驟一" :done="stepFormat > 1">
       <div class="text-h6 text-weight-bold">

@@ -5,6 +5,7 @@ import { useLiveStore, usePendingStore } from 'src/stores';
 import { computed, toRefs } from 'vue';
 import { useStorage } from 'vue3-storage';
 import PendingItem from 'src/components/PendingItem.vue';
+import dayjs from 'dayjs';
 
 const { getOrders } = useLiveStore();
 const { pendingInstant } = toRefs(usePendingStore());
@@ -14,6 +15,7 @@ const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
 </script>
 <template>
   <q-btn
+    :loading="pendingInstant.loading"
     no-caps
     rounded
     unelevated
@@ -22,8 +24,10 @@ const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
     style="width: fit-content"
     class="lt-xs q-px-sm"
     :disable="
-      getOrders('progress').length !== 0 &&
-      (pendingInstant?.data?.length ?? 0) !== 0
+      !(
+        getOrders('progress').length !== 0 ||
+        (pendingInstant?.data?.length ?? 0) !== 0
+      )
     "
   >
     <q-badge
@@ -49,7 +53,9 @@ const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
       >
         <div v-if="isAgent">
           <order-item
-            v-for="(order, index) in getOrders('progress')"
+            v-for="(order, index) in getOrders('progress')?.sort((a, b) =>
+              dayjs(b.CreateDate).isAfter(dayjs(a.CreateDate)) ? 0 : -1
+            )"
             :key="index"
             :order="order"
             :is-instant="false"

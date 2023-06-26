@@ -4,7 +4,7 @@ import { useStateStore } from 'src/stores';
 import { numberTool, thousandInput, thousandTool } from 'src/utils/NumberTool';
 import { computed, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-
+import { useStorage } from 'vue3-storage';
 import TransferTitle from './components/TransferTitle.vue';
 import QrReader from 'src/components/QrReader.vue';
 import { useCheckErc, useCheckTrc } from './api';
@@ -208,7 +208,7 @@ const handleSuccess = () => {
           </div>
 
           <!-- 地址備註 -->
-          <div class="q-mt-lg">
+          <div class="q-mt-lg" v-if="useStorage().getStorageSync('isAgent')">
             <div class="q-my-sm text-subtitle1">
               {{ $t('transfer.label.remark') }}
             </div>
@@ -283,19 +283,19 @@ const handleSuccess = () => {
           </div>
 
           <!-- 訂單資訊 -->
-          <div class="q-mt-lg">
+          <!-- <div class="q-mt-lg">
             <div class="text-subtitle1">
               {{ $t('transfer.label.order_info') }}
             </div>
             <div class="mycolor1 q-pa-md">
-              <!-- 轉出數量 -->
+              轉出數量
               <div
                 class="flex items-baseline justify-between text-grey-7 text-caption"
               >
                 <div>{{ $t('transfer.label.transfer_quantity') }}</div>
                 <div>{{ transAmt }} USDT</div>
               </div>
-              <!-- 手續費 -->
+              手續費
               <div
                 class="flex items-baseline justify-between text-grey-7 text-caption"
               >
@@ -303,17 +303,17 @@ const handleSuccess = () => {
                 <div>{{ premium }} USDT</div>
               </div>
 
-              <!-- 會員互轉免手續費 -->
-              <!-- <div
+              會員互轉免手續費
+              <div
                 class="flex items-baseline justify-between text-grey-7 text-caption"
               >
                 <div>{{ $t('transfer.label.premium') }}</div>
                 <div>{{ $t('transfer.label.popularize') }}!</div>
-              </div> -->
+              </div>
 
               <q-separator class="q-my-sm" />
+              預計到帳
               <div class="flex justify-between">
-                <!-- 預計到帳 -->
                 <div class="text-right text-blue-13 text-weight-bold">
                   {{ $t('transfer.label.expect') }}
                 </div>
@@ -328,7 +328,7 @@ const handleSuccess = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </div> -->
           <!--  -->
           <div class="flex no-wrap items-start q-my-md">
             <q-checkbox v-model="isPassTwenty" dense />

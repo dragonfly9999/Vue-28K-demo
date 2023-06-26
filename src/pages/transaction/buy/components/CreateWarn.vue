@@ -20,11 +20,11 @@ const emits = defineEmits(['confirm']);
     </div>
     <q-card-actions align="right" class="text-primary">
       <!-- 返回btn -->
-      <q-btn v-close-popup outline color="primary" :label="$t('label.back')" />
+      <q-btn v-close-popup outline color="blue-13" :label="$t('label.back')" />
       <!-- 確認btn -->
       <q-btn
-        glossy
-        color="primary"
+        unelevated
+        color="blue-13"
         :label="$t('label.confirm')"
         @click="emits('confirm')"
       />

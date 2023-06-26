@@ -81,7 +81,7 @@ onMounted(() => {
       if (
         hint.value &&
         ((useStorage().getStorageSync('isAgent') && msg?.Message_Role !== 3) ||
-          (useStorage().getStorageSync('isAgent') && msg?.Message_Role === 1))
+          (!useStorage().getStorageSync('isAgent') && msg?.Message_Role !== 1))
       ) {
         messageAudio.value?.play();
       }
@@ -137,7 +137,12 @@ onBeforeUnmount(() => {
         :key="index"
       >
         <q-chat-message
-          :name="$t(`chatName.${msg.Message_Role}`)"
+          :name="
+            (isAgent && msg.Message_Role !== 3) ||
+            (!isAgent && msg.Message_Role !== 1)
+              ? $t(`chatName.${msg.Message_Role}`)
+              : ''
+          "
           :sent="isAgent ? msg.Message_Role === 3 : msg.Message_Role === 1"
           :stamp="dayjs(msg.Sysdate).format('YYYY-MM-DD HH:mm:ss')"
           :key="msg.SysID"

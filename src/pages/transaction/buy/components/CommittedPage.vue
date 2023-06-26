@@ -10,11 +10,11 @@ const router = useRouter();
 // Dom
 </script>
 <template>
-  <div class="col-auto full-width">
+  <div class="col-auto full-width q-mb-xl">
     <StepperMaster :order="order" />
   </div>
 
-  <div class="col-auto full-width column justify-center">
+  <div class="col-auto full-width column justify-center q-mb-xl">
     <div class="flex justify-center">
       <q-spinner-hourglass color="orange-14" size="5.5em" />
     </div>
@@ -29,7 +29,7 @@ const router = useRouter();
       <PunctuationMaster justify="center" :label="order?.Tx_HASH" />
     </div>
   </div>
-  <div class="full-width col-auto">
+  <div class="full-width col-auto q-mb-md">
     <!-- 返回主頁btn -->
     <q-btn
       rounded

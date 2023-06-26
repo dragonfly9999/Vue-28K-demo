@@ -198,7 +198,7 @@ onBeforeUnmount(() => {
     trnasition-hide="fade"
     v-model="visible.cancelWarn"
   >
-    <CancelConfirm />
+    <CancelConfirm :token="(route.query.token  as string)" />
   </q-dialog>
 
   <q-file

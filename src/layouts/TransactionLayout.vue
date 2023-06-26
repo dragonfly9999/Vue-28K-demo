@@ -41,20 +41,19 @@ watch(watchTest, (newValue) => {
 <template>
   <div class="flex items-start justify-center" id="background">
     <q-card class="row q-pa-md" id="background2">
-      <div class="col-xs-12 col-lg-8 column items-center">
-        <RouterView />
-      </div>
+      <RouterView />
 
-      <div class="col-xs-12 col-lg-4 justify-center flex">
-        <ChatBox
-          v-if="
-            [
-              OrderStatusNum.Assigned,
-              OrderStatusNum.Appeal,
-              OrderStatusNum.Committed,
-            ].includes(orderStatus?.Order_StatusID ?? 0)
-          "
-        />
+      <div
+        class="col-xs-12 col-lg-4 justify-center flex"
+        v-if="
+          [
+            OrderStatusNum.Assigned,
+            OrderStatusNum.Appeal,
+            OrderStatusNum.Committed,
+          ].includes(orderStatus?.Order_StatusID ?? 0)
+        "
+      >
+        <ChatBox />
       </div>
 
       <!-- Transaction Status -->
@@ -100,11 +99,11 @@ watch(watchTest, (newValue) => {
 }
 
 #background2 {
-  width: 60vw;
+  /* min-width: calc(10vw * 10 - 950px); */
 }
 @media screen and (max-width: 1439px) {
   #background2 {
-    width: 100%;
+    min-width: 100%;
   }
 }
 </style>

@@ -7,17 +7,25 @@ import { useI18n } from 'vue-i18n';
 import { AccNum } from 'src/pages/account/api';
 import { useDetail } from '../api';
 import { useRoute } from 'vue-router';
+import { useStorage } from 'vue3-storage';
 //
 const { t } = useI18n();
 const { data: detail, loading } = useDetail({
   Token: useRoute()?.query?.token as string,
 });
 // DOM
+enum ClientNum {
+  Buy = 1,
+  Sell = 0,
+}
+const useNum = computed(() =>
+  useStorage().getStorageSync('isAgent') ? MasterTypeNum : ClientNum
+);
 const orderInfo = computed(() => {
   switch (detail.value?.MasterType) {
-    case MasterTypeNum.Sell:
+    case useNum.value.Sell:
       return { label: t('label.buy'), color: 'blue-13' };
-    case MasterTypeNum.Buy:
+    case useNum.value.Buy:
       return { label: t('label.sell'), color: 'red' };
     default: {
       return { label: t('label.undefined'), color: 'purple' };
@@ -27,7 +35,7 @@ const orderInfo = computed(() => {
 
 const statusInfo = computed(() => {
   switch (Number(detail.value?.MasterType)) {
-    case MasterTypeNum.Sell:
+    case useNum.value.Sell:
       switch (detail.value?.Order_StatusID) {
         case OrderStatusNum.Matching:
           return t('transaction.pairing');
@@ -42,7 +50,7 @@ const statusInfo = computed(() => {
         default:
           return t('label.undefined');
       }
-    case MasterTypeNum.Buy:
+    case useNum.value.Buy:
       switch (detail.value?.Order_StatusID) {
         case OrderStatusNum.Matching:
           return t('transaction.pairing');
@@ -135,11 +143,7 @@ const statusInfo = computed(() => {
             {{ $t('transaction.payee') }}
           </q-item-section>
           <q-item-section avatar>
-            {{
-              detail?.Order_StatusID === MasterTypeNum.Sell
-                ? detail?.P2?.split('|')?.[0]
-                : detail?.P5?.split('|')?.[0]
-            }}
+            {{ detail?.P2?.split('|')?.[0] }}
           </q-item-section>
         </q-item>
         <!-- 付款方名 -->
@@ -148,15 +152,14 @@ const statusInfo = computed(() => {
             {{ $t('transaction.payer') }}
           </q-item-section>
           <q-item-section avatar>
-            {{
-              detail?.Order_StatusID === MasterTypeNum.Sell
-                ? detail?.P5?.split('|')?.[0]
-                : detail?.P2?.split('|')?.[0]
-            }}
+            {{ detail?.P5?.split('|')?.[0] }}
           </q-item-section>
         </q-item>
-        <q-item style="min-height: 32px">
-          <!--銀行名稱 -->
+        <!--銀行名稱 -->
+        <q-item
+          style="min-height: 32px"
+          v-if="useNum['Sell'] === detail?.MasterType"
+        >
           <q-item-section class="text-grey-6 text-caption">
             {{ $t('transaction.bank_name') }}
           </q-item-section>
@@ -164,26 +167,28 @@ const statusInfo = computed(() => {
             {{ detail?.P3 }}
           </q-item-section>
         </q-item>
-        <q-item style="min-height: 32px">
-          <!--所在省市 -->
+        <!--所在省市 -->
+        <q-item
+          style="min-height: 32px"
+          v-if="useNum['Sell'] === detail?.MasterType"
+        >
           <q-item-section class="text-grey-6 text-caption">
-            {{ $t('transaction.city') }}
+            {{ $t('transaction.city') ?? '--' }}
           </q-item-section>
           <q-item-section avatar>
             {{ detail?.P4 }}
           </q-item-section>
         </q-item>
-        <q-item style="min-height: 32px">
-          <!--帳號 -->
+        <!--帳號 -->
+        <q-item
+          style="min-height: 32px"
+          v-if="useNum['Sell'] === detail?.MasterType"
+        >
           <q-item-section class="text-grey-6 text-caption">
             {{ $t('transaction.account_number') }}
           </q-item-section>
           <q-item-section avatar
-            >{{
-              detail?.Order_StatusID === MasterTypeNum.Sell
-                ? detail[AccNum.Account]
-                : detail?.P5?.split('|')?.[0]
-            }}
+            >{{ detail?.[AccNum.Account] }}
           </q-item-section>
         </q-item>
         <!--完成時間 -->

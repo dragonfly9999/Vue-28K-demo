@@ -38,12 +38,12 @@ onMounted(() => {
     </div>
   </div>
 
-  <div class="text-center justify-center q-pa-md col-auto q-gutter-md">
+  <div class="text-center justify-center q-pa-md col-auto">
     <!--返回主頁 -->
     <q-btn
       rounded
       unelevated
-      class="full-width"
+      class="full-width q-mb-sm"
       color="blue-13"
       :label="t('label.back_front_page')"
       @click="() => router.push({ name: 'dashboard' })"
@@ -51,6 +51,7 @@ onMounted(() => {
     <!-- 交易明細-->
     <q-btn
       flat
+      rounded
       color="blue-13"
       class="full-width"
       :label="t('transaction.transaction_details')"

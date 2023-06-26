@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { thousandTool, numberTool } from 'src/utils/NumberTool';
+import { numberTool } from 'src/utils/NumberTool';
 import { addressOptions } from '../data';
 import { useI18n } from 'vue-i18n';
 import { ref } from 'vue';
 import { useStorage } from 'vue3-storage';
 import { useTransTrc } from '../api/useTransTrc';
 import { useTransErc } from '../api/useTransErc';
-import { useRouter } from 'vue-router';
 import { useStateStore } from 'src/stores';
 const emits = defineEmits(['success']);
 const props = defineProps<{
@@ -18,7 +17,6 @@ const props = defineProps<{
 }>();
 //
 const { t } = useI18n();
-const router = useRouter();
 const { updateState } = useStateStore();
 const onSuccess = () => {
   updateState();
@@ -112,7 +110,7 @@ const handleVerifyPassword = () => {
           </q-item-section>
         </q-item>
         <!-- 地址備註 -->
-        <q-item>
+        <q-item v-if="useStorage().getStorageSync('isAgent')">
           <q-item-section class="text-grey-6">
             {{ $t('transfer.check.remark') }}
           </q-item-section>
@@ -130,7 +128,7 @@ const handleVerifyPassword = () => {
           </q-item-section>
         </q-item>
         <!-- 手續費 -->
-        <q-item>
+        <!-- <q-item>
           <q-item-section class="text-grey-6">
             {{ $t('transfer.check.premium') }}
           </q-item-section>
@@ -139,7 +137,7 @@ const handleVerifyPassword = () => {
           </q-item-section>
         </q-item>
         <q-separator />
-        <!-- 預計到帳 -->
+        預計到帳
         <q-item>
           <q-item-section class="text-grey-6">
             {{ $t('transfer.check.expect') }}
@@ -149,7 +147,7 @@ const handleVerifyPassword = () => {
               thousandTool(numberTool(transAmt) - numberTool(premium), 'USDT')
             }}
           </q-item-section>
-        </q-item>
+        </q-item> -->
         <!-- 輸入密碼 -->
         <q-item>
           <q-item-section class="text-grey-6">

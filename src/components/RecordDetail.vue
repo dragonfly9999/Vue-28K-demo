@@ -110,7 +110,7 @@ const statusInfo = computed(() => {
           return t('label.undefined');
       }
     default:
-      return t('label.undefined');
+      return t('transaction.complete');
   }
 });
 </script>
@@ -198,11 +198,7 @@ const statusInfo = computed(() => {
             {{ $t('transaction.payee') }}
           </q-item-section>
           <q-item-section avatar>
-            {{
-              record?.MasterType === MasterTypeNum.Sell
-                ? record?.P2
-                : record?.P5?.split('|')?.[0]
-            }}
+            {{ record?.P2 }}
           </q-item-section>
         </q-item>
         <!-- 付款方名 -->
@@ -299,7 +295,7 @@ const statusInfo = computed(() => {
       <!--交易對話紀錄btn -->
       <div
         class="flex justify-center"
-        v-if="record?.MasterType < 3 && 'Balance' in record"
+        v-if="record?.MasterType < 2 && 'Balance' in record"
       >
         <q-btn
           flat
@@ -310,6 +306,7 @@ const statusInfo = computed(() => {
       </div>
       <div class="flex justify-center" v-else>
         <q-btn
+          v-if="record.MasterType < 2"
           @click="
             () =>
               $router.push({
