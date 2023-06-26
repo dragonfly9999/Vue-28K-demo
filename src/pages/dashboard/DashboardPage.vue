@@ -19,6 +19,8 @@ onMounted(() => {
   if (!isAgent.value) {
     hint.value = false;
     tab.value = '3';
+  } else {
+    hint.value = true;d
   }
 });
 </script>
