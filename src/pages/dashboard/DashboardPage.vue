@@ -20,7 +20,7 @@ onMounted(() => {
     hint.value = false;
     tab.value = '3';
   } else {
-    hint.value = true;d
+    hint.value = true;
   }
 });
 </script>
