@@ -75,7 +75,7 @@ import { useStorage } from 'vue3-storage';
 import { useKeyStore } from 'src/stores/key';
 
 //
-const { getBalance, getBalanceLoad } = useStateStore();
+const { getBalance, getBalanceLoad, refreshBalance } = useStateStore();
 const { handleRemove, handelSet } = useKeyStore();
 const { hint } = toRefs(useThirdStore());
 const { setOnMessage, setOrders } = useLiveStore();
@@ -107,6 +107,8 @@ const handleResetSound = () => {
 onMounted(() => {
   const login_session = useStorage().getStorageSync('login_session');
   setOrders(login_session);
+  refreshBalance();
+
   // sound
   setOnMessage({
     type: 'instant',
@@ -164,6 +166,7 @@ onMounted(() => {
       }, 100);
     },
   });
+  // keyboard
   handelSet();
 });
 onBeforeUnmount(() => {

@@ -5,7 +5,7 @@ import messageSound from 'src/assets/sound/message2.mp3';
 import { useStorage } from 'vue3-storage';
 
 export const useThirdStore = defineStore('third', () => {
-  const hint = ref(import.meta.env.DEV ? false : true);
+  const hint = ref(true);
   const unReadCount = ref<{ [key: string]: number }>({});
   const chatListObj = ref<{ [key: string]: Array<ChatRes> }>({});
   const webSockets = ref<{ [key: string]: WebSocketClient }>({});

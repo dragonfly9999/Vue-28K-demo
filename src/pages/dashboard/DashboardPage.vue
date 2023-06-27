@@ -9,6 +9,7 @@ import { useStorage } from 'vue3-storage';
 import PendingOrders from './components/PendingOrders.vue';
 
 const { hint } = toRefs(useThirdStore());
+const { refreshBalance } = useStateStore();
 const { getOrders } = useLiveStore();
 const { getAuto, getAutoLoad, updateAuto } = useStateStore();
 const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
@@ -16,11 +17,15 @@ const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
 const tab = ref('1');
 //
 onMounted(() => {
+  refreshBalance();
   if (!isAgent.value) {
     hint.value = false;
     tab.value = '3';
   } else {
     hint.value = true;
+  }
+  if (import.meta.env.DEV) {
+    hint.value = false;
   }
 });
 </script>

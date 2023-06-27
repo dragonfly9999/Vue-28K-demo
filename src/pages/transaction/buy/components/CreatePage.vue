@@ -17,8 +17,9 @@ const router = useRouter();
 const { pendingInstant } = usePendingStore();
 const { setOrderWs } = useOrderStore();
 const { setWebSockets } = useThirdStore();
-const { run: create } = useBuy1({
+const { run: create, loading } = useBuy1({
   onSuccess: (res) => {
+    pairWarn.value = false;
     const token = res?.data.order_token;
     pairWarn.value = false;
     pendingInstant.refresh();
@@ -274,6 +275,7 @@ const flag = new URL(`../../../../assets/${currency}.png`, import.meta.url)
       v-model="pairWarn"
     >
       <CreateWarn
+        :loading="loading"
         @confirm="
           () => {
             const UsdtAmt = numberTool(form.UsdtAmt).toString();

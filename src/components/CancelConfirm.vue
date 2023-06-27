@@ -1,8 +1,14 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { useCancel } from './api';
+import { usePendingStore } from 'src/stores';
 const { t } = useI18n();
-const { run: cancel } = useCancel();
+const { refresh } = usePendingStore().pendingInstant;
+const { run: cancel } = useCancel({
+  onSuccess: () => {
+    refresh();
+  },
+});
 defineProps<{ token: string }>();
 //
 </script>

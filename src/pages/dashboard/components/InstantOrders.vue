@@ -2,22 +2,23 @@
 import dayjs from 'dayjs';
 import OrderItem from 'src/components/OrderItem.vue';
 import { useLiveStore } from 'src/stores';
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-const { getOrders } = useLiveStore();
 const { t } = useI18n();
+const orders = computed(() => useLiveStore().getOrders('instant'));
 </script>
 <template>
   <q-list>
     <OrderItem
-      v-for="(order, index) in getOrders('instant')?.sort((a, b) =>
+      v-for="(order, index) in orders?.sort((a, b) =>
         dayjs(b.CreateDate).isAfter(a.CreateDate) ? 1 : 0
       )"
       :key="index"
       :order="order"
       :is-instant="true"
     />
-    <q-item v-if="getOrders('instant').length === 0">
+    <q-item v-if="orders?.length === 0">
       <div
         class="q-pa-md text-capitalize text-weight-medium text-caption text-blue-14"
       >

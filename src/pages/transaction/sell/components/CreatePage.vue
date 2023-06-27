@@ -13,8 +13,9 @@ const { getBalance, getRates, currency, getBalanceLoad, getRatesLoad } =
 const isTest = import.meta.env.DEV;
 const router = useRouter();
 const { pendingInstant } = usePendingStore();
-const { run: create } = useSell1({
+const { run: create, loading } = useSell1({
   onSuccess: (res) => {
+    createWarn.value = false;
     const token = res?.data.order_token;
     pendingInstant.refresh();
     useStateStore().refreshBalance();
@@ -328,6 +329,7 @@ const flag = new URL(`../../../../assets/${currency}.png`, import.meta.url)
       v-model="createWarn"
     >
       <CreateWarn
+        :loading="loading"
         @confirm="
           () => {
             const UsdtAmt = numberTool(form.UsdtAmt);

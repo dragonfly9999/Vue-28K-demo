@@ -9,15 +9,20 @@ import CancelSuccess from './components/CancelSuccess.vue';
 import { useOrderStore, useThirdStore } from 'src/stores';
 import { computed } from 'vue';
 import TimeOut from './components/TimeOut.vue';
+import { useQuasar } from 'quasar';
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
+const q = useQuasar();
 const route = useRoute();
 const { setWebSockets, removeChat } = useThirdStore();
 const { setOrderWs, getStatus, removeOrder } = useOrderStore();
 const token = computed(() => route.query?.token as string);
 const orderStatus = computed(() => getStatus(token.value));
 const watchTest = ref();
+
 //
 onMounted(() => {
-  // 清除多餘的交易
+  // 清除多餘
   if (token.value) {
     const tokens = removeOrder();
     tokens?.forEach((token) => token && removeChat(token));
@@ -29,6 +34,13 @@ watch(
     if (newValue) {
       setWebSockets(newValue);
       setOrderWs(newValue);
+      // 等待連接
+      q.loading.show({
+        message: t('連線中'),
+      });
+      setTimeout(() => {
+        q.loading.hide();
+      }, 600);
     }
   },
   { immediate: true }

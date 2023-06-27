@@ -133,7 +133,7 @@ const OrderStatus = (order: PendingOrder) => {
         <!-- 狀態  Order_StatusID: 32=> 等待配對中, 33 => 等待付款, 34 => 等待確認中, 35 => 申訴,-->
         <div class="q-gutter-sm">
           <div class="q-gutter-sm column items-end justify-end">
-            <q-badge :label="$t('訊息:') + ' ' + getCount(order?.token)" />
+            <q-badge :label="$t('訊息') + ': ' + getCount(order?.token)" />
             <q-badge
               transparent
               rounded

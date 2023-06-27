@@ -4,6 +4,7 @@ import I18nBtn from 'src/components/I18nBtn.vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
+
 </script>
 <template>
   <q-layout view="hHh lpr fff">

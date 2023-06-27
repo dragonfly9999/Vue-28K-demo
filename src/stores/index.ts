@@ -1,4 +1,3 @@
-import { usePendingStore } from './pending';
 import { store } from 'quasar/wrappers';
 import { createPinia } from 'pinia';
 import { Router } from 'vue-router';

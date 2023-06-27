@@ -30,13 +30,13 @@ const router = useRouter();
 const storage = useStorage();
 const { setOrderWs } = useOrderStore();
 const { setWebSockets, getCount, handleResetCount } = useThirdStore();
-const { run: matchBuy } = useBuyMatch({
+const { run: matchBuy, loading: loadingBuy } = useBuyMatch({
   onTriger: () => {
     setWebSockets(props.order.token);
     setOrderWs(props.order.token);
   },
 });
-const { run: matchSell } = useSellMatch({
+const { run: matchSell, loading: loadingSell } = useSellMatch({
   onSuccess: () => {
     setWebSockets(props.order.token);
     setOrderWs(props.order.token);
@@ -52,43 +52,6 @@ const orderInfo = computed(() => {
     default: {
       return { label: t('label.undefined'), color: 'purple' };
     }
-  }
-});
-
-const OrderStatus = computed(() => {
-  switch (Number(props.order.MType)) {
-    case MtTypeNum.Buy:
-      switch (props.order?.Order_StatusID) {
-        case OrderStatusNum.Matching:
-          return t('transaction.pairing');
-        case OrderStatusNum.Assigned:
-          return t('transaction.payment_required');
-        case OrderStatusNum.Committed:
-          return t('transaction.inProgress');
-        case OrderStatusNum.Appeal:
-          return t('transaction.appeal');
-        case OrderStatusNum.Complete:
-          return t('transaction.complete');
-        default:
-          return t('transaction.pairing');
-      }
-    case MtTypeNum.Sell:
-      switch (props.order?.Order_StatusID) {
-        case OrderStatusNum.Matching:
-          return t('transaction.pairing');
-        case OrderStatusNum.Assigned:
-          return t('transaction.opponent_preparing');
-        case OrderStatusNum.Committed:
-          return t('transaction.need_confirm_payment');
-        case OrderStatusNum.Appeal:
-          return t('transaction.appeal');
-        case OrderStatusNum.Complete:
-          return t('transaction.complete');
-        default:
-          return t('transaction.pairing');
-      }
-    default:
-      return t('label.undefined');
   }
 });
 
@@ -214,13 +177,14 @@ const handleCopy = (value: string) => {
         <div class="q-gutter-sm">
           <div class="q-gutter-sm column items-end justify-end">
             <q-badge
-              :label="$t('訊息:') + ' ' + getCount(order.token)"
+              :label="$t('訊息') + ': ' + getCount(order.token)"
               v-if="!isInstant"
             />
             <status-master :order="order" />
           </div>
           <div v-if="isInstant">
             <q-btn
+              :loading="loadingBuy || loadingSell"
               @click="handleMatch"
               rounded
               unelevated

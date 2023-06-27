@@ -4,7 +4,8 @@ import { requestProvider } from 'src/utils/requestProvider';
 export const useBalance = () => {
   return requestProvider<BalanceRes>({
     reqFn: () => axiosProvider.get('/ChkBalance.aspx'),
-    isManual: false,
+    isManual: true,
+    noFeedback: true,
     config: {
       cacheKey: 'balance',
       pollingInterval: 1000 * 10 * 60,

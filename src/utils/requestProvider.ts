@@ -14,6 +14,7 @@ type ProviderProps<DATA, Params = unknown> = {
   onSuccess?: (args?: VirgilRes<DATA>) => void;
   onAfter?: (args?: Params[]) => void;
   onError?: () => void;
+  noFeedback?: boolean;
 };
 
 export const requestProvider = <DATA, Params = unknown>({
@@ -23,6 +24,7 @@ export const requestProvider = <DATA, Params = unknown>({
   onSuccess,
   onError,
   onAfter,
+  noFeedback,
 }: ProviderProps<DATA, Params>) => {
   const { t } = useI18n();
   const requestInstance = useRequest(reqFn, {
@@ -53,7 +55,7 @@ export const requestProvider = <DATA, Params = unknown>({
       if (onError) onError();
     },
     onSuccess: (res) => {
-      if (isManual) {
+      if (isManual && !noFeedback) {
         Notify.create({
           type: 'positive',
           message: t('success'),

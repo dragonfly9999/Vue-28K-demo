@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { thousandTool } from 'src/utils/NumberTool';
-import { maskString } from 'src/utils/TimeMaster';
 import { useI18n } from 'vue-i18n';
-import { useStorage } from 'vue3-storage';
 defineProps<{ order: OrderStatus | undefined }>();
 const emit = defineEmits(['upload', 'skip']);
 

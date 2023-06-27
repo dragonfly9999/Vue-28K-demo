@@ -1,4 +1,5 @@
 <script setup lang="ts">
+defineProps<{ loading: boolean }>();
 const emits = defineEmits(['confirm']);
 </script>
 <template>

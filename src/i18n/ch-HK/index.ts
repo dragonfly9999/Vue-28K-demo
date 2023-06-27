@@ -3,6 +3,7 @@ import { MasterTypeNum } from 'src/utils/NumberTool';
 
 export default {
   name: '中文',
+  訊息: '訊息',
   locale: 'ch-HK',
   label: {
     login: '登入',
