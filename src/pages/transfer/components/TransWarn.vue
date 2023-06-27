@@ -22,8 +22,8 @@ const onSuccess = () => {
   updateState();
   emits('success');
 };
-const { run: transTrc } = useTransTrc({ onSuccess });
-const { run: transErc } = useTransErc({ onSuccess });
+const { run: transTrc, loading: loadingTransTrc } = useTransTrc({ onSuccess });
+const { run: transErc, loading: loadingTransErc } = useTransErc({ onSuccess });
 // DOM
 const password = ref();
 const isPassword = ref(true);
@@ -183,6 +183,7 @@ const handleVerifyPassword = () => {
         <q-btn outline color="blue-13" :label="t('btn.cancel')" v-close-popup />
         <!-- 確認轉出btn -->
         <q-btn
+          :loading="loadingTransErc || loadingTransTrc"
           :disable="!password?.length"
           unelevated
           color="blue-13"

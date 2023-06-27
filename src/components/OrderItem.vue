@@ -5,7 +5,7 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { useStorage } from 'vue3-storage';
 import dayjs from 'dayjs';
-import { MtTypeNum, OrderStatusNum } from 'src/stores/live';
+import { MtTypeNum } from 'src/stores/live';
 import { useBuyMatch, useSellMatch } from './api';
 import {
   useKeyStore,

@@ -7,7 +7,7 @@ import { thousandTool } from 'src/utils/NumberTool';
 import { useCancel } from 'src/components/api';
 defineProps<{ orderStatus: OrderStatus | undefined }>();
 
-const { run: cancel } = useCancel();
+const { run: cancel, loading } = useCancel();
 const { currency } = useStateStore();
 const route = useRoute();
 //
@@ -71,6 +71,7 @@ const token = computed(() => route?.query?.token as string);
         />
         <!-- 確認btn -->
         <q-btn
+          :loading="loading"
           @click="
             () =>
               cancel({

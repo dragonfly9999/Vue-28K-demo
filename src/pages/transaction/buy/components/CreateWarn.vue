@@ -24,6 +24,7 @@ const emits = defineEmits(['confirm']);
       <q-btn v-close-popup outline color="blue-13" :label="$t('label.back')" />
       <!-- 確認btn -->
       <q-btn
+        :loading="loading"
         unelevated
         color="blue-13"
         :label="$t('label.confirm')"
