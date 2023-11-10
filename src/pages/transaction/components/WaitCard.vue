@@ -15,7 +15,7 @@ const cancelConfirm = ref(false);
 const token = computed(() => route?.query?.token as string);
 </script>
 <template>
-  <div align="center" class="q-pa-md q-gutter-y-lg" style="width: 360px">
+  <q-card align="center" class="width600 q-gutter-y-lg">
     <div class="q-gutter-y-md">
       <q-spinner-ball color="primary" size="4em" />
       <div class="text-h5 text-primary text-weight-bold">
@@ -27,7 +27,6 @@ const token = computed(() => route?.query?.token as string);
       <div class="text-center text-subtitle2 text-grey-5">
         {{ useRoute().name === 'buy' ? $t('購買USDT') : $t('出售USDT') }}
       </div>
-      <q-separator />
       <table>
         <tr>
           <td>{{ $t('數量') }}</td>
@@ -38,8 +37,8 @@ const token = computed(() => route?.query?.token as string);
           <td>{{ thousandTool(orderStatus?.D2, 'CNY') }}{{ currency }}</td>
         </tr>
       </table>
-      <q-separator />
     </div>
+    <q-separator inset />
     <!-- 取消訂單btn -->
     <q-btn
       @click="() => (cancelConfirm = true)"
@@ -48,7 +47,7 @@ const token = computed(() => route?.query?.token as string);
       color="red"
       :label="$t('取消訂單')"
     />
-  </div>
+  </q-card>
 
   <q-dialog v-model="cancelConfirm"
     ><q-card class="q-pa-md q-gutter-y-sm" style="width: 360px">

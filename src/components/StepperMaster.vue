@@ -3,7 +3,9 @@ import { OrderStatusNum } from 'src/stores/live';
 import { MasterTypeNum } from 'src/utils/NumberTool';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useStorage } from 'vue3-storage';
 const props = defineProps<{ order?: OrderStatus }>();
+const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
 
 const { t } = useI18n();
 const stepFormat = computed(() => {
@@ -16,8 +18,13 @@ const stepFormat = computed(() => {
       return 3;
     case OrderStatusNum.Complete:
       return 4;
-    case OrderStatusNum.Appeal:
-      return 2;
+    case OrderStatusNum.Appeal: {
+      if (isAgent.value) {
+        return props.order.MasterType === MasterTypeNum.Buy ? 3 : 2;
+      } else {
+        return props.order.MasterType === MasterTypeNum.Buy ? 2 : 3;
+      }
+    }
     default:
       return 0;
   }
@@ -25,14 +32,18 @@ const stepFormat = computed(() => {
 </script>
 <template>
   <q-stepper
-    v-if="order?.MasterType === MasterTypeNum.Buy"
+    v-if="
+      isAgent
+        ? order?.MasterType === MasterTypeNum.Buy
+        : order?.MasterType === MasterTypeNum.Sell
+    "
     :model-value="stepFormat"
     contracted
     color="blue-13"
     animated
-    class="no-shadow q-mb-md"
-    bordered
-    style="border-bottom-left-radius: 30px; width: 100%; min-width: 33vw"
+    class="q-mb-md no-shadow"
+    header-class="no-border"
+    style="border-bottom-left-radius: 30px; border-bottom: 1px solid #f0f0f0"
   >
     <q-step :name="1" prefix="1" title="步驟一" :done="stepFormat > 1">
       <div class="text-h6 text-weight-bold">
@@ -77,9 +88,9 @@ const stepFormat = computed(() => {
     contracted
     color="blue-13"
     animated
-    class="no-shadow q-mb-md"
-    bordered
-    style="border-bottom-left-radius: 30px"
+    class="q-mb-md no-shadow"
+    style="border-bottom-left-radius: 30px; border-bottom: 1px solid #f0f0f0"
+    header-class="no-border"
   >
     <q-step :name="1" prefix="1" title="步驟一" :done="stepFormat > 1">
       <!-- 步驟title 提交訂單 -->

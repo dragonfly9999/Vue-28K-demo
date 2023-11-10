@@ -22,7 +22,8 @@ const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
     color="blue-13"
     :label="t('label.inProgress')"
     style="width: fit-content"
-    class="lt-xs q-px-sm"
+    class="q-px-sm"
+    padding="5px 20px"
     :disable="
       !(
         getOrders('progress').length !== 0 ||

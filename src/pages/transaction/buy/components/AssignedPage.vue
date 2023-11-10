@@ -14,6 +14,8 @@ import { handleBoforeUpload } from 'src/utils/ImageManager';
 import { useThirdStore } from 'src/stores';
 import PunctuationMaster from 'src/components/PunctuationMaster.vue';
 import { useStorage } from 'vue3-storage';
+import CopyButton from 'src/components/CopyButton.vue';
+
 defineProps<{ order?: OrderStatus }>();
 //
 const route = useRoute();
@@ -64,118 +66,145 @@ onBeforeUnmount(() => {
 });
 </script>
 <template>
-  <!-- 步驟 -->
-  <div class="full-width col-auto">
+  <q-card class="full-width no-border no-shadow">
+    <!-- 步驟 -->
     <StepperMaster :order="order" />
-  </div>
-
-  <div class="col-auto justify-center full-width column q-pa-sm">
-    <!-- 購買資訊 Header -->
-    <div class="flex no-wrap items-start justify-between q-my-md">
-      <!--購買USDT  -->
-      <div style="min-width: fit-content" class="q-mr-xl">
+    <div class="q-px-lg q-pb-md">
+      <!-- 購買資訊 Header -->
+      <div class="text-overline">
         {{ t('buy.buy_usdt') }}
       </div>
-      <!-- 訂單號 -->
-      <PunctuationMaster :label="order?.Tx_HASH" />
-    </div>
-
-    <!-- 購買資訊 Body -->
-    <PriceInfo :order="order" />
-    <div class="flex items-start text-grey-8 q-mb-lg no-wrap">
-      <q-icon name="error_outline" color="orange-9" size="xs" class="q-mr-sm" />
-      <!-- 為確保交易雙方帳戶安全請於交易對話窗上傳 -->
-      <div>
-        {{ t('warn.hint_cny_6') }}
-        <!-- 【24小時內銀行流水帳截圖】 -->
-        <span class="text-weight-bold">【{{ t('warn.hint_cny_8') }}】。</span>
-        <!-- 提供後，交易方將提供完整轉帳資料 -->
-        {{ t('warn.hint_cny_7') }}
-      </div>
-    </div>
-
-    <!-- 轉帳資訊 Header -->
-    <div class="flex justify-between">
-      <div class="text-h6 text-weight-bold q-mx-sm text-blue-13">
-        <!-- 轉帳資料 -->
-        {{ t('buy.transfer_info') }}
-      </div>
-      <div class="flex items-center">
-        <!-- 付款時間 -->
-        <q-icon name="schedule" color="blue-13" />
-        <div class="text-caption">
-          {{ t('transaction.payment_time') }}:
-          {{
-            getLeaseTime(order?.CreateDate, (order?.DeltaTime ?? 0) + deltaTime)
-          }}
+      <!-- 購買資訊 Body -->
+      <PriceInfo :order="order" />
+      <div class="flex items-start text-grey-8 q-my-md no-wrap">
+        <q-icon
+          name="error_outline"
+          color="orange-9"
+          size="xs"
+          class="q-mr-sm"
+        />
+        <!-- 為確保交易雙方帳戶安全請於交易對話窗上傳 -->
+        <div>
+          {{ t('warn.hint_cny_6') }}
+          <!-- 【24小時內銀行流水帳截圖】 -->
+          <span class="text-weight-bold">【{{ t('warn.hint_cny_8') }}】。</span>
+          <!-- 提供後，交易方將提供完整轉帳資料 -->
+          {{ t('warn.hint_cny_7') }}
         </div>
       </div>
-    </div>
-    <!-- 轉帳資訊 Body -->
-    <div class="mycolor1 q-pa-sm info td">
-      <table class="q-pa-xs">
-        <tr
-          v-for="(information, index) in [
-            {
-              title: t('buy.bankInformation.amount'),
-              content: thousandTool(order?.D2, 'CNY'),
-            },
-            {
-              title: t('transaction.payee'),
-              content: order?.P2,
-            },
-            {
-              title: t('transaction.account_number'),
-              content: order?.P1,
-            },
-            {
-              title: t(`transaction.bank_name`),
-              content: order?.P3,
-            },
-            {
-              title: t(`transaction.code.${order?.Currency}`),
-              content: order?.P4,
-            },
-          ]"
-          :key="index"
-        >
-          <td class="text-body1 text-grey-8">{{ information.title }}:</td>
-          <td class="text-body1 text-weight-bold text-dark">
-            {{ information.content }}
-          </td>
-        </tr>
-      </table>
-    </div>
-  </div>
 
-  <div class="full-width col-auto column justify-center">
-    <div class="text-center q-mt-md q-gutter-y-md row">
-      <!--已完成付款btn  -->
-      <q-btn
-        class="full-width"
-        rounded
-        unelevated
-        color="blue-13"
-        :label="
-          order?.Order_StatusID === OrderStatusNum.Appeal
-            ? t('transaction.appeal')
-            : t('transaction.payment_completed')
-        "
-        :disable="order?.Order_StatusID === OrderStatusNum.Appeal"
-        @click="() => (visible.payWarn = true)"
-      />
-      <!-- 取消訂單 -->
-      <q-btn
-        flat
-        class="full-width"
-        color="blue-13"
-        v-close-popup
-        :label="t('transaction.deal_canceled')"
-        @click="() => (visible.cancelWarn = true)"
-      />
-    </div>
-  </div>
+      <!-- 轉帳資訊 Header -->
+      <div class="flex justify-between">
+        <div class="text-h6 text-weight-bold q-mx-sm text-blue-13">
+          <!-- 轉帳資料 -->
+          {{ t('buy.transfer_info') }}
+        </div>
+        <div class="flex items-center q-gutter-x-xs">
+          <!-- 付款時間 -->
+          <q-icon name="schedule" />
+          <div class="text-caption">
+            {{ t('transaction.payment_time') }}:
+            <span class="text-orange-9">
+              {{
+                order?.Order_StatusID !== OrderStatusNum.Appeal
+                  ? getLeaseTime(
+                      order?.CreateDate,
+                      (order?.DeltaTime ?? 0) + deltaTime
+                    )
+                  : '--'
+              }}
+            </span>
+          </div>
+        </div>
+      </div>
+      <!-- 轉帳資訊 Body -->
+      <div class="mycolor1 q-pa-sm info td">
+        <table class="q-pa-xs">
+          <tr
+            v-for="(information, index) in [
+              {
+                title: t('buy.bankInformation.amount'),
+                content: thousandTool(order?.D2, 'CNY'),
+              },
+              {
+                title: t('transaction.payee'),
+                content: order?.P2,
+              },
+              {
+                title: t('transaction.account_number'),
+                content: order?.P1,
+              },
+              {
+                title: t(`transaction.bank_name`),
+                content: order?.P3,
+              },
+              {
+                title: t(`transaction.code.${order?.Currency}`),
+                content: order?.P4 ? order?.P4 : '--',
+              },
+            ]"
+            :key="index"
+          >
+            <td class="text-body1 text-grey-7">{{ information.title }}:</td>
+            <td class="text-body1 text-weight-bold text-dark">
+              {{ information.content }}
+            </td>
+            <CopyButton :value="information.content" />
+          </tr>
+        </table>
+      </div>
 
+      <div class="text-h6 text-weight-bold q-mx-sm text-blue-13">
+        {{ t('transaction.payer') }}
+      </div>
+      <div class="mycolor1 q-pa-sm info td">
+        <table class="q-pa-xs">
+          <tr
+            v-for="(information, index) in [
+              {
+                title: t('sell.payer_account_name'),
+                content: order?.P5?.split('|')?.[0],
+              },
+            ]"
+            :key="index"
+          >
+            <td class="text-body1 text-grey-7">{{ information.title }}:</td>
+            <td class="text-body1 text-weight-bold text-dark">
+              {{ information.content }}
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <PunctuationMaster :label="order?.Tx_HASH" />
+
+      <div class="q-gutter-y-md">
+        <!--已完成付款btn  -->
+        <q-btn
+          class="full-width"
+          rounded
+          unelevated
+          color="blue-13"
+          :label="
+            order?.Order_StatusID === OrderStatusNum.Appeal
+              ? t('transaction.appeal')
+              : t('transaction.payment_completed')
+          "
+          :disable="order?.Order_StatusID === OrderStatusNum.Appeal"
+          @click="() => (visible.payWarn = true)"
+        />
+        <!-- 取消訂單 -->
+        <q-btn
+          flat
+          class="full-width"
+          color="blue-13"
+          v-close-popup
+          :label="t('transaction.deal_canceled')"
+          @click="() => (visible.cancelWarn = true)"
+        />
+      </div>
+    </div>
+  </q-card>
   <!-- PayMent Confirm -->
   <q-dialog
     trnasition-show="fade"

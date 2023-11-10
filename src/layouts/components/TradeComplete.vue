@@ -19,45 +19,43 @@ onMounted(() => {
 });
 </script>
 <template>
-  <div class="col-auto">
+  <q-card class="width600 ">
     <StepperMaster :order="order" />
-  </div>
 
-  <div class="text-center col-auto column items-center justify-center">
-    <q-icon class="material-icons text-blue-13 text-h1"
-      >check_circle_outline</q-icon
-    >
-    <!-- 交易完成 -->
-    <div class="text-h6 text-weight-bold q-mx-sm text-blue-13">
-      {{ t('transaction.transaction_complete') }}
+    <div class="text-center column items-center justify-center">
+      <q-icon class="text-blue-13 text-h1" name="check_circle_outline" />
+      <!-- 交易完成 -->
+      <div class="text-h6 text-weight-bold q-mx-sm text-blue-13">
+        {{ t('transaction.transaction_complete') }}
+      </div>
+      <!-- 訂單號 -->
+      <div class="q-ma-sm text-body-1 text-grey-8  items-center">
+        Tx Hash：
+        <PunctuationMaster color="black" :label="order?.Tx_HASH" />
+      </div>
     </div>
-    <!-- 訂單號 -->
-    <div class="q-ma-sm text-body-1 text-grey-8 flex">
-      {{ t('transaction.order_number') }}: &nbsp;
-      <PunctuationMaster color="black" :label="order?.Tx_HASH" />
-    </div>
-  </div>
 
-  <div class="text-center justify-center q-pa-md col-auto">
-    <!--返回主頁 -->
-    <q-btn
-      rounded
-      unelevated
-      class="full-width q-mb-sm"
-      color="blue-13"
-      :label="t('label.back_front_page')"
-      @click="() => router.push({ name: 'dashboard' })"
-    />
-    <!-- 交易明細-->
-    <q-btn
-      flat
-      rounded
-      color="blue-13"
-      class="full-width"
-      :label="t('transaction.transaction_details')"
-      @click="() => (isVisibleDetail = true)"
-    />
-  </div>
+    <div class="text-center justify-center q-pa-md q-gutter-y-md">
+      <!--返回主頁 -->
+      <q-btn
+        rounded
+        unelevated
+        class="full-width q-mb-sm"
+        color="blue-13"
+        :label="t('label.back_front_page')"
+        @click="() => router.push({ name: 'dashboard' })"
+      />
+      <!-- 交易明細-->
+      <q-btn
+        flat
+        rounded
+        color="blue-13"
+        class="full-width"
+        :label="t('transaction.transaction_details')"
+        @click="() => (isVisibleDetail = true)"
+      />
+    </div>
+  </q-card>
 
   <q-dialog v-model="isVisibleDetail">
     <TransactionDetail />

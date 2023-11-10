@@ -29,13 +29,15 @@ defineProps<{ order?: OrderStatus }>();
       </div>
     </div>
     <!-- 總金額 -->
-    <div class="flex items-baseline">
+    <div class="flex items-baseline ">
       <q-separator vertical spaced />
-      <div class="text-blue-13 text-weight-bold q-mr-sm">
-        {{ $t('transaction.total_amount') }}
-      </div>
-      <div class="text-blue-13 text-weight-bold text-h6">
-        {{ thousandTool(order?.D2, 'CNY') + ' ' + order?.Currency }}
+      <div>
+        <div class="text-blue-13 text-caption">
+          {{ $t('transaction.total_amount') }}
+        </div>
+        <div class="text-blue-13 text-weight-bold ">
+          {{ thousandTool(order?.D2, 'CNY') + ' ' + order?.Currency }}
+        </div>
       </div>
     </div>
   </div>

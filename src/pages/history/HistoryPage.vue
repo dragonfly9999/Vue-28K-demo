@@ -6,7 +6,6 @@ import { useExpired, useHistory, useProgress } from './api';
 import DateMasterOne from 'src/components/DateMasterOne.vue';
 import dayjs from 'dayjs';
 import HistoryList from './components/HistoryList.vue';
-import { MasterTypeNum } from 'src/utils/NumberTool';
 
 const { t } = useI18n();
 const router = useRouter();
@@ -39,20 +38,6 @@ const useOrders = computed(() => {
   }
   useOrders = useOrders
     ?.filter((order) => {
-      switch (type.value) {
-        case MasterTypeNum.Buy:
-          return order?.MasterType === MasterTypeNum.Buy;
-        case MasterTypeNum.Sell:
-          return order?.MasterType === MasterTypeNum.Sell;
-        case MasterTypeNum.TransIn:
-          return order?.MasterType === MasterTypeNum.TransIn;
-        case MasterTypeNum.TransOut:
-          return order?.MasterType === MasterTypeNum.TransOut;
-        default:
-          return true;
-      }
-    })
-    .filter((order) => {
       const date = dayjs(order?.Date);
       const from = dayjs(dateRange.from);
       const to = dayjs(dateRange.to);
@@ -74,41 +59,37 @@ const tab = ref('finish');
 const type = ref(5);
 </script>
 <template>
-  <q-card class="q-pt-sm">
-    <div class="row">
-      <div class="col-3">
-        <!-- 返回btn -->
-        <q-btn
-          flat
-          color="blue-13"
-          :label="t('label.back')"
-          @click="() => router.back()"
-        />
+  <q-page class="width900">
+    <q-card class="myshadow q-pt-md">
+      <div class="row">
+        <div class="col-3">
+          <!-- 返回btn -->
+          <q-btn
+            flat
+            color="blue-13"
+            :label="t('label.back')"
+            @click="() => router.back()"
+          />
+        </div>
+        <!-- title交易紀錄 -->
+        <div
+          class="col col-md flex no-wrap justify-center text-h6 text-weight-bold"
+        >
+          {{ $t('transaction_history.title') }}
+        </div>
+        <div class="col-3"></div>
       </div>
-      <!-- title交易紀錄 -->
-      <div
-        class="col col-md flex no-wrap justify-center text-h6 text-weight-bold"
-      >
-        {{ $t('transaction_history.title') }}
-      </div>
-      <div class="col-3"></div>
-    </div>
-    <q-card class="q-pa-sm q-mb-sm myshadow">
-      <div class="row justify-between items-center q-gutter-sm">
-        <DateMasterOne
-          v-model:from="dateRange.from"
-          v-model:to="dateRange.to"
-        />
+      <q-card class="q-pa-sm q-mb-sm">
         <q-tabs
           dense
           rounded-borders
           v-model="tab"
-          indicator-color="transparent"
           active-color="white"
           active-bg-color="blue-13"
           class="text-grey-8 bg-white"
           align="right"
           style="height: 45px"
+          indicator-color="transparent"
         >
           <!-- 完成tab -->
           <q-tab
@@ -138,32 +119,45 @@ const type = ref(5);
             :label="t('transaction_history.label.fail')"
           />
         </q-tabs>
-      </div>
-      <!-- Status Panel -->
-      <q-tab-panels v-model="tab" animated>
-        <q-tab-panel
-          :name="status"
-          v-for="(status, index) in ['finish', 'someProgress', 'fail']"
-          :key="index"
-          class="q-pa-xs"
-        >
-          <HistoryList
-            v-model:type="type"
-            :orders="useOrders?.slice((current - 1) * 5, (current - 1) * 5 + 5)"
-            :loading="loading"
-          />
-        </q-tab-panel>
-      </q-tab-panels>
+        <q-separator class="q-mb-md" />
+        <div class="row">
+          <div class="col-sm-5 col-12">
+            <DateMasterOne
+              v-model:from="dateRange.from"
+              v-model:to="dateRange.to"
+            />
+          </div>
+        </div>
 
-      <!-- 頁碼 -->
-      <q-pagination
-        v-model="current"
-        :max="maxPaination"
-        input
-        class="q-my-md justify-center"
-      />
+        <!-- Status Panel -->
+        <q-tab-panels v-model="tab" animated>
+          <q-tab-panel
+            :name="status"
+            v-for="(status, index) in ['finish', 'someProgress', 'fail']"
+            :key="index"
+            class="q-pa-xs"
+          >
+            <HistoryList
+              v-model:type="type"
+              :orders="
+                useOrders?.slice((current - 1) * 5, (current - 1) * 5 + 5)
+              "
+              :loading="loading"
+              :is-expired="status === 'fail'"
+            />
+          </q-tab-panel>
+        </q-tab-panels>
+
+        <!-- 頁碼 -->
+        <q-pagination
+          v-model="current"
+          :max="maxPaination"
+          input
+          class="q-my-md justify-center"
+        />
+      </q-card>
     </q-card>
-  </q-card>
+  </q-page>
 </template>
 
 <style scoped></style>

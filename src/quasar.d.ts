@@ -16,7 +16,7 @@ interface OrderStatus {
   P1: string; // 銀行帳號
   P2: string; // 姓名
   P3: string; // 銀行名稱
-  P4: string; // 省分
+  P4: string; // 所在省市
   P5: string; // 付款人資訊
   P6: null; // 這啥?
   Tx_HASH: string;
@@ -76,7 +76,7 @@ interface OrderRecord {
   P1: string; // 銀行帳號
   P2: string; // 姓名
   P3: string; // 銀行名稱
-  P4: string; // 省分
+  P4: string; // 所在省市
   P5: string; // 會員資訊
   token: string;
 }

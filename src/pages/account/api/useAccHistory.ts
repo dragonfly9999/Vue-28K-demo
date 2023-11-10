@@ -2,8 +2,8 @@ import { axiosProvider } from 'src/utils/axiosProvider';
 import { requestProvider } from 'src/utils/requestProvider';
 
 export enum AccNum {
-  Account = 'P1',
   Name = 'P2',
+  Account = 'P1',
   BankID = 'P3',
   Branch = 'P4'
 }

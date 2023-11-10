@@ -17,7 +17,7 @@ const { run: set } = useSetAcc({
         router.push({ name: 'account' });
       }
     }, 1000);
-  }
+  },
 });
 // DOM
 const time = ref(5);
@@ -25,11 +25,11 @@ const formData = reactive<Omit<AccRes, 'H_id'>>({
   [AccNum.Account]: '',
   [AccNum.Name]: '',
   [AccNum.BankID]: '',
-  [AccNum.Branch]: ''
+  [AccNum.Branch]: '',
 });
 const visible = reactive({
   warn: false,
-  redirect: false
+  redirect: false,
 });
 //
 onBeforeUnmount(() => {
@@ -37,113 +37,119 @@ onBeforeUnmount(() => {
 });
 </script>
 <template>
-  <q-card class="q-pa-sm q-ma-sm q-mt-md q-mb-xl" style="max-width: 600px">
-    <q-form
-      @submit="
-        () =>
-          set({
-            [AccNum.Account]: formData[AccNum.Account],
-            [AccNum.Name]: formData[AccNum.Name],
-            [AccNum.BankID]: formData[AccNum.BankID],
-            [AccNum.Branch]: formData[AccNum.Branch]
-          })
-      "
-    >
-      <div class="row q-mb-sm items-center">
-        <div class="col-2">
-          <q-btn
-            flat
-            dense
-            color="blue-13"
-            :label="t('label.back')"
-            @click="() => (visible.warn = true)"
-          />
-        </div>
-        <!-- title帳戶驗證 -->
-        <div class="col text-center text-h6 text-weight-bold">
-          {{ $t('label.title_add_account') }}
-          <!-- ()帳戶 -->
-          <div class="text-overline text-blue-13">
-            {{ $t('label.CNY.account') }}{{ $t('label.account') }}
+  <q-page class="width480">
+    <q-card class="q-pa-sm q-ma-sm q-mt-md q-mb-xl">
+      <q-form
+        @submit="
+          () =>
+            set({
+              [AccNum.Account]: formData[AccNum.Account],
+              [AccNum.Name]: formData[AccNum.Name],
+              [AccNum.BankID]: formData[AccNum.BankID],
+              [AccNum.Branch]: formData[AccNum.Branch],
+            })
+        "
+      >
+        <div class="row q-mb-sm items-center">
+          <div class="col-2">
+            <q-btn
+              flat
+              dense
+              color="blue-13"
+              :label="t('label.back')"
+              @click="() => (visible.warn = true)"
+            />
           </div>
-        </div>
-        <div class="col-2 flex justify-end"></div>
-      </div>
-      <q-separator />
-
-      <div class="q-pa-md">
-        <div class="q-gutter-y-lg q-mt-xs">
-          <!-- 填寫銀行資料 -->
-          <div
-            class="q-mt-lg bg-blue-grey-1 q-pa-sm"
-            style="border-bottom-right-radius: 15px"
-          >
-            <div>{{ $t('label.bank_info') }}</div>
-            <div>
-              <!-- hint -->
-              {{ $t('warn.bank_hint') }}
+          <!-- title帳戶驗證 -->
+          <div class="col text-center text-h6 text-weight-bold">
+            {{ $t('label.title_add_account') }}
+            <!-- ()帳戶 -->
+            <div class="text-overline text-blue-13">
+              {{ $t('label.CNY.account') }}
             </div>
           </div>
+          <div class="col-2 flex justify-end"></div>
+        </div>
+        <q-separator />
 
-          <div>
-            <!-- 銀行戶名 -->
-            <div class="q-my-sm">{{ $t(`label.CNY.${AccNum.Name}`) }}</div>
-            <q-input
-              outlined
-              v-model="formData[AccNum.Name]"
-              :rules="[
-                (val) => (val?.length > 0 && !!val) || t('error.simple_input')
-              ]"
-            />
-          </div>
-          <div>
-            <!-- 銀行帳號 -->
-            <div class="q-my-sm">{{ $t(`label.CNY.${AccNum.Account}`) }}</div>
-            <q-input
-              outlined
-              v-model="formData[AccNum.Account]"
-              :rules="[
-                (val) => (val?.length > 0 && !!val) || t('error.simple_input')
-              ]"
-            />
-          </div>
-          <div>
-            <!-- 銀行名稱 -->
-            <div class="q-my-sm">{{ $t(`label.CNY.${AccNum.BankID}`) }}</div>
-            <q-input
-              outlined
-              v-model="formData[AccNum.BankID]"
-              :rules="[
-                (val) => (val?.length > 0 && !!val) || t('error.simple_input')
-              ]"
-            />
-          </div>
-          <div>
-            <!-- 省分 -->
-            <div class="q-my-sm">{{ $t(`label.CNY.${AccNum.Branch}`) }}</div>
-            <q-input
-              outlined
-              v-model="formData[AccNum.Branch]"
-              :rules="[
-                (val) => (val?.length > 0 && !!val) || t('error.simple_input')
-              ]"
-            />
-          </div>
+        <div class="q-pa-md">
+          <div class="q-gutter-y-lg q-mt-xs">
+            <!-- 填寫銀行資料 -->
+            <div
+              class="q-mt-lg bg-blue-grey-1 q-pa-sm"
+              style="border-bottom-right-radius: 15px"
+            >
+              <div>{{ $t('label.bank_info') }}</div>
+              <div>
+                <!-- hint -->
+                {{ $t('warn.bank_hint') }}
+              </div>
+            </div>
 
-          <!-- buttons -->
-          <div class="flex q-gutter-x-md justify-end">
-            <!-- 確認btn -->
-            <q-btn
-              color="blue-13"
-              unelevated
-              :label="t('label.confirm')"
-              type="submit"
-            />
+            <div>
+              <!-- 銀行戶名 -->
+              <div class="q-my-sm">{{ $t(`label.CNY.${AccNum.Name}`) }}</div>
+              <q-input
+                outlined
+                v-model="formData[AccNum.Name]"
+                :rules="[
+                  (val) =>
+                    (val?.length > 0 && !!val) || t('error.simple_input'),
+                ]"
+              />
+            </div>
+            <div>
+              <!-- 銀行帳號 -->
+              <div class="q-my-sm">{{ $t(`label.CNY.${AccNum.Account}`) }}</div>
+              <q-input
+                outlined
+                v-model="formData[AccNum.Account]"
+                :rules="[
+                  (val) =>
+                    (val?.length > 0 && !!val) || t('error.simple_input'),
+                ]"
+              />
+            </div>
+            <div>
+              <!-- 銀行名稱 -->
+              <div class="q-my-sm">{{ $t(`label.CNY.${AccNum.BankID}`) }}</div>
+              <q-input
+                outlined
+                v-model="formData[AccNum.BankID]"
+                :rules="[
+                  (val) =>
+                    (val?.length > 0 && !!val) || t('error.simple_input'),
+                ]"
+              />
+            </div>
+            <div>
+              <!-- 所在省市 -->
+              <div class="q-my-sm">{{ $t(`label.CNY.${AccNum.Branch}`) }}</div>
+              <q-input
+                outlined
+                v-model="formData[AccNum.Branch]"
+                :rules="[
+                  (val) =>
+                    (val?.length > 0 && !!val) || t('error.simple_input'),
+                ]"
+              />
+            </div>
+
+            <!-- buttons -->
+            <div class="flex q-gutter-x-md justify-end">
+              <!-- 確認btn -->
+              <q-btn
+                color="blue-13"
+                unelevated
+                :label="t('label.confirm')"
+                type="submit"
+              />
+            </div>
           </div>
         </div>
-      </div>
-    </q-form>
-  </q-card>
+      </q-form>
+    </q-card>
+  </q-page>
   <!-- 跳轉前提示 -->
   <q-dialog :model-value="!!timeIntervale" persistent>
     <q-card class="q-pa-lg" align="center" style="width: 360px">

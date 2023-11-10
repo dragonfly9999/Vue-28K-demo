@@ -1,194 +1,205 @@
 <template>
-  <span>
-    <q-btn
-      outline
-      class="q-pa-md"
-      icon-right="search"
-      @click="visible.datePanel = true"
-      padding="3px 10px"
-    >
-      <q-field label="從" stack-label class="cursor-pointer" borderless>
-        <template v-slot:control>
-          <div class="self-center full-width no-outline" tabindex="0">
-            <span>
-              {{ fromDate + ' ' }}
-            </span>
-            <span class="q-mx-sm">
-              {{ fromTime }}
-            </span>
-          </div>
-        </template>
-      </q-field>
-      <q-field label="至" stack-label class="q-mx-lg cursor-pointer" borderless>
-        <template v-slot:control>
-          <div class="self-center full-width no-outline" tabindex="0">
-            <span>
-              {{ toDate + ' ' }}
-            </span>
-            <span class="q-mx-sm">
-              {{ toTime }}
-            </span>
-          </div>
-        </template>
-      </q-field>
-    </q-btn>
-    <q-dialog v-model="visible.datePanel" persistent>
-      <q-card style="width: 60vh">
-        <!-- header -->
-        <q-banner inline-actions style="background-color: #136d28; width: 100%">
-          <q-btn
-            color="primary"
-            class="q-mr-sm"
-            @click="handleToday"
-            :disable="disablePick && focusButton === 'today'"
-            :loading="disablePick && focusButton === 'today'"
-          >
-            今日
-          </q-btn>
-          <q-btn
-            color="primary"
-            class="q-mr-sm"
-            @click="handleToWeek"
-            :disable="disablePick && focusButton === 'week'"
-            :loading="disablePick && focusButton === 'week'"
-          >
-            本週
-          </q-btn>
-          <q-btn
-            color="primary"
-            class="q-mr-sm"
-            @click="handleToMonth"
-            :disable="disablePick && focusButton === 'month'"
-            :loading="disablePick && focusButton === 'month'"
-          >
-            本月
-          </q-btn>
-          <template #action>
-            <q-btn
-              color="info"
-              class="q-mr-sm"
-              outline
-              @click="visible.datePanel = false"
-              :disable="disablePick"
-            >
-              X
-            </q-btn>
+  <q-btn class="q-mb-sm full-width" @click="visible.datePanel = true">
+    <div class="row items-center justify-around q-pa-xs full-width">
+      <div class="col-5">
+        <q-field
+          label="從"
+          stack-label
+          label-color="grey-5"
+          class="cursor-pointer"
+          borderless
+        >
+          <template v-slot:control>
+            <div class="no-outline" tabindex="0">
+              <span>
+                {{ fromDate + ' ' }}
+              </span>
+              <span>
+                {{ fromTime }}
+              </span>
+            </div>
           </template>
-        </q-banner>
-        <!-- body -->
-        <div class="picker-body">
-          <!--  -->
-          <q-btn
-            icon="arrow_back"
-            dense
-            size="large"
-            color="primary"
-            @click="handleDayBefore"
-            :disable="disablePick && focusButton === 'before'"
-            :loading="disablePick && focusButton === 'before'"
-          />
-          <!-- 從 -->
-          <span style="width: 40%" class="q-ml-md">
-            <div>
-              <!-- Day -->
-              <q-field label="從" stack-label class="q-ml-md cursor-pointer">
-                <q-popup-proxy>
-                  <q-date v-model="fromDate" :options="options.fromDate" />
-                </q-popup-proxy>
-                <template v-slot:control>
-                  <div class="self-center full-width no-outline" tabindex="0">
-                    {{ fromDate }}
-                  </div>
-                </template>
-                <template v-slot:append>
-                  <q-icon name="date_range" />
-                </template>
-              </q-field>
-              <!-- Time -->
-              <q-field label="從" stack-label class="q-ml-md cursor-pointer">
-                <q-popup-proxy>
-                  <q-time
-                    v-model="fromTime"
-                    format24h
-                    :minute-options="[0]"
-                    now-btn
-                  />
-                </q-popup-proxy>
-                <template v-slot:control>
-                  <div class="self-center full-width no-outline" tabindex="0">
-                    {{ fromTime }}
-                  </div>
-                </template>
-                <template v-slot:append>
-                  <q-icon name="schedule" />
-                </template>
-              </q-field>
+        </q-field>
+      </div>
+      <div class="col-5">
+        <q-field
+          label="至"
+          stack-label
+          label-color="grey-5"
+          class="cursor-pointer"
+          borderless
+        >
+          <template v-slot:control>
+            <div class="no-outline" tabindex="0">
+              <span>
+                {{ toDate + ' ' }}
+              </span>
+              <span>
+                {{ toTime }}
+              </span>
             </div>
-          </span>
-          <!-- 至 -->
-          <span style="width: 40%" class="q-mr-md">
-            <div>
-              <!-- day -->
-              <q-field label="至" stack-label class="q-ml-md cursor-pointer">
-                <q-popup-proxy>
-                  <q-date v-model="toDate" :options="options.toDate" />
-                </q-popup-proxy>
-                <template v-slot:control>
-                  <div class="self-center full-width no-outline" tabindex="0">
-                    {{ toDate }}
-                  </div>
-                </template>
-                <template v-slot:append>
-                  <q-icon name="date_range" />
-                </template>
-              </q-field>
-              <!-- time -->
-              <q-field label="至" stack-label class="q-ml-md cursor-pointer">
-                <q-popup-proxy>
-                  <q-time
-                    v-model="toTime"
-                    :options="options.toTime"
-                    format24h
-                    now-btn
-                  />
-                </q-popup-proxy>
-                <template v-slot:control>
-                  <div class="self-center full-width no-outline" tabindex="0">
-                    {{ toTime }}
-                  </div>
-                </template>
-                <template v-slot:append>
-                  <q-icon name="schedule" />
-                </template>
-              </q-field>
-            </div>
-          </span>
-          <!-- 後一天 -->
-          <q-btn
-            icon="arrow_forward"
-            color="primary"
-            dense
-            size="large"
-            class="q-ml-md"
-            @click="handleNextDay"
-            :disable="disablePick && focusButton === 'next'"
-            :loading="disablePick && focusButton === 'next'"
-          />
-        </div>
-        <!-- footer -->
-        <div class="picker-body">
-          <q-btn
-            color="primary"
-            padding="5px 20px"
-            v-if="!!props.needSubmit"
-            @click="emit('submit')"
-          >
-            送出
-          </q-btn>
-        </div>
-      </q-card>
-    </q-dialog>
-  </span>
+          </template>
+        </q-field>
+      </div>
+      <div class="col-auto">
+        <q-icon name="search" color="blue-13" />
+      </div>
+    </div>
+  </q-btn>
+  <q-dialog v-model="visible.datePanel" persistent>
+    <q-card style="width: 60vh">
+      <!-- header -->
+      <q-card-section
+        class="row items-center"
+        style="background-color: #242e47"
+      >
+        <q-btn
+          color="blue-13"
+          class="q-mr-sm"
+          @click="handleToday"
+          :disable="disablePick && focusButton === 'today'"
+          :loading="disablePick && focusButton === 'today'"
+        >
+          今日
+        </q-btn>
+        <q-btn
+          color="blue-13"
+          class="q-mr-sm"
+          @click="handleToWeek"
+          :disable="disablePick && focusButton === 'week'"
+          :loading="disablePick && focusButton === 'week'"
+        >
+          本週
+        </q-btn>
+        <q-btn
+          color="blue-13"
+          class="q-mr-sm"
+          @click="handleToMonth"
+          :disable="disablePick && focusButton === 'month'"
+          :loading="disablePick && focusButton === 'month'"
+        >
+          本月
+        </q-btn>
+        <q-space />
+        <q-btn icon="close" color="white" flat round dense v-close-popup />
+      </q-card-section>
+      <!-- body -->
+      <div class="picker-body">
+        <!-- 從 -->
+        <span style="width: 45%" >
+          <div>
+            <!-- Day -->
+            <q-field label="從" stack-label class="q-mr-md cursor-pointer">
+              <q-popup-proxy>
+                <q-date v-model="fromDate" :options="options.fromDate" />
+              </q-popup-proxy>
+              <template v-slot:control>
+                <div class="self-center full-width no-outline" tabindex="0">
+                  {{ fromDate }}
+                </div>
+              </template>
+              <template v-slot:append>
+                <q-icon name="date_range" />
+              </template>
+            </q-field>
+            <!-- Time -->
+            <q-field label="從" stack-label class="q-mr-md cursor-pointer">
+              <q-popup-proxy>
+                <q-time
+                  v-model="fromTime"
+                  format24h
+                  :minute-options="[0]"
+                  now-btn
+                />
+              </q-popup-proxy>
+              <template v-slot:control>
+                <div class="self-center full-width no-outline" tabindex="0">
+                  {{ fromTime }}
+                </div>
+              </template>
+              <template v-slot:append>
+                <q-icon name="schedule" />
+              </template>
+            </q-field>
+          </div>
+        </span>
+        <!-- 至 -->
+        <span style="width: 45%">
+          <div>
+            <!-- day -->
+            <q-field label="至" stack-label class="q-ml-md cursor-pointer">
+              <q-popup-proxy>
+                <q-date v-model="toDate" :options="options.toDate" />
+              </q-popup-proxy>
+              <template v-slot:control>
+                <div class="self-center full-width no-outline" tabindex="0">
+                  {{ toDate }}
+                </div>
+              </template>
+              <template v-slot:append>
+                <q-icon name="date_range" />
+              </template>
+            </q-field>
+            <!-- time -->
+            <q-field label="至" stack-label class="q-ml-md cursor-pointer">
+              <q-popup-proxy>
+                <q-time
+                  v-model="toTime"
+                  :options="options.toTime"
+                  format24h
+                  now-btn
+                />
+              </q-popup-proxy>
+              <template v-slot:control>
+                <div class="self-center full-width no-outline" tabindex="0">
+                  {{ toTime }}
+                </div>
+              </template>
+              <template v-slot:append>
+                <q-icon name="schedule" />
+              </template>
+            </q-field>
+          </div>
+        </span>
+      </div>
+      <!-- footer -->
+      <q-card-actions align="center">
+        <!-- 前一天 -->
+        <q-btn
+          icon="arrow_back"
+          dense
+          size="large"
+          outline
+          color="blue-13"
+          @click="handleDayBefore"
+          :disable="disablePick && focusButton === 'before'"
+          :loading="disablePick && focusButton === 'before'"
+        />
+        <!-- 後一天 -->
+        <q-btn
+          icon="arrow_forward"
+          color="blue-13"
+          dense
+          size="large"
+          outline
+          class="q-ml-md"
+          @click="handleNextDay"
+          :disable="disablePick && focusButton === 'next'"
+          :loading="disablePick && focusButton === 'next'"
+        />
+      </q-card-actions>
+      <div class="picker-body">
+        <q-btn
+          color="blue-13"
+          padding="5px 20px"
+          v-if="!!props.needSubmit"
+          @click="emit('submit')"
+        >
+          送出
+        </q-btn>
+      </div>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script setup lang="ts">
@@ -264,7 +275,7 @@ const fromDate = computed({
   set(newValue) {
     const newFrom = newValue.replaceAll('/', '-') + props.from.slice(-6);
     emit('update:from', newFrom);
-  }
+  },
 });
 const fromTime = computed({
   get() {
@@ -273,7 +284,7 @@ const fromTime = computed({
   set(newValue) {
     const newFrom = props.from.replaceAll('/', '-').slice(0, 11) + newValue;
     emit('update:from', newFrom);
-  }
+  },
 });
 
 //  to
@@ -284,7 +295,7 @@ const toDate = computed({
   set(newValue) {
     const newTo = newValue.replaceAll('/', '-') + props.to.slice(-6);
     emit('update:to', newTo);
-  }
+  },
 });
 const toTime = computed({
   get() {
@@ -293,7 +304,7 @@ const toTime = computed({
   set(newValue) {
     const newTo = props.to.slice(0, 11).replaceAll('/', '-') + newValue;
     emit('update:to', newTo);
-  }
+  },
 });
 
 // set
@@ -301,18 +312,18 @@ const options = computed(() => {
   return {
     fromDate: (date: string) => !!date,
     toDate: (date: string) => date >= fromDate.value,
-    toTime: (hr: number) => Number(fromTime.value.substring(0, 2)) <= hr
+    toTime: (hr: number) => Number(fromTime.value.substring(0, 2)) <= hr,
   };
 });
 const visible = reactive({
-  datePanel: false
+  datePanel: false,
 });
 </script>
 
 <style lang="scss" scoped>
 .picker-body {
   display: flex;
-  padding: 3% 5%;
+  padding: 3% 0;
   justify-content: center;
   align-items: center;
 }

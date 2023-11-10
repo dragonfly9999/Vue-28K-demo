@@ -6,6 +6,7 @@ defineProps<{
   orders: Array<OrderRecord | ExpiredOrder> | undefined;
   loading: boolean;
   type: MasterTypeNum | 5;
+  isExpired: boolean
 }>();
 const emit = defineEmits(['update:type']);
 
@@ -68,7 +69,8 @@ const allType = computed(() => [
         <q-spinner-tail size="2em" color="blue-13" v-if="loading && !orders" />
         <div v-else>
           <div v-for="(order, index) in orders" :key="index">
-            <RecordItem :order="order" />
+            <!-- 亡羊補牢 -->
+            <RecordItem :is-expired="isExpired" :order="order" />
             <q-separator class="q-mt-sm" />
           </div>
         </div>

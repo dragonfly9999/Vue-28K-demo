@@ -50,27 +50,24 @@ const logout = () => {
       <q-space />
 
       <!-- right -->
-      <div class="flex">
+      <div class="flex q-gutter-x-sm">
         <div class="flex items-center">
-          <div class="flex items-center q-mr-md">
-            <q-icon name="account_circle" size="sm" class="q-mr-xs" />
-            <div>
-              <div class="text-caption">{{ $t('label.welcome') }}！</div>
-              <div class="text-caption">
-                {{ storage.getStorageSync('phone') }}
-              </div>
+          <q-icon name="account_circle" size="md" class="q-mr-xs" />
+          <div>
+            <div class="text-caption">{{ $t('label.welcome') }}！</div>
+            <div class="text-caption">
+              {{ storage.getStorageSync('phone') }}
             </div>
           </div>
-          <q-separator vertical dark spaced />
-          <!-- 登出btn -->
-          <q-btn
-            flat
-            class="q-btn:visited"
-            style="text-decoration: none"
-            :label="t('label.logout')"
-            @click="logout"
-          />
         </div>
+        <!-- 登出btn -->
+        <q-btn
+          flat
+          class="q-btn:visited"
+          style="text-decoration: none"
+          :label="t('label.logout')"
+          @click="logout"
+        />
 
         <!-- 語言 & 幫助btn -->
         <div class="q-gutter-x-sm self-center">
@@ -108,7 +105,6 @@ const logout = () => {
     side="right"
     v-model="drawerRight"
     overlay
-    bordered
     :width="320"
     :breakpoint="1440"
     class="bg-grey-3 shadow-24 text-dark"

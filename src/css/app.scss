@@ -1,8 +1,12 @@
 .q-layout {
-  background: linear-gradient(180deg, rgba(173, 181, 190, 0.144) 0%, #f4f9ff 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(173, 181, 190, 0.144) 0%,
+    #f4f9ff 100%
+  );
 }
 
-div.d{
+div.d {
   border: 2px solid black;
   padding: 5px;
 }
@@ -12,9 +16,13 @@ div.d{
   align-items: center;
   height: 100px;
   backdrop-filter: blur(15px);
-  background: linear-gradient(180deg, rgba(169, 224, 248, 0.5) 15.29%, rgba(233, 243, 248, 0.5) 118.6%);
+  background: linear-gradient(
+    180deg,
+    rgba(169, 224, 248, 0.5) 15.29%,
+    rgba(233, 243, 248, 0.5) 118.6%
+  );
 }
-.q-card{
+.q-card {
   box-shadow: 0px 0px 2px rgba(0, 21, 143, 0.2);
 }
 p.hr {
@@ -26,7 +34,7 @@ p.hr {
 .card1 {
   width: 480px;
 }
-.card2{
+.card2 {
   height: 170px;
 }
 
@@ -34,59 +42,75 @@ p.hr {
   width: -webkit-fill-available;
   height: -webkit-fill-available;
 }
-.basemap1{
-  width:-webkit-fill-available;
-  background-color:#F4F9FF ;
+.basemap1 {
+  width: -webkit-fill-available;
+  background-color: #f4f9ff;
   border-radius: 10px;
   padding: 1rem;
 }
-.icon-box{
+.icon-box {
   margin: 0 0.5rem;
 }
 .bg-brand {
-  background: #4E6178;
+  background: #4e6178;
 }
-.mycolor1{
-  background: linear-gradient(270deg, rgba(244, 249, 255, 0) 0%, #F4F9FF 100%);
-
+.mycolor1 {
+  background: linear-gradient(270deg, rgba(244, 249, 255, 0) 0%, #f4f9ff 100%);
 }
-.bg-step{
-  background: linear-gradient(270deg, rgba(244, 249, 255, 0) 0%, #F4F9FF 100%);
+.bg-step {
+  background: linear-gradient(270deg, rgba(244, 249, 255, 0) 0%, #f4f9ff 100%);
 }
-.hr{
-  width:1px;
-  height:30px;
-  display:inline-block;
+.hr {
+  width: 1px;
+  height: 30px;
+  display: inline-block;
   margin: 0 1rem;
 }
-a,a:visited{
+a,
+a:visited {
   color: #b9b9b9;
 }
-a{
- text-decoration:none
+a {
+  text-decoration: none;
 }
 
-
-ul{
+ul {
   list-style: none;
   color: #fff;
 }
-li{
+li {
   color: #b9b9b9;
 }
-.q-item{
+.q-item {
   padding: 0;
-  text-decoration:none;
+  text-decoration: none;
 }
 
-.q-btn:visited{
-  color:#616161;
+.q-btn:visited {
+  color: #616161;
 }
 
-.q-btn{
-  text-decoration:none;
- }
+.q-btn {
+  text-decoration: none;
+}
 
- .myshadow{
+.myshadow {
   box-shadow: 0px 2px 30px 1px rgba(1, 26, 36, 0.1);
+}
+
+.width900 {
+  max-width: 900px;
+  margin: auto;
+  padding:0 0.2rem
+}
+.width480 {
+  max-width: 480px;
+  margin: auto;
+  padding:0 0.2rem
+}
+.width600 {
+  max-width: 600px;
+  margin: auto;
+  padding:1rem
+
 }

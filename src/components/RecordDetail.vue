@@ -5,6 +5,8 @@ import { computed } from 'vue';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
 import { useDetail } from 'src/pages/history/api';
+import { AccNum } from 'src/pages/account/api';
+import CopyButton from './CopyButton.vue';
 const props = defineProps<{ record: OrderRecord | ExpiredOrder }>();
 //
 const { t } = useI18n();
@@ -149,7 +151,6 @@ const statusInfo = computed(() => {
             {{ thousandTool(record?.D2, 'CNY') }}
           </q-item-section>
         </q-item>
-        <q-separator />
         <!-- 結餘 -->
         <q-item style="min-height: 32px" v-if="'Balance' in record">
           <q-item-section class="text-grey-6 text-caption">
@@ -192,51 +193,57 @@ const statusInfo = computed(() => {
             <q-spinner v-else />
           </q-item-section>
         </q-item>
-        <!-- 收款方 -->
-        <q-item style="min-height: 32px" v-if="'P2' in record && !!record?.P2">
-          <q-item-section class="text-grey-6 text-caption">
-            {{ $t('transaction.payee') }}
-          </q-item-section>
-          <q-item-section avatar>
-            {{ record?.P2 }}
-          </q-item-section>
-        </q-item>
+        <q-separator v-if="'P2' in record && !!record?.P2" />
         <!-- 付款方名 -->
         <q-item style="min-height: 32px" v-if="'P2' in record && !!record?.P2">
           <q-item-section class="text-grey-6 text-caption">
-            {{ $t('transaction.payer') }}
+            {{ $t('transaction.payer')
+            }}{{ $t('transaction_history.label.history_detail.account_name') }}
           </q-item-section>
           <q-item-section avatar>
             {{ payerInfo?.name }}
           </q-item-section>
         </q-item>
-        <!--銀行名稱 -->
-        <q-item style="min-height: 32px" v-if="payerInfo?.bank">
+        <q-separator v-if="'P2' in record && !!record?.P2" />
+        <!-- 收款方 -->
+        <q-item style="min-height: 32px" v-if="'P2' in record && !!record?.P2">
           <q-item-section class="text-grey-6 text-caption">
-            {{ $t('transaction.bank_name') }}
+            {{ $t('buy.bankInformation.amount_name') }}
           </q-item-section>
           <q-item-section avatar>
-            {{ payerInfo?.bank }}
-          </q-item-section>
-        </q-item>
-        <!--所在省市 -->
-        <q-item style="min-height: 32px" v-if="payerInfo?.code">
-          <q-item-section class="text-grey-6 text-caption">
-            {{ $t('transaction.city') }}
-          </q-item-section>
-          <q-item-section avatar>
-            {{ payerInfo?.code }}
+            {{ record?.P2 }}
           </q-item-section>
         </q-item>
         <!--帳號 -->
-        <q-item style="min-height: 32px" v-if="payerInfo.account">
+        <q-item style="min-height: 32px" v-if="'P2' in record && !!record?.P2">
           <q-item-section class="text-grey-6 text-caption">
-            {{ $t('transaction.account_number') }}
+            {{ $t('buy.bankInformation.account_number') }}
           </q-item-section>
           <q-item-section avatar>
-            {{ payerInfo?.account }}
+            {{ detail?.[AccNum.Account] }}
           </q-item-section>
         </q-item>
+        <!--銀行名稱 -->
+        <q-item style="min-height: 32px" v-if="'P2' in record && !!record?.P2">
+          <q-item-section class="text-grey-6 text-caption">
+            {{ $t('transaction.beneficiary')
+            }}{{ $t('buy.bankInformation.bank_name.CNY') }}
+          </q-item-section>
+          <q-item-section avatar>
+            {{ detail?.P3 }}
+          </q-item-section>
+        </q-item>
+        <!--所在省市 -->
+        <q-item style="min-height: 32px" v-if="'P2' in record && !!record?.P2">
+          <q-item-section class="text-grey-6 text-caption">
+            {{ $t('transaction.beneficiary')
+            }}{{ $t('buy.bankInformation.code.CNY') ?? '--' }}
+          </q-item-section>
+          <q-item-section avatar>
+            {{ detail?.P4 ? detail?.P4 : '--' }}
+          </q-item-section>
+        </q-item>
+        <q-separator />
         <!--完成時間 或 時間 -->
         <q-item style="min-height: 32px">
           <q-item-section class="text-grey-6 text-caption"
@@ -253,35 +260,35 @@ const statusInfo = computed(() => {
         <!--訂單號 -->
         <q-item style="min-height: 32px" v-if="'Tx_HASH' in record">
           <q-item-section class="text-grey-6 text-caption">
-            {{ $t('transaction.order_number') }}</q-item-section
+           Tx Hash</q-item-section
           >
           <q-item-section avatar class="text-right">
             {{ record?.Tx_HASH?.substring(0, 21) }} <br />
             <div class="row">
-              <CopyButton :value="record?.Tx_HASH" />
               {{ record?.Tx_HASH?.substring(21) }}
+              <CopyButton :value="record?.Tx_HASH" />
             </div>
           </q-item-section>
         </q-item>
         <!--合約書編號 -->
-        <q-item style="min-height: 32px" v-if="'Balance' in record">
+        <q-item style="min-height: 32px" v-if="'P2' in record && !!record?.P2">
           <q-item-section class="text-grey-6 text-caption">
             {{ $t('transaction.contract_number') }}
           </q-item-section>
           <q-item-section
             avatar
-            :class="'text-' + recordInfo.color + ' cursor-pointer'"
+            class="text-blue-13 cursor-pointer"
           >
             content(fake)
           </q-item-section>
         </q-item>
         <!--備註 -->
-        <q-item style="min-height: 32px" v-if="'Balance' in record">
+        <!-- <q-item style="min-height: 32px" v-if="'Balance' in record">
           <q-item-section class="text-grey-6 text-caption">
             {{ $t('transaction.remark') }}</q-item-section
           >
           <q-item-section avatar> content(fake) </q-item-section>
-        </q-item>
+        </q-item> -->
       </q-list>
       <!--關閉btn -->
       <q-btn

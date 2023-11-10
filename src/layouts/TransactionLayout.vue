@@ -51,12 +51,11 @@ watch(watchTest, (newValue) => {
 });
 </script>
 <template>
-  <div class="flex items-start justify-center" id="background">
-    <q-card class="row q-pa-md" id="background2">
+  <div id="background">
+    <div class="row">
       <RouterView />
-
-      <div
-        class="col-xs-12 col-lg-4 justify-center flex"
+      <q-card
+        class="col-12 col-md-4 no-border no-shadow"
         v-if="
           [
             OrderStatusNum.Assigned,
@@ -66,56 +65,50 @@ watch(watchTest, (newValue) => {
         "
       >
         <ChatBox />
-      </div>
-
-      <!-- Transaction Status -->
-      <div class="col-12 column justify-between">
-        <TradeComplete
-          :order="orderStatus"
-          v-if="orderStatus?.Order_StatusID === OrderStatusNum.Complete"
-        />
-        <CancelSuccess
-          v-else-if="
-            [OrderStatusNum.Cancel].includes(orderStatus?.Order_StatusID ?? -5)
-          "
-          :order="orderStatus"
-        />
-        <TimeOut
-          v-else-if="
-            [OrderStatusNum.TimeOut].includes(orderStatus?.Order_StatusID ?? -5)
-          "
-          :order="orderStatus"
-        />
-        <WaitCard
-          v-else-if="
-            [OrderStatusNum.Matching].includes(
-              orderStatus?.Order_StatusID ?? -5
-            )
-          "
-          :orderStatus="orderStatus"
-        />
-      </div>
-    </q-card>
+      </q-card>
+    </div>
+    <!-- Transaction Status -->
+    <div class="col-12 q-pa-md" >
+      <TradeComplete
+        :order="orderStatus"
+        v-if="orderStatus?.Order_StatusID === OrderStatusNum.Complete"
+      />
+      <CancelSuccess
+        v-else-if="
+          [OrderStatusNum.Cancel].includes(orderStatus?.Order_StatusID ?? -5)
+        "
+        :order="orderStatus"
+      />
+      <TimeOut
+        v-else-if="
+          [OrderStatusNum.TimeOut].includes(orderStatus?.Order_StatusID ?? -5)
+        "
+        :order="orderStatus"
+      />
+      <WaitCard
+        v-else-if="
+          [OrderStatusNum.Matching].includes(orderStatus?.Order_StatusID ?? -5)
+        "
+        :orderStatus="orderStatus"
+      />
+    </div>
   </div>
 </template>
 
 <style scoped>
 #background {
-  min-height: 100%;
+  margin: auto;
+  max-width: 1200px;
 }
 
 @media screen and (max-width: 1439px) {
   #background {
-    min-height: 110vh;
+    min-height: 130vh;
   }
-}
-
-#background2 {
-  /* min-width: calc(10vw * 10 - 950px); */
 }
 @media screen and (max-width: 1439px) {
   #background2 {
-    min-width: 100%;
+    width: 100%;
   }
 }
 </style>

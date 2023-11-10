@@ -13,10 +13,7 @@ const { data: wallet, loading } = useWallet();
 const tab = ref('TRC20');
 </script>
 <template>
-  <div
-    class="full-width"
-    style="max-width: 1024px; margin: auto; padding: 0 0.1rem"
-  >
+  <div class="width900">
     <div class="row">
       <!-- 返回 -->
       <div class="col-3">

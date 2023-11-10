@@ -159,6 +159,7 @@ const handleVerifyPassword = () => {
               @keyup.enter="handleVerifyPassword"
               :type="isPassword ? 'password' : 'text'"
               class="q-mb-lg"
+              style="max-width: 160px"
               @update:model-value="() => (isPasswordError = false)"
               @blur="() => (isPasswordError = false)"
               :error="isPasswordError"
@@ -180,7 +181,13 @@ const handleVerifyPassword = () => {
 
       <q-card-actions align="right" class="text-blue-13">
         <!-- 取消btn -->
-        <q-btn outline color="blue-13" :label="t('btn.cancel')" v-close-popup />
+        <q-btn
+          outline
+          color="blue-13"
+          :label="t('btn.cancel')"
+          v-close-popup
+          style="min-width: 100px"
+        />
         <!-- 確認轉出btn -->
         <q-btn
           :loading="loadingTransErc || loadingTransTrc"
@@ -189,6 +196,7 @@ const handleVerifyPassword = () => {
           color="blue-13"
           :label="t('btn.confirm_transfer')"
           @click="handleVerifyPassword"
+          style="min-width: 100px"
         />
       </q-card-actions>
     </div>

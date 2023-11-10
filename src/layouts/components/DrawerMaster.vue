@@ -19,10 +19,9 @@ const drawerRight = ref(true);
     v-model="drawerRight"
     show-if-above
     overlay
-    bordered
     :width="360"
     :breakpoint="500"
-    class="bg-grey-3 shadow-24 text-dark"
+    class="bg-grey-3 shadow-24 text-dark no-border"
     :delay="1200"
     :persistent="false"
   >

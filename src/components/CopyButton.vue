@@ -32,7 +32,7 @@ const getIcon = computed(() =>
 <template>
   <q-btn
     flat
-    color="orange-9"
+    color="blue-13"
     dense
     :icon="getIcon"
     :disable="isCopy"

@@ -41,12 +41,12 @@ export default {
     add_account: '新增帳戶',
     del_hint: '是否要刪除帳戶',
     preset_hint: '是否要設為預設帳戶',
-    preset_hint2: '設為預設帳戶：以此做為交易時的 收&付款帳戶',
+    preset_hint2: '設為預設帳戶：以此做為交易時的 收款帳戶',
     CNY: {
       [AccNum.Account]: '銀行帳號',
       [AccNum.Name]: '銀行戶名',
       [AccNum.BankID]: '銀行名稱',
-      [AccNum.Branch]: '省分',
+      [AccNum.Branch]: '所在省市',
       account: '人民幣CNY帳戶'
     },
     bank_info: '填寫銀行資料',
@@ -91,8 +91,9 @@ export default {
     all_transaction_history: '所有交易紀錄',
     status: '狀態',
     handling_fee: '手續費',
-    payee: '收款方',
+    payee: '姓名',
     payer: '付款方',
+    beneficiary:'收款方',
     bank_name: '銀行名稱',
     code: {
       TWD: '銀行代碼',
@@ -100,13 +101,13 @@ export default {
       VND: '銀行名稱'
     },
     city: '所在省市',
-    account_number: '帳號',
+    account_number: '銀行帳號',
     complete_time: '完成時間',
     order_number: '訂單號',
     contract_number: '合約書編號',
     remark: '備註',
     conversation_record: '對話紀錄',
-    total_amount: '總金額',
+    total_amount: '金額',
     payment_completed: '已完成付款',
     confirmCancel: '確認取消',
     title_index: '交易USDT',
@@ -122,7 +123,7 @@ export default {
     transaction_details: '交易明細',
     transaction_dialog_window: '交易對話',
     message_notification_tone: '訊息提醒',
-    preset_hint2: '設為預設帳戶：以此做為交易時的 收&付款帳戶',
+    preset_hint2: '設為預設帳戶：以此做為交易時的 收款帳戶',
     input_message: '輸入訊息...',
     payment_time: '付款時間',
     sell_info: '付款方資料'
@@ -176,9 +177,9 @@ export default {
     //buy step
     step_hint_buy_title_1: '提交訂單',
     step_hint_buy_text_1: '請填寫訂單資料',
-    step_hint_buy_title_2: '付款',
+    step_hint_buy_title_2: '請付款',
     step_hint_buy_text_2:
-      '請按照畫面中的轉帳資料進行付款，完成付款後點擊「已完成付款」。',
+      '請按照轉帳資料進行付款，完成付款後點擊「已完成付款」。',
     step_hint_buy_title_3: '等待確認',
     step_hint_buy_text_3: '等待對方確認收到款項後，即可完成。',
     step_hint_buy_title_4: '交易完成',
@@ -195,7 +196,7 @@ export default {
     // hint
     hint: '完成轉帳後，可上傳匯款憑證給收款方確認',
     bankInformation: {
-      amount: '付款金額',
+      amount: '金額',
       amount_name: '收款方戶名',
       account_number: '收款方帳號',
       bank_name: {
@@ -230,7 +231,7 @@ export default {
     hint1: '請等待付款方完成轉帳',
     hint2: '請查看您的收款帳戶是否到帳',
     hint3: '我已經確認收款帳戶已到帳，且金額、交易方姓名都正確',
-    payer_account_name: '付款方戶名',
+    payer_account_name: '付款方姓名',
     appeal_hint: '您已提出申訴，稍後客服人員會在「交易對話」與交易雙方進行協調'
   },
 

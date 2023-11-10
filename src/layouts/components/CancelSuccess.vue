@@ -10,10 +10,10 @@ const router = useRouter();
 const route = useRoute();
 </script>
 <template>
-  <div class="q-mt-xl text-center container">
+  <q-card class="width600 text-center">
     <!-- title -->
-    <q-icon class="material-icons text-red text-h1">cancel</q-icon>
-    <div class="text-h6 text-weight-bold q-mx-sm">
+    <q-icon name="cancel" class="text-red text-h1" />
+    <div class="text-h6 text-weight-bold">
       {{ t('transaction.deal_canceled') }}
     </div>
 
@@ -39,7 +39,7 @@ const route = useRoute();
       </div>
       <!-- 訂單號 -->
       <div class="flex items-center ellipsis">
-        <div class="text-grey-6">{{ t('transaction.order_number') }}：</div>
+        <div class="text-grey-6">Tx Hash：</div>
         <punctuation-master
           color="black"
           :label="order?.Tx_HASH"
@@ -48,17 +48,15 @@ const route = useRoute();
       </div>
     </div>
 
-    <div class="text-center q-mt-md justify-center q-gutter-y-sm">
-      <q-btn
-        unelevated
-        rounded
-        class="full-width"
-        @click="() => router.push({ name: 'dashboard' })"
-        color="blue-13"
-        :label="t('label.back_front_page')"
-      />
-    </div>
-  </div>
+    <q-btn
+      unelevated
+      rounded
+      class="full-width q-mt-md"
+      @click="() => router.push({ name: 'dashboard' })"
+      color="blue-13"
+      :label="t('label.back_front_page')"
+    />
+  </q-card>
 </template>
 
 <style scoped>

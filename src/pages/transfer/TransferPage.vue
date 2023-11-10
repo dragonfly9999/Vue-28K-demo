@@ -97,10 +97,10 @@ const handleSuccess = () => {
 };
 </script>
 <template>
-  <div style="max-width: 600px; margin: auto; padding: 0 0.1rem">
-    <TransferTitle />
-    <!-- Content -->
+  <div class="width480">
     <q-card class="q-pa-sm q-ma-sm q-mb-xl myshadow">
+      <TransferTitle />
+      <!-- Content -->
       <q-form
         @reset="
           () => {

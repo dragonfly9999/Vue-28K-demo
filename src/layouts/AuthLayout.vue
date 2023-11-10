@@ -4,7 +4,6 @@ import I18nBtn from 'src/components/I18nBtn.vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
-
 </script>
 <template>
   <q-layout view="hHh lpr fff">
@@ -37,31 +36,6 @@ const router = useRouter();
     <q-page-container style="margin-top: 30px">
       <router-view></router-view>
     </q-page-container>
-
-    <!-- footer -->
-    <q-footer class="text-white" style="background: #242e47">
-      <div class="wrap" style="margin: 0.5rem; padding: 2rem">
-        <div>
-          <div class="flex">
-            <div class="col-12 col-md">
-              <div class="flex items-center">
-                <!-- logo -->
-
-                <q-img
-                  :src="logo"
-                  width="260px"
-                  height="60px"
-                  class="q-mr-sm"
-                />
-              </div>
-            </div>
-            <div
-              class="col-12 col-md gt-sm flex justify-end text-subtitle1 text-right"
-            ></div>
-          </div>
-        </div>
-      </div>
-    </q-footer>
   </q-layout>
 </template>
 

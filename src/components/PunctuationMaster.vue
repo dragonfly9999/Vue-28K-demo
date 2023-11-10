@@ -9,12 +9,12 @@ const porps = defineProps<{
 </script>
 <template>
   <div
-    :class="`col text-${porps.type ?? 'caption'} text-${
+    :class="` text-${porps.type ?? 'caption'} text-${
       color ?? 'grey-5'
-    } ellipsis ellipsis-2-lines  `"
+    } ellipsis ellipsis-2-lines  q-mt-md`"
     style="max-width: 85vw"
   >
-    <div :class="`row justify-${justify ?? 'end'} items-center`">
+    <div :class="`row justify-${justify ?? 'center'} items-center`">
       <div style="">
         {{ label?.slice(0, Math.ceil((label?.length * 2) / 3)) }}
       </div>

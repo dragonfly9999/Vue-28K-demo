@@ -25,7 +25,7 @@ const features = computed(() => [
 <template>
   <q-btn-dropdown
     v-if="!isAgent"
-    rounded
+    flat
     no-caps
     icon="attach_money"
     style="text-decoration: none"
@@ -56,7 +56,7 @@ const features = computed(() => [
   <q-btn
     v-for="(feature, index) in features"
     :key="index"
-    rounded
+    flat
     no-caps
     :icon="feature['icon']"
     style="text-decoration: none"
@@ -66,7 +66,7 @@ const features = computed(() => [
   </q-btn>
   <q-btn
     v-if="isAgent"
-    rounded
+    flat
     no-caps
     icon="credit_card"
     style="text-decoration: none"

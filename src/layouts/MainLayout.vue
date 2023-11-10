@@ -2,9 +2,9 @@
   <q-layout view="hHh lpr fff">
     <HeaderMaster />
     <!-- Body -->
-    <q-page-container>
+    <q-page-container style="margin: auto">
       <q-page-sticky expand position="top" style="z-index: 5">
-        <q-toolbar class="bg-white myshadow">
+        <q-toolbar class="bg-white myshadow justify-end">
           <ProgressBtn />
           <div
             style="border-radius: 15px"
@@ -45,7 +45,7 @@
           </div>
         </q-toolbar>
       </q-page-sticky>
-      <div class="flex justify-center q-pa-md q-mt-xl" style="min-width: 100%">
+      <div style="margin-top:70px">
         <router-view></router-view>
       </div>
     </q-page-container>

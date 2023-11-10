@@ -30,7 +30,7 @@ onMounted(() => {
 });
 </script>
 <template>
-  <div style="max-width: 800px; min-width: 50%" class="q-gutter-sm q-mt-md">
+  <div class="q-gutter-y-md q-mt-md width900" >
     <!-- 交易列表 -->
     <div class="flex items-center justify-between">
       <div class="flex items-center q-mr-md">

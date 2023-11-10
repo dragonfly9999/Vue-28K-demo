@@ -93,8 +93,8 @@ onBeforeUnmount(() => {
 });
 </script>
 <template>
-  <q-card class="q-pa-sm justify-between" id="fade-in">
-    <q-toolbar class="flex q-mb-sm toolbar">
+  <q-card class="q-pa-md " id="fade-in" >
+    <q-toolbar class=" q-mb-sm toolbar">
       <q-badge
         v-if="getCount(route?.query?.token as string) > 0"
         color="red"
@@ -103,18 +103,15 @@ onBeforeUnmount(() => {
       />
       <!-- 交易對話窗btn -->
       <q-icon name="chat" color="blue-13" size="24px" class="gt-md" />
-
       <q-btn
-        class="lt-lg col-6 text-body1 text-weight-bold"
+        class="lt-lg col-9 text-body1 text-weight-bold q-mb-md"
         align="left"
         flat
-        dense
         color="blue-13"
         :icon="btnIcon"
         :label="$t('transaction.transaction_dialog_window')"
         @click="handleSwitch"
       />
-
       <!-- title 交易對話窗-->
       <div class="gt-md">
         {{ $t('transaction.transaction_dialog_window') }}
@@ -124,7 +121,7 @@ onBeforeUnmount(() => {
       <q-toggle
         dense
         color="blue-13"
-        class="col-6 text-grey-6"
+        class="col-auto text-grey-6"
         :label="$t('transaction.message_notification_tone')"
         left-label
         v-model="hint"
@@ -205,28 +202,40 @@ onBeforeUnmount(() => {
   border-top-left-radius: 30px;
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
-  z-index: 6;
   box-shadow: 0px -1px 5px rgba(0, 27, 61, 0.158);
-  margin-left: 15px;
   overflow: hidden;
   height: 100%;
   width: 100%;
   min-height: 100%;
-  max-height: 100%;
 }
 
 @media screen and (max-width: 1439px) {
   #fade-in {
-    margin-top: 20px;
     position: fixed;
     bottom: 0px;
     height: 60px;
-    max-width: 96vw;
-    width: calc((1700px - 48vw) / 2);
+    /* width: calc((1700px - 48vw) / 2); */
     margin-left: 0px;
     min-height: 0px;
     max-height: 100vh;
     transition: height 0.3141592s;
+    z-index: 6;
+    width:93vw
+  }
+}
+@media screen and (max-width: 1280px) {
+  #fade-in {
+    position: fixed;
+    bottom: 0px;
+    height: 60px;
+    /* width: calc((1700px - 48vw) / 2); */
+    margin-left: 0px;
+    min-height: 0px;
+    max-height: 100vh;
+    transition: height 0.3141592s;
+    z-index: 6;
+    width: 100%;
+
   }
 }
 .toolbar {

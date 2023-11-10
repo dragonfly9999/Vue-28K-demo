@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useSellConfirm } from 'src/components/api/useSellConfirm';
 import { thousandTool } from 'src/utils/NumberTool';
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 import { useSell2 } from '../api';
@@ -13,15 +13,15 @@ const { run: sell } = useSell2();
 const route = useRoute();
 // DOM
 const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
-const remark = ref<string>();
+// const remark = ref<string>();
 const informations = computed(() => [
-  {
-    title: t('transaction.amount'),
-    content: thousandTool(props.order?.D2, 'CNY'),
-  },
   {
     title: t('transaction.payee'),
     content: props?.order?.P5?.split('|')[0],
+  },
+  {
+    title: t('transaction.amount'),
+    content: thousandTool(props.order?.D2, 'CNY'),
   },
 ]);
 // handler
@@ -64,13 +64,13 @@ const handleConfirm = () => {
       </table>
     </div>
     <!-- input備註(非必填) -->
-    <q-input
+    <!-- <q-input
       v-if="isAgent"
       v-model="remark"
       rounded
       color="blue-13"
       :label="$t('transaction.remark')"
-    />
+    /> -->
     <q-card-actions align="right" class="text-blue-13">
       <!-- 確認收款btn -->
       <q-btn

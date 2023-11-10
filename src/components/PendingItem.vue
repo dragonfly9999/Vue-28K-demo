@@ -2,12 +2,14 @@
 import { useRouter } from 'vue-router';
 import { MasterTypeNum } from 'src/utils/NumberTool';
 import { useI18n } from 'vue-i18n';
-import { OrderStatusNum } from 'src/stores/live';
 import { thousandTool } from 'src/utils/NumberTool';
 import dayjs from 'dayjs';
 import { useThirdStore } from 'src/stores';
+import { computed } from 'vue';
+import StatusMaster from 'src/pages/transaction/components/StatusMaster.vue';
+import { MtTypeNum } from 'src/stores/live';
 
-defineProps<{ order: PendingOrder }>();
+const props = defineProps<{ order: PendingOrder }>();
 const router = useRouter();
 const { t } = useI18n();
 const { getCount } = useThirdStore();
@@ -23,42 +25,24 @@ const orderInfo = (order: PendingOrder) => {
     }
   }
 };
-const OrderStatus = (order: PendingOrder) => {
-  switch (Number(order?.MasterType)) {
-    case MasterTypeNum.Buy:
-      switch (order?.Order_StatusID) {
-        case OrderStatusNum.Matching:
-          return t('transaction.pairing');
-        case OrderStatusNum.Assigned:
-          return t('transaction.payment_required');
-        case OrderStatusNum.Committed:
-          return t('transaction.inProgress');
-        case OrderStatusNum.Appeal:
-          return t('transaction.appeal');
-        case OrderStatusNum.Complete:
-          return t('transaction.complete');
-        default:
-          return t('transaction.pairing');
-      }
-    case MasterTypeNum.Sell:
-      switch (order?.Order_StatusID) {
-        case OrderStatusNum.Matching:
-          return t('transaction.pairing');
-        case OrderStatusNum.Assigned:
-          return t('transaction.opponent_preparing');
-        case OrderStatusNum.Committed:
-          return t('transaction.need_confirm_payment');
-        case OrderStatusNum.Appeal:
-          return t('transaction.appeal');
-        case OrderStatusNum.Complete:
-          return t('transaction.complete');
-        default:
-          return t('transaction.pairing');
-      }
-    default:
-      return t('label.undefined');
-  }
-};
+const fakeLiveOrder = computed(() => {
+  const order: LiveOrder = {
+    Order_StatusID: props.order.Order_StatusID,
+    MType:
+      props.order.MasterType === MasterTypeNum.Buy
+        ? MtTypeNum.Buy
+        : MtTypeNum.Sell,
+    DeltaTime: 0,
+    UsdtAmt: 0,
+    D1: 0,
+    D2: 0,
+    CreateDate: '',
+    P5: '',
+    extraInfo: null,
+    token: '',
+  };
+  return order;
+});
 </script>
 <template>
   <q-item
@@ -134,17 +118,7 @@ const OrderStatus = (order: PendingOrder) => {
         <div class="q-gutter-sm">
           <div class="q-gutter-sm column items-end justify-end">
             <q-badge :label="$t('訊息') + ': ' + getCount(order?.token)" />
-            <q-badge
-              transparent
-              rounded
-              class="flex items-end items-center q-px-xs"
-              color="orange-1"
-            >
-              <q-spinner-hourglass color="orange-9" size="1.5em" />
-              <div class="text-caption text-weight-bold text-orange-9">
-                {{ OrderStatus(order) }}
-              </div>
-            </q-badge>
+            <status-master :order="fakeLiveOrder" />
           </div>
         </div>
       </div>
