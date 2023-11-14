@@ -32,9 +32,7 @@ const delID = ref<number>();
 </script>
 <template>
   <q-page class="width900">
-    <q-card
-      class="q-pa-md myshadow"
-    >
+    <q-card class="q-pa-md myshadow">
       <!-- header -->
       <div class="row q-mb-sm">
         <!-- 返回btn -->

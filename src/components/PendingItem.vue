@@ -109,7 +109,7 @@ const fakeLiveOrder = computed(() => {
             </div>
             <!-- 日期 -->
             <div class="text-caption">
-              {{ dayjs(order.Date).format('YYYY-MM-DD HH:mm:ss') }}
+              {{ dayjs(order.Date.replaceAll('.', '-')).format('YYYY-MM-DD HH:mm:ss') }}
             </div>
           </div>
         </div>

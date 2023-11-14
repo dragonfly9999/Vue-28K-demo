@@ -141,7 +141,7 @@ onBeforeUnmount(() => {
               : ''
           "
           :sent="isAgent ? msg.Message_Role === 3 : msg.Message_Role === 1"
-          :stamp="dayjs(msg.Sysdate).format('YYYY-MM-DD HH:mm:ss')"
+          :stamp="dayjs(msg.Sysdate.replaceAll('.', '-')).format('YYYY-MM-DD HH:mm:ss')"
           :key="msg.SysID"
           class="q-my-lg"
           :bg-color="

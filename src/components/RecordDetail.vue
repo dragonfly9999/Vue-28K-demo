@@ -7,9 +7,15 @@ import { useI18n } from 'vue-i18n';
 import { useDetail } from 'src/pages/history/api';
 import { AccNum } from 'src/pages/account/api';
 import CopyButton from './CopyButton.vue';
-const props = defineProps<{ record: OrderRecord | ExpiredOrder }>();
+import { useRouter } from 'vue-router';
+import { useStorage } from 'vue3-storage';
+const props = defineProps<{
+  record: OrderRecord | ExpiredOrder;
+  isExpired?: boolean;
+}>();
 //
 const { t } = useI18n();
+const router = useRouter();
 const { data: detail } = useDetail({
   Token: props.record.token,
 });
@@ -115,6 +121,20 @@ const statusInfo = computed(() => {
       return t('transaction.complete');
   }
 });
+// 亡羊補牢
+const handleBackTrade = () => {
+  if (props.isExpired && useStorage().getStorageSync('isAgent')) {
+    router.push({
+      name: props.record?.MasterType === MasterTypeNum.Sell ? 'buy' : 'sell',
+      query: { token: props.record.token },
+    });
+  } else {
+    router.push({
+      name: props.record?.MasterType === MasterTypeNum.Buy ? 'buy' : 'sell',
+      query: { token: props.record.token },
+    });
+  }
+};
 </script>
 <template>
   <q-card class="q-pa-md" style="width: 380px">
@@ -254,13 +274,13 @@ const statusInfo = computed(() => {
             }}
           </q-item-section>
           <q-item-section avatar>
-            {{ dayjs(record?.Date).format('YYYY-MM-DD HH:mm:ss') }}
+            {{ dayjs(record?.Date?.replaceAll('.', '-')).format('YYYY-MM-DD HH:mm:ss') }}
           </q-item-section>
         </q-item>
         <!--訂單號 -->
         <q-item style="min-height: 32px" v-if="'Tx_HASH' in record">
           <q-item-section class="text-grey-6 text-caption">
-           Tx Hash</q-item-section
+            Tx Hash</q-item-section
           >
           <q-item-section avatar class="text-right">
             {{ record?.Tx_HASH?.substring(0, 21) }} <br />
@@ -275,10 +295,7 @@ const statusInfo = computed(() => {
           <q-item-section class="text-grey-6 text-caption">
             {{ $t('transaction.contract_number') }}
           </q-item-section>
-          <q-item-section
-            avatar
-            class="text-blue-13 cursor-pointer"
-          >
+          <q-item-section avatar class="text-blue-13 cursor-pointer">
             content(fake)
           </q-item-section>
         </q-item>
@@ -314,13 +331,7 @@ const statusInfo = computed(() => {
       <div class="flex justify-center" v-else>
         <q-btn
           v-if="record.MasterType < 2"
-          @click="
-            () =>
-              $router.push({
-                name: record?.MasterType === MasterTypeNum.Buy ? 'buy' : 'sell',
-                query: { token: record.token },
-              })
-          "
+          @click="handleBackTrade"
           flat
           color="blue-13"
           :label="t('返回交易')"

@@ -85,39 +85,35 @@ const handleCopy = (value: string) => {
       });
     });
 };
+
+const handleClickItem = () => {
+  if (pressing() === 'Control') {
+    const copyStr =
+      '交易方姓名：' +
+      props.order?.P5?.split('|')?.[0] +
+      '\n' +
+      '金額: ' +
+      thousandTool(props.order.D2, 'CNY');
+    handleCopy(copyStr);
+  } else if (pressing() === 'c') {
+    const copyStr =
+      '交易方姓名：' +
+      props.order?.P5?.split('|')?.[0] +
+      '\n' +
+      '金額(CNY): ' +
+      thousandTool(props.order.D2, 'CNY');
+    handleCopy(copyStr);
+  } else {
+    if (props.isCleanCount) handleResetCount(props.order.token);
+    router.push({
+      name: props.order?.MType === MtTypeNum.Buy ? 'buy' : 'sell',
+      query: { token: props.order.token },
+    });
+  }
+};
 </script>
 <template>
-  <q-item
-    :clickable="!isInstant"
-    v-ripple
-    @click="
-      () => {
-        if (pressing() === 'Control') {
-          const copyStr =
-            '交易方姓名：' +
-            order?.P5?.split('|')?.[0] +
-            '\n' +
-            '金額: ' +
-            thousandTool(order.D2, 'CNY');
-          handleCopy(copyStr);
-        } else if (pressing() === 'c') {
-          const copyStr =
-            '交易方姓名：' +
-            order?.P5?.split('|')?.[0] +
-            '\n' +
-            '金額(CNY): ' +
-            thousandTool(order.D2, 'CNY');
-          handleCopy(copyStr);
-        } else {
-          if (isCleanCount) handleResetCount(order.token);
-          router.push({
-            name: order?.MType === MtTypeNum.Buy ? 'buy' : 'sell',
-            query: { token: order.token },
-          });
-        }
-      }
-    "
-  >
+  <q-item :clickable="!isInstant" v-ripple @click="handleClickItem">
     <q-item-section class="q-pa-xs">
       <!-- title -->
       <div class="flex no-wrap q-gutter-x-sm items-center">
@@ -168,7 +164,11 @@ const handleCopy = (value: string) => {
             </div>
             <!-- 日期 -->
             <div class="text-caption">
-              {{ dayjs(order.CreateDate).format('YYYY-MM-DD HH:mm:ss') }}
+              {{
+                dayjs(order.CreateDate.replaceAll('.', '-')).format(
+                  'YYYY-MM-DD HH:mm:ss'
+                )
+              }}
             </div>
           </div>
         </div>

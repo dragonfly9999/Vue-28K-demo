@@ -55,7 +55,11 @@ const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
         <div v-if="isAgent">
           <order-item
             v-for="(order, index) in getOrders('progress')?.sort((a, b) =>
-              dayjs(b.CreateDate).isAfter(dayjs(a.CreateDate)) ? 0 : -1
+              dayjs(b.CreateDate.replaceAll('.', '-')).isAfter(
+                dayjs(a.CreateDate.replaceAll('.', '-'))
+              )
+                ? 0
+                : -1
             )"
             :key="index"
             :order="order"
