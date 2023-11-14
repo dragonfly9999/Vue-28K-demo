@@ -21,6 +21,31 @@ const { data: detail } = useDetail({
 });
 // DOM
 const recordInfo = computed(() => {
+  if (props.isExpired && useStorage().getStorageSync('isAgent')) {
+    switch (props.record?.MasterType) {
+      case MasterTypeNum.Sell:
+        return { label: t('label.buy'), color: 'blue-13' };
+      case MasterTypeNum.Buy:
+        return { label: t('label.sell'), color: 'red' };
+      case MasterTypeNum.TransIn:
+        return {
+          label: t(
+            `transaction_history.label.transaction_type.${MasterTypeNum.TransIn}`
+          ),
+          color: 'purple',
+        };
+      case MasterTypeNum.TransIn:
+        return {
+          label: t(
+            `transaction_history.label.transaction_type.${MasterTypeNum.TransOut}`
+          ),
+          color: 'purple',
+        };
+      default: {
+        return { label: t('label.undefined'), color: 'purple' };
+      }
+    }
+  }
   switch (props.record?.MasterType) {
     case MasterTypeNum.Buy:
       return { label: t('label.buy'), color: 'blue-13' };
@@ -47,6 +72,34 @@ const recordInfo = computed(() => {
 });
 const payerInfo = computed(() => {
   if ('P5' in props.record) {
+    if (props.isExpired && useStorage().getStorageSync('isAgent')) {
+      switch (props.record?.MasterType) {
+        case MasterTypeNum.Sell: {
+          const name = props?.record?.P5;
+          const bank = props?.record?.P3;
+          const code = props?.record?.P4;
+          const account = props?.record?.P1;
+          return {
+            name,
+            bank,
+            code,
+            account,
+          };
+        }
+        case MasterTypeNum.Buy: {
+          const [name, bank, code, account] = props.record?.P5?.split('|');
+          return {
+            name,
+            bank,
+            code,
+            account,
+          };
+        }
+        default: {
+          return { label: t('label.undefined'), color: 'purple' };
+        }
+      }
+    }
     switch (props.record?.MasterType) {
       case MasterTypeNum.Buy: {
         const name = props?.record?.P5;
@@ -78,6 +131,50 @@ const payerInfo = computed(() => {
 });
 
 const statusInfo = computed(() => {
+  if (props.isExpired && useStorage().getStorageSync('isAgent')) {
+    switch (Number(detail?.value?.MasterType)) {
+      case MasterTypeNum.Sell:
+        switch (detail.value?.Order_StatusID) {
+          case OrderStatusNum.Matching:
+            return t('transaction.pairing');
+          case OrderStatusNum.Assigned:
+            return t('transaction.payment_required');
+          case OrderStatusNum.Committed:
+            return t('transaction.inProgress');
+          case OrderStatusNum.Appeal:
+            return t('transaction.appeal');
+          case OrderStatusNum.Complete:
+            return t('transaction.complete');
+          case OrderStatusNum.Cancel:
+            return t('transaction.deal_canceled');
+          case OrderStatusNum.TimeOut:
+            return t('transaction.deal_canceled');
+          default:
+            return t('label.undefined');
+        }
+      case MasterTypeNum.Buy:
+        switch (detail.value?.Order_StatusID) {
+          case OrderStatusNum.Matching:
+            return t('transaction.pairing');
+          case OrderStatusNum.Assigned:
+            return t('transaction.opponent_preparing');
+          case OrderStatusNum.Committed:
+            return t('transaction.need_confirm_payment');
+          case OrderStatusNum.Appeal:
+            return t('transaction.appeal');
+          case OrderStatusNum.Complete:
+            return t('transaction.complete');
+          case OrderStatusNum.Cancel:
+            return t('transaction.deal_canceled');
+          case OrderStatusNum.TimeOut:
+            return t('transaction.deal_canceled');
+          default:
+            return t('label.undefined');
+        }
+      default:
+        return t('transaction.complete');
+    }
+  }
   switch (Number(detail?.value?.MasterType)) {
     case MasterTypeNum.Buy:
       switch (detail.value?.Order_StatusID) {
@@ -274,7 +371,11 @@ const handleBackTrade = () => {
             }}
           </q-item-section>
           <q-item-section avatar>
-            {{ dayjs(record?.Date?.replaceAll('.', '-')).format('YYYY-MM-DD HH:mm:ss') }}
+            {{
+              dayjs(record?.Date?.replaceAll('.', '-')).format(
+                'YYYY-MM-DD HH:mm:ss'
+              )
+            }}
           </q-item-section>
         </q-item>
         <!--訂單號 -->
