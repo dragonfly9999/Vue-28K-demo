@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { useAccHistory, AccNum, useDelAcc } from './api';
@@ -12,7 +12,28 @@ import Flag from 'src/assets/CNY.png';
 const { t } = useI18n();
 const router = useRouter();
 const { data: accs, loading, refresh: reStory } = useAccHistory();
-const { data: acc, refresh: reAcc } = useAcc();
+const { request, tempAcc } = useAcc();
+const { data: acc, refresh: reAcc } = request;
+
+const currentAcc = computed(() => {
+  if (!accs.value) return;
+  return accs.value?.find(
+    (accInfo) =>
+      accInfo.P1 === acc.value?.P1 &&
+      accInfo.P2 === acc.value?.P2 &&
+      accInfo.P3 === acc.value?.P3 &&
+      accInfo.P4 === acc.value?.P4
+  );
+});
+const otherAccs = computed(() => {
+  if (!accs.value) return [];
+  const pureAccs = [...accs.value];
+  const currentIndex = pureAccs.findIndex(
+    (accInfo) => accInfo.P1 === acc.value?.P1
+  );
+  pureAccs.splice(currentIndex, 1);
+  return pureAccs;
+});
 const { run: set } = useSetAcc({
   onSuccess: () => {
     reStory();
@@ -32,9 +53,7 @@ const delID = ref<number>();
 </script>
 <template>
   <q-page class="width900">
-    <q-card
-      class="q-pa-md myshadow"
-    >
+    <q-card class="q-pa-md myshadow">
       <!-- header -->
       <div class="row q-mb-sm">
         <!-- 返回btn -->
@@ -84,9 +103,92 @@ const delID = ref<number>();
           <q-card-section style="padding: 0">
             <div class="row">
               <!-- card 1 -->
+              <div class="col-12 col-md-4 col-sm-6">
+                <!-- card 1 -->
+                <q-card class="q-pa-md q-ma-sm" flat bordered>
+                  <!-- 編輯帳戶 -->
+                  <div
+                    v-for="(AccKey, aki) in Object.values(AccNum)"
+                    :key="aki"
+                  >
+                    <div class="text-grey-6 text-caption">
+                      {{ t(`label.CNY.P1`) }}
+                    </div>
+                    <div class="flex items-center justify-end cursor-pointer">
+                      {{ tempAcc[AccKey] }}
+                      <q-popup-edit
+                        :model-value="tempAcc[AccKey]"
+                        v-slot="scope"
+                        touch-position
+                        persistent
+                        buttons
+                        @save="
+                          (value, initValue) => {
+                            if (value !== initValue && currentAcc) {
+                              set({
+                                ...tempAcc,
+                                [AccKey]: tempAcc[AccKey],
+                              });
+                              del({
+                                H_id: currentAcc.H_id,
+                              });
+                            }
+                          }
+                        "
+                        :label-set="$t('label.confirm')"
+                        :label-cancel="$t('transaction.cancel')"
+                      >
+                        <q-input
+                          v-model="scope.value"
+                          dense
+                          autofocus
+                          counter
+                          @keyup.enter="() => scope.set()"
+                        />
+                      </q-popup-edit>
+                      <q-icon
+                        flat
+                        round
+                        name="edit"
+                        color="blue-13"
+                        class="q-ml-xs"
+                      />
+                    </div>
+                    <div style="border: 0.25px dashed #eeeeee"></div>
+                  </div>
+
+                  <q-card-actions
+                    align="right"
+                    class="q-gutter-x-sm"
+                    style="padding: 0; margin-top: 15px"
+                  >
+                    <!-- 設為預設帳戶 btn -->
+                    <!-- if帳戶數量=0，新增第一個帳戶後，自動設為預設 -->
+                    <!-- 變成預設帳戶後，點亮這顆星  -->
+                    <!-- 變成預設帳戶後，disable不可點擊 -->
+                    <q-checkbox
+                      :model-value="true"
+                      checked-icon="star"
+                      unchecked-icon="star_border"
+                      color="orange"
+                    >
+                      <!-- hint -->
+                      <q-tooltip>
+                        {{ $t('label.preset_hint2') }}
+                      </q-tooltip>
+                    </q-checkbox>
+
+                    <!-- 刪除帳戶 btn-->
+                    <!-- 變成預設帳戶後，disable不可點擊 -->
+                    <q-btn disable flat round color="blue-13" icon="delete">
+                    </q-btn>
+                  </q-card-actions>
+                </q-card>
+              </div>
+
               <div
                 class="col-12 col-md-4 col-sm-6"
-                v-for="(Acc, Ai) in accs"
+                v-for="(Acc, Ai) in otherAccs"
                 :key="Ai"
               >
                 <!-- card 1 -->

@@ -25,8 +25,8 @@ const { run: login } = useLogin({
 // DOM
 const isTest = import.meta.env.DEV;
 const countryCode = ref(isTest ? 886 : null);
-const phone_number = ref(isTest ? 938265860 : null);
-const password = ref(isTest ? 'dls24068812' : null);
+const phone_number = ref(isTest ? 9809806674 : null);
+const password = ref(isTest ? '000000' : null);
 const isVisibleSetting = ref(false);
 
 // handlers
