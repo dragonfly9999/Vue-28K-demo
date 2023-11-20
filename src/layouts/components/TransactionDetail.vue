@@ -16,17 +16,25 @@ const { data: detail, loading } = useDetail({
 });
 // DOM
 enum ClientNum {
-  Buy = 1,
-  Sell = 0,
+  Buy = MasterTypeNum.Sell,
+  Sell = MasterTypeNum.Buy,
 }
 const useNum = computed(() =>
-  useStorage().getStorageSync('isAgent') ? MasterTypeNum : ClientNum
+  useStorage().getStorageSync('isAgent') ? ClientNum : MasterTypeNum
 );
+
+const usdtFormat = computed(() => {
+  if (!detail.value) return '0';
+  if (detail.value.MasterType === useNum.value.Buy) {
+    return thousandTool(Math.abs(detail.value.UsdtAmt), 'USDT');
+  }
+  return '-' + thousandTool(Math.abs(detail.value.UsdtAmt ?? 0), 'USDT');
+});
 const orderInfo = computed(() => {
   switch (detail.value?.MasterType) {
-    case useNum.value.Sell:
-      return { label: t('label.buy'), color: 'blue-13' };
     case useNum.value.Buy:
+      return { label: t('label.buy'), color: 'blue-13' };
+    case useNum.value.Sell:
       return { label: t('label.sell'), color: 'red' };
     default: {
       return { label: t('label.undefined'), color: 'purple' };
@@ -36,7 +44,7 @@ const orderInfo = computed(() => {
 
 const statusInfo = computed(() => {
   switch (Number(detail.value?.MasterType)) {
-    case useNum.value.Sell:
+    case useNum.value.Buy:
       switch (detail.value?.Order_StatusID) {
         case OrderStatusNum.Matching:
           return t('transaction.pairing');
@@ -51,7 +59,7 @@ const statusInfo = computed(() => {
         default:
           return t('label.undefined');
       }
-    case useNum.value.Buy:
+    case useNum.value.Sell:
       switch (detail.value?.Order_StatusID) {
         case OrderStatusNum.Matching:
           return t('transaction.pairing');
@@ -90,7 +98,7 @@ const statusInfo = computed(() => {
     <div class="q-ma-xs">
       <q-list style="padding: 0">
         <!-- 數量 -->
-        <q-item style="min-height: 36px" >
+        <q-item style="min-height: 36px">
           <q-item-section class="text-dark">
             {{ $t('transaction.quantity') }}(USDT)
           </q-item-section>
@@ -98,11 +106,11 @@ const statusInfo = computed(() => {
             avatar
             :class="'text-' + orderInfo.color + ' text-body1 text-weight-bold'"
           >
-            {{ thousandTool(detail?.UsdtAmt, 'USDT') }}
+            {{ usdtFormat }}
           </q-item-section>
         </q-item>
         <!-- 金額 -->
-        <q-item style="min-height: 36px" >
+        <q-item style="min-height: 36px">
           <q-item-section class="text-dark">
             {{ $t('transaction.amount') }}(CNY)
           </q-item-section>
@@ -141,13 +149,14 @@ const statusInfo = computed(() => {
         <!-- 付款方名 -->
         <q-item style="min-height: 32px">
           <q-item-section class="text-grey-6 text-caption">
-            {{ $t('transaction.payer') }}{{$t('transaction_history.label.history_detail.account_name')}}
+            {{ $t('transaction.payer')
+            }}{{ $t('transaction_history.label.history_detail.account_name') }}
           </q-item-section>
           <q-item-section avatar>
             {{ detail?.P5?.split('|')?.[0] }}
           </q-item-section>
         </q-item>
-        <q-separator  />
+        <q-separator />
         <!-- 收款方 -->
         <q-item style="min-height: 32px">
           <q-item-section class="text-grey-6 text-caption">
@@ -183,10 +192,10 @@ const statusInfo = computed(() => {
             }}{{ $t('buy.bankInformation.code.CNY') ?? '--' }}
           </q-item-section>
           <q-item-section avatar>
-            {{ detail?.P4 ? detail?.P4:'--'}}
+            {{ detail?.P4 ? detail?.P4 : '--' }}
           </q-item-section>
         </q-item>
-        <q-separator  />
+        <q-separator />
         <!--完成時間 -->
         <q-item style="min-height: 32px">
           <q-item-section class="text-grey-6 text-caption"
@@ -195,7 +204,7 @@ const statusInfo = computed(() => {
           <q-item-section avatar>
             {{
               dayjs(
-                dayjs(detail?.Date).toDate().getTime() +
+                dayjs(detail?.Date?.replaceAll('.', '-')).toDate().getTime() +
                   (detail?.DeltaTime ?? 0) * 1000
               ).format('YYYY-MM-DD HH:mm:ss')
             }}
@@ -219,10 +228,7 @@ const statusInfo = computed(() => {
           <q-item-section class="text-grey-6 text-caption">
             {{ $t('transaction.contract_number') }}
           </q-item-section>
-          <q-item-section
-            avatar
-            class="text-blue-13  cursor-pointer"
-          >
+          <q-item-section avatar class="text-blue-13 cursor-pointer">
             content(fake)
           </q-item-section>
         </q-item>

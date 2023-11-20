@@ -1,50 +1,48 @@
 <script setup lang="ts">
 import RecordItem from 'src/components/RecordItem.vue';
 import { MasterTypeNum } from 'src/utils/NumberTool';
-import { computed, ref } from 'vue';
 defineProps<{
   orders: Array<OrderRecord | ExpiredOrder> | undefined;
   loading: boolean;
-  type: MasterTypeNum | 5;
-  isExpired: boolean
+  isExpired: boolean;
+  type: number;
 }>();
-const emit = defineEmits(['update:type']);
+defineEmits(['update:type']);
 
-const tab = ref(5);
-const allType = computed(() => [
+const allType = [
   {
     value: 5,
     label: '全部',
-    color: 'text-dark'
+    color: 'text-dark',
   },
   {
     value: MasterTypeNum.Buy,
     label: '購買',
-    color: 'text-blue-13'
+    color: 'text-blue-13',
   },
   {
     value: MasterTypeNum.Sell,
     label: '出售',
 
-    color: 'text-red'
+    color: 'text-red',
   },
   {
     value: MasterTypeNum.TransIn,
     label: '轉入',
-    color: 'text-purple-7'
+    color: 'text-purple-7',
   },
   {
     value: MasterTypeNum.TransOut,
     label: '轉出',
-    color: 'text-purple-7'
-  }
-]);
+    color: 'text-purple-7',
+  },
+];
 </script>
 <template>
   <div class="no-margin no-padding">
     <q-tabs
       :model-value="type"
-      @update:model-value="(value) => emit('update:type', value)"
+      @update:model-value="(newType) => $emit('update:type', newType)"
       align="justify"
       inline-label
       class="bg-grey-1 text-grey q-mt-sm"
@@ -58,7 +56,11 @@ const allType = computed(() => [
         :label="$t(`transaction_history.label.transaction_type.${type.value}`)"
       />
     </q-tabs>
-    <q-tab-panels v-model="tab" animated>
+    <q-tab-panels
+      :model-value="type"
+      @update:model-value="(newType) => $emit('update:type', newType)"
+      animated
+    >
       <!-- 全部 -->
       <q-tab-panel
         v-for="(type, index) in allType"

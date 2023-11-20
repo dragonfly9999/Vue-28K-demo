@@ -46,7 +46,11 @@ const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
           {{ $t('transaction_history.label.order_time') }}：
         </div>
         <div>
-          {{ dayjs(order?.['CreateDate']).format('YYYY-MM-DD HH:mm:ss') }}
+          {{
+            dayjs(order?.['CreateDate']?.replaceAll('.', '-')).format(
+              'YYYY-MM-DD HH:mm:ss'
+            )
+          }}
         </div>
       </div>
       <!-- 訂單號 -->

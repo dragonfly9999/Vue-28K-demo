@@ -87,6 +87,10 @@ const recordInfo = computed(() => {
     }
   }
 });
+
+const date = computed(() =>
+  dayjs(props.order.Date.replaceAll('.', '-')).format('YYYY-MM-DD HH:mm:ss')
+);
 </script>
 <template>
   <q-item clickable v-ripple @click="() => (detailVisible = true)">
@@ -179,14 +183,14 @@ const recordInfo = computed(() => {
               {{ $t('transaction.time') }}
             </div>
             <div class="text-caption">
-              {{ dayjs(order.Date).format('YYYY-MM-DD HH:mm:ss') }}
+              {{ date }}
             </div>
           </div>
         </div>
       </div>
     </q-item-section>
     <q-dialog v-model="detailVisible">
-      <RecordDetail :record="order" />
+      <RecordDetail :record="order" :is-expired="isExpired" />
     </q-dialog>
   </q-item>
 </template>

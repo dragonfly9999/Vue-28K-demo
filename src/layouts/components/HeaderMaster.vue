@@ -21,7 +21,9 @@ const drawerRight = ref(false);
 const isAgent = computed(() => storage.getStorageSync('isAgent'));
 
 const logout = () => {
-  updateAuto(0);
+  if (useStorage().getStorageSync('isAgent')) {
+    updateAuto(0);
+  }
   setTimeout(() => {
     cleanLive();
     storage.clearStorageSync();

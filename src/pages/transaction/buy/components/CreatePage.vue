@@ -42,6 +42,13 @@ const isPassTwenty = ref(false);
 const pairWarn = ref(false);
 const flag = new URL(`../../../../assets/${currency}.png`, import.meta.url)
   .href;
+const handleConfirm = () => {
+  const UsdtAmt = numberTool(form.UsdtAmt);
+  create({
+    ClientName: form.ClientName,
+    UsdtAmt,
+  });
+};
 </script>
 <template>
   <q-card class="q-pa-md">
@@ -268,18 +275,7 @@ const flag = new URL(`../../../../assets/${currency}.png`, import.meta.url)
     trnasition-hide="fade"
     v-model="pairWarn"
   >
-    <CreateWarn
-      :loading="loading"
-      @confirm="
-        () => {
-          const UsdtAmt = numberTool(form.UsdtAmt).toString();
-          create({
-            ClientName: form.ClientName,
-            UsdtAmt,
-          });
-        }
-      "
-    />
+    <CreateWarn :loading="loading" @confirm="handleConfirm" />
   </q-dialog>
 </template>
 

@@ -11,14 +11,13 @@ export const useStateStore = defineStore('state', () => {
     data: balance,
     run: updateBalance,
     loading: balanceLoading,
-    refresh:refreshBalance
+    refresh: refreshBalance,
   } = useBalance();
   const { data: rates, run: updateRates, loading: loadRates } = useRates();
 
   const updateState = () => {
     updateBalance({});
     updateRates({});
-    updateAuto(-1);
   };
   const getAuto = () => auto.value;
   const getBalance = () => balance.value;
@@ -36,6 +35,6 @@ export const useStateStore = defineStore('state', () => {
     getBalanceLoad,
     getRatesLoad,
     refreshBalance,
-    currency
+    currency,
   };
 });

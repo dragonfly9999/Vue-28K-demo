@@ -6,6 +6,8 @@ import { useExpired, useHistory, useProgress } from './api';
 import DateMasterOne from 'src/components/DateMasterOne.vue';
 import dayjs from 'dayjs';
 import HistoryList from './components/HistoryList.vue';
+import { MasterTypeNum } from 'src/utils/NumberTool';
+import { useStorage } from 'vue3-storage';
 
 const { t } = useI18n();
 const router = useRouter();
@@ -18,45 +20,71 @@ const dateRange = reactive({
   to: dayjs().endOf('week').format('YYYY-MM-DD HH:mm'),
 });
 const current = ref(1);
-const useOrders = computed(() => {
-  let useOrders: Array<OrderRecord | ExpiredOrder> | undefined;
-  switch (tab.value) {
-    case 'finish': {
-      useOrders = history.value;
-      break;
+const type = ref(5);
+const filterOrders = computed(() => {
+  const useOrders = () => {
+    switch (tab.value) {
+      case 'finish':
+        return history.value;
+      case 'someProgress':
+        return progress.value;
+      case 'fail':
+        return expireds.value;
+      default:
+        return [];
     }
-    case 'someProgress': {
-      useOrders = progress.value;
-      break;
-    }
-    case 'fail': {
-      useOrders = expireds.value;
-      break;
-    }
-    default:
-      return [];
-  }
-  useOrders = useOrders
-    ?.filter((order) => {
-      const date = dayjs(order?.Date);
-      const from = dayjs(dateRange.from);
-      const to = dayjs(dateRange.to);
+  };
+  const pureOrder = useOrders();
+  if (!pureOrder) return [];
+
+  const result = pureOrder
+    .filter((order) => {
+      const date = dayjs(order?.Date.replaceAll('.', '-'));
+      const from = dayjs(dateRange.from.replaceAll('.', '-'));
+      const to = dayjs(dateRange.to.replaceAll('.', '-'));
       return (
+        (date.isAfter(from) && date.isBefore(to)) ||
         date.isSame(from) ||
-        date.isSame(to) ||
-        (date.isAfter(from) && date.isBefore(to))
+        date.isSame(to)
       );
     })
-    .sort((a, b) => (dayjs(b.Date).isBefore(dayjs(a.Date)) ? -1 : 0));
-  return useOrders;
+    .filter((record) => {
+      if (type.value === 5) return true;
+      if (tab.value === 'fail' && useStorage().getStorageSync('isAgent')) {
+        switch (type.value) {
+          case MasterTypeNum.Buy:
+            return record.MasterType === MasterTypeNum.Sell;
+          case MasterTypeNum.Sell:
+            return record.MasterType === MasterTypeNum.Buy;
+          case MasterTypeNum.TransIn:
+            return record.MasterType === MasterTypeNum.TransOut;
+          case MasterTypeNum.TransOut:
+            return record.MasterType === MasterTypeNum.TransIn;
+          default:
+            return false;
+        }
+      }
+      return record.MasterType === type.value;
+    });
+  return result;
 });
+const useOrders = computed(
+  () =>
+    filterOrders.value
+      .slice()
+      .sort((a, b) =>
+        dayjs(b.Date.replaceAll('.', '-')).isBefore(
+          dayjs(a.Date.replaceAll('.', '-'))
+        )
+          ? -1
+          : 0
+      )
+      .slice((current.value - 1) * 5, (current.value - 1) * 5 + 5) // page
+);
 const maxPaination = computed(() =>
-  Math.floor(
-    ((useOrders.value?.length === 0 ? 5 : useOrders.value?.length ?? 5) + 4) / 5
-  )
+  Math.floor((filterOrders.value.length + 4) / 5)
 );
 const tab = ref('finish');
-const type = ref(5);
 </script>
 <template>
   <q-page class="width900">
@@ -138,10 +166,9 @@ const type = ref(5);
             class="q-pa-xs"
           >
             <HistoryList
+              @update:type="() => (current = 1)"
               v-model:type="type"
-              :orders="
-                useOrders?.slice((current - 1) * 5, (current - 1) * 5 + 5)
-              "
+              :orders="useOrders"
               :loading="loading"
               :is-expired="status === 'fail'"
             />
