@@ -38,11 +38,11 @@ const processImage = async (file: File) => {
     ctx.drawImage(img, 0, 0, width, height);
 
     // 浮水印
-    // const text = '好幣多 實名驗證';
-    // ctx.font = '20px Arial';
-    // ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-    // ctx.textBaseline = 'middle';
-    // ctx.fillText(text, 10, 20, maxWidth);
+    const text = '實名驗證';
+    ctx.font = '20px Arial';
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(text, 10, 20, maxWidth);
     const dataUrl = canvas.toDataURL('image/jpeg', quality);
     return dataUrl;
   } else {

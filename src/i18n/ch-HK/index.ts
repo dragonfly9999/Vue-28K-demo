@@ -1,10 +1,20 @@
 import { AccNum } from 'src/pages/account/api';
 import { MasterTypeNum } from 'src/utils/NumberTool';
+import kyc from './kyc';
 
 export default {
   name: '中文',
   訊息: '訊息',
   locale: 'ch-HK',
+  交易進行中: '交易進行中',
+  交易: '交易',
+  購買: '購買',
+  出售: '出售',
+  kyc,
+  cancel: {
+    title: '即將離開',
+    content: '注意！資料將不會儲存'
+  },
   label: {
     login: '登入',
     country_code: '國碼',
@@ -93,7 +103,7 @@ export default {
     handling_fee: '手續費',
     payee: '姓名',
     payer: '付款方',
-    beneficiary:'收款方',
+    beneficiary: '收款方',
     bank_name: '銀行名稱',
     code: {
       TWD: '銀行代碼',
@@ -353,6 +363,10 @@ export default {
   },
 
   error: {
+    input: {
+      empty: '欄位不能為空'
+    },
+    圖片上傳失敗: '圖片上傳失敗',
     simple_input: '請輸入欄位',
     country_code: '請選擇國碼',
     phone: '請輸入完整電話號碼',

@@ -17,7 +17,7 @@ const routes: RouteRecordRaw[] = [
     children: [
       {
         path: '/main',
-        redirect: import.meta.env.DEV ? '/main/account' : '/main/dashboard'
+        redirect: import.meta.env.DEV ? '/main/account' : '/main/kyc'
       },
       {
         path: 'dashboard',
@@ -65,6 +65,22 @@ const routes: RouteRecordRaw[] = [
         path: 'account_create',
         component: () => import('pages/account/CreatePage.vue'),
         name: 'account_create'
+      },
+      {
+        path: 'kyc',
+        component: () => import('pages/kyc/IndexPage.vue'),
+        children: [
+          {
+            path: '',
+            component: () => import('pages/kyc/KycList.vue'),
+            name: 'kyc'
+          },
+          {
+            path: 'create',
+            component: () => import('pages/kyc/CreatePage.vue'),
+            name: 'kyc_create'
+          }
+        ]
       }
     ],
     meta: {

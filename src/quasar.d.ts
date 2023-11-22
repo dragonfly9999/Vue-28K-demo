@@ -130,3 +130,9 @@ type WebsocketOptions = {
   order_token?: string;
   login_session: string;
 };
+
+type UseProps<DATA = unknown, Params = unknown> = {
+  onSuccess?: (res?: VirgilRes<DATA>) => void;
+  onError?: () => void;
+  onAfter?: (args?: Params) => void;
+};
