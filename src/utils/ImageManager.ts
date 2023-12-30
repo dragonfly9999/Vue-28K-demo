@@ -90,7 +90,7 @@ const fullScreen = (base64Image: string) => {
     // 當使用者按下 ESC 鍵或點擊全螢幕元素時，關閉全螢幕展示
     fullscreenElement.addEventListener('click', closeFullscreen);
     document.addEventListener('keydown', function (event: KeyboardEvent) {
-      if (event.keyCode === 27) {
+      if (event.key === 'Esc') {
         closeFullscreen();
       }
     });

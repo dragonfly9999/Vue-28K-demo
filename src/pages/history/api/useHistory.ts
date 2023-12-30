@@ -4,7 +4,8 @@ import { requestProvider } from 'src/utils/requestProvider';
 export const useHistory = () =>
   requestProvider<Array<OrderRecord>>({
     reqFn: () => axiosProvider.get('/GetTxHistory.aspx'),
-    isManual: false,
+    isManual: true,
+    noFeedback: true,
     config: {
       cacheKey: 'history'
     }

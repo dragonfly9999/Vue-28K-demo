@@ -7,6 +7,7 @@ import { useThirdStore } from './third';
 enum MtTypeNum {
   Buy = 2,
   Sell = 1,
+  CantTake = 4
 }
 enum OrderStatusNum {
   Matching = 31,
@@ -15,7 +16,7 @@ enum OrderStatusNum {
   Appeal = 35,
   Complete = 1,
   Cancel = 99,
-  TimeOut = 98,
+  TimeOut = 98
 }
 type LiveType = 'instant' | 'progress';
 
@@ -23,11 +24,11 @@ export const useLiveStore = defineStore('live', () => {
   const { setWebSockets: setThird } = useThirdStore();
   const liveWs = reactive<{ [key in LiveType]: WebSocketClient | null }>({
     instant: null,
-    progress: null,
+    progress: null
   });
   const liveOrders = reactive<{ [key in LiveType]: Array<LiveOrder> }>({
     instant: [],
-    progress: [],
+    progress: []
   });
   const liveMessages = reactive<{
     [key in LiveType]: (args?: Array<LiveOrder>) => void;
@@ -37,7 +38,7 @@ export const useLiveStore = defineStore('live', () => {
     },
     progress: () => {
       console.log('progress on message');
-    },
+    }
   });
 
   const setOrders = (login_session: string) => {
@@ -45,7 +46,7 @@ export const useLiveStore = defineStore('live', () => {
       reconnectEnabled: true,
       reconnectInterval: 2000,
       isChat: false,
-      login_session,
+      login_session
     };
     const isAgent = useStorage().getStorageSync('isAgent');
     if (isAgent) {
@@ -92,7 +93,7 @@ export const useLiveStore = defineStore('live', () => {
 
   const setOnMessage = ({
     type,
-    fn,
+    fn
   }: {
     type: LiveType;
     fn: (args?: Array<LiveOrder> | undefined) => void;
@@ -111,7 +112,7 @@ export const useLiveStore = defineStore('live', () => {
     setOrders,
     getOrders,
     setOnMessage,
-    cleanLive,
+    cleanLive
   };
 });
 export { MtTypeNum, OrderStatusNum };

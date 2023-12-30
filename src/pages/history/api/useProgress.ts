@@ -4,5 +4,6 @@ import { requestProvider } from 'src/utils/requestProvider';
 export const useProgress = () =>
   requestProvider<Array<OrderRecord>>({
     reqFn: () => axiosProvider.get('/GetTxPendings.aspx'),
-    isManual: false
+    isManual: true,
+    noFeedback: true
   });

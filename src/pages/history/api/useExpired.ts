@@ -4,5 +4,6 @@ import { requestProvider } from 'src/utils/requestProvider';
 export const useExpired = () =>
   requestProvider<Array<ExpiredOrder>>({
     reqFn: () => axiosProvider.get('/GetTxExpired.aspx'),
-    isManual: false,
+    isManual: true,
+    noFeedback: true
   });

@@ -90,6 +90,7 @@ export default {
     complete: '完成',
     opponent_preparing: '對方準備中',
     need_confirm_payment: '需確認收款',
+    cantTake: '餘額不足',
     cancel: '取消',
     over_time: '訂單超時',
     quantity: '數量',

@@ -24,6 +24,8 @@
         <q-btn round flat icon="add" @click="() => picker.pickFiles()" />
       </template>
     </q-file>
+    <div>base64: {{ base64 }}</div>
+    <div>loading: {{ loading }}</div>
   </div>
 </template>
 

@@ -87,6 +87,12 @@ const OrderStatus = computed(() => {
             bg_color: 'grey-1',
           };
       }
+    case MtTypeNum.CantTake:
+      return {
+        label: t('transaction.cantTake'),
+        text_color: 'dark',
+        bg_color: 'grey-1',
+      };
     default:
       return {
         label: t('label.undefined'),

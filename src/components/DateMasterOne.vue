@@ -1,5 +1,9 @@
 <template>
-  <q-btn class="q-mb-sm full-width" @click="visible.datePanel = true">
+  <q-btn
+    class="q-mb-sm full-width"
+    @click="visible.datePanel = true"
+    :loading="loading"
+  >
     <div class="row items-center justify-around q-pa-xs full-width">
       <div class="col-5">
         <q-field
@@ -12,10 +16,7 @@
           <template v-slot:control>
             <div class="no-outline" tabindex="0">
               <span>
-                {{ fromDate + ' ' }}
-              </span>
-              <span>
-                {{ fromTime }}
+                {{ from?.format('YYYY/MM/DD HH:mm') }}
               </span>
             </div>
           </template>
@@ -32,10 +33,7 @@
           <template v-slot:control>
             <div class="no-outline" tabindex="0">
               <span>
-                {{ toDate + ' ' }}
-              </span>
-              <span>
-                {{ toTime }}
+                {{ to?.format('YYYY/MM/DD HH:mm') }}
               </span>
             </div>
           </template>
@@ -46,7 +44,16 @@
       </div>
     </div>
   </q-btn>
-  <q-dialog v-model="visible.datePanel" persistent>
+  <q-dialog
+    v-model="visible.datePanel"
+    persistent
+    @before-show="
+      () => {
+        if (from) tempData.fromDate = from;
+        if (to) tempData.toDate = to;
+      }
+    "
+  >
     <q-card style="width: 60vh">
       <!-- header -->
       <q-card-section
@@ -86,16 +93,26 @@
       <!-- body -->
       <div class="picker-body">
         <!-- 從 -->
-        <span style="width: 45%" >
+        <span style="width: 45%">
           <div>
             <!-- Day -->
             <q-field label="從" stack-label class="q-mr-md cursor-pointer">
               <q-popup-proxy>
-                <q-date v-model="fromDate" :options="options.fromDate" />
+                <q-date
+                  :model-value="fromFormat.date"
+                  @update:model-value="
+                    (newDate) => {
+                      tempData.fromDate = useDayJs(newDate).hour(
+                        tempData.fromDate.hour()
+                      );
+                    }
+                  "
+                  :options="options.fromDate"
+                />
               </q-popup-proxy>
               <template v-slot:control>
                 <div class="self-center full-width no-outline" tabindex="0">
-                  {{ fromDate }}
+                  {{ fromFormat.date }}
                 </div>
               </template>
               <template v-slot:append>
@@ -105,16 +122,37 @@
             <!-- Time -->
             <q-field label="從" stack-label class="q-mr-md cursor-pointer">
               <q-popup-proxy>
-                <q-time
-                  v-model="fromTime"
-                  format24h
-                  :minute-options="[0]"
-                  now-btn
-                />
+                <q-list bordered style="height: 30vh">
+                  <div v-for="time in 24" :key="time">
+                    <q-item
+                      dense
+                      clickable
+                      @click="
+                        () =>
+                          (tempData.fromDate = useDayJs()
+                            .set('hour', time)
+                            .set('minute', 0))
+                      "
+                    >
+                      <q-item-section
+                        class="items-center"
+                        style="user-select: none"
+                      >
+                        {{
+                          useDayJs()
+                            .set('hour', time)
+                            .set('minute', 0)
+                            .format('HH:mm')
+                        }}
+                      </q-item-section>
+                    </q-item>
+                    <q-separator />
+                  </div>
+                </q-list>
               </q-popup-proxy>
               <template v-slot:control>
                 <div class="self-center full-width no-outline" tabindex="0">
-                  {{ fromTime }}
+                  {{ fromFormat.time }}
                 </div>
               </template>
               <template v-slot:append>
@@ -129,11 +167,21 @@
             <!-- day -->
             <q-field label="至" stack-label class="q-ml-md cursor-pointer">
               <q-popup-proxy>
-                <q-date v-model="toDate" :options="options.toDate" />
+                <q-date
+                  :model-value="toFormat.date"
+                  @update:model-value="
+                    (newDate) => {
+                      tempData.toDate = useDayJs(newDate).hour(
+                        tempData.toDate.hour()
+                      );
+                    }
+                  "
+                  :options="options.toDate"
+                />
               </q-popup-proxy>
               <template v-slot:control>
                 <div class="self-center full-width no-outline" tabindex="0">
-                  {{ toDate }}
+                  {{ toFormat.date }}
                 </div>
               </template>
               <template v-slot:append>
@@ -143,16 +191,37 @@
             <!-- time -->
             <q-field label="至" stack-label class="q-ml-md cursor-pointer">
               <q-popup-proxy>
-                <q-time
-                  v-model="toTime"
-                  :options="options.toTime"
-                  format24h
-                  now-btn
-                />
+                <q-list bordered style="height: 30vh">
+                  <div v-for="time in 24" :key="time">
+                    <q-item
+                      dense
+                      clickable
+                      @click="
+                        () =>
+                          (tempData.toDate = useDayJs()
+                            .set('hour', time)
+                            .set('minute', 0))
+                      "
+                    >
+                      <q-item-section
+                        class="items-center"
+                        style="user-select: none"
+                      >
+                        {{
+                          useDayJs()
+                            .set('hour', time)
+                            .set('minute', 0)
+                            .format('HH:mm')
+                        }}
+                      </q-item-section>
+                    </q-item>
+                    <q-separator />
+                  </div>
+                </q-list>
               </q-popup-proxy>
               <template v-slot:control>
                 <div class="self-center full-width no-outline" tabindex="0">
-                  {{ toTime }}
+                  {{ toFormat.time }}
                 </div>
               </template>
               <template v-slot:append>
@@ -163,7 +232,7 @@
         </span>
       </div>
       <!-- footer -->
-      <q-card-actions align="center">
+      <q-card-actions align="around">
         <!-- 前一天 -->
         <q-btn
           icon="arrow_back"
@@ -175,6 +244,22 @@
           :disable="disablePick && focusButton === 'before'"
           :loading="disablePick && focusButton === 'before'"
         />
+
+        <q-btn
+          color="blue-13"
+          padding="5px 20px"
+          @click="
+            () => {
+              visible.datePanel = false;
+              emit('submit', {
+                from: tempData.fromDate,
+                to: tempData.toDate,
+              });
+            }
+          "
+        >
+          送出
+        </q-btn>
         <!-- 後一天 -->
         <q-btn
           icon="arrow_forward"
@@ -188,16 +273,6 @@
           :loading="disablePick && focusButton === 'next'"
         />
       </q-card-actions>
-      <div class="picker-body">
-        <q-btn
-          color="blue-13"
-          padding="5px 20px"
-          v-if="!!props.needSubmit"
-          @click="emit('submit')"
-        >
-          送出
-        </q-btn>
-      </div>
     </q-card>
   </q-dialog>
 </template>
@@ -207,13 +282,13 @@ import { defineProps, defineEmits, reactive, computed, toRefs, ref } from 'vue';
 import dayjs, { Dayjs } from 'dayjs';
 
 const props = defineProps<{
-  from: string;
-  to: string;
-  needSubmit?: boolean;
+  from: Dayjs | null;
+  to: Dayjs | null;
   dayjsSet?: () => Dayjs;
   disable?: boolean;
+  loading?: boolean;
 }>();
-const emit = defineEmits(['update:from', 'update:to', 'submit']);
+const emit = defineEmits(['submit']);
 
 const useDayJs = props.dayjsSet ?? dayjs;
 const { disable: disablePick } = toRefs(props);
@@ -222,97 +297,61 @@ const focusButton = ref<FocusingButton>();
 
 const handleToMonth = () => {
   focusButton.value = 'month';
-  const newFromDate = useDayJs().startOf('month').format('YYYY-MM-DD HH:mm');
-  const newToDate = useDayJs().endOf('month').format('YYYY-MM-DD HH:mm');
-  emit('update:from', newFromDate);
-  emit('update:to', newToDate);
+  tempData.fromDate = useDayJs().startOf('month');
+  tempData.toDate = useDayJs().startOf('month').add(1, 'month');
 };
 
 const handleToWeek = () => {
   focusButton.value = 'week';
-  const newFromDate = useDayJs().startOf('week').format('YYYY-MM-DD HH:mm');
-  const newToDate = useDayJs().endOf('week').format('YYYY-MM-DD HH:mm');
-  emit('update:from', newFromDate);
-  emit('update:to', newToDate);
+  tempData.fromDate = useDayJs().startOf('week');
+  tempData.toDate = useDayJs().startOf('week').add(1, 'week');
 };
 
 const handleToday = () => {
   focusButton.value = 'today';
-  const newFromDate = useDayJs().startOf('day').format('YYYY-MM-DD HH:mm');
-  const newToDate = useDayJs().endOf('day').format('YYYY-MM-DD HH:mm');
-  emit('update:from', newFromDate);
-  emit('update:to', newToDate);
+  tempData.fromDate = useDayJs().startOf('day');
+  tempData.toDate = useDayJs().startOf('day').add(1, 'day');
 };
 
 const handleNextDay = () => {
   focusButton.value = 'next';
-  const newFromDate = useDayJs(props.from.substring(0, 10))
-    .add(1, 'day')
-    .format('YYYY-MM-DD');
-  const newToDate = useDayJs(props.to.substring(0, 10))
-    .add(1, 'day')
-    .format('YYYY-MM-DD');
-  fromDate.value = newFromDate;
-  toDate.value = newToDate;
+  tempData.fromDate = tempData.fromDate.add(1, 'day');
+  tempData.toDate = tempData.fromDate.add(1, 'day');
 };
 
 const handleDayBefore = () => {
   focusButton.value = 'before';
-  const newFromDate = useDayJs(props.from.substring(0, 10))
-    .subtract(1, 'day')
-    .format('YYYY-MM-DD');
-  const newToDate = useDayJs(props.to.substring(0, 10))
-    .subtract(1, 'day')
-    .format('YYYY-MM-DD');
-  fromDate.value = newFromDate;
-  toDate.value = newToDate;
+  tempData.fromDate = tempData.fromDate.subtract(1, 'day');
+  tempData.toDate = tempData.fromDate.subtract(1, 'day');
 };
 
-const fromDate = computed({
-  get() {
-    return props.from.slice(0, 10).replaceAll('-', '/');
-  },
-  set(newValue) {
-    const newFrom = newValue.replaceAll('/', '-') + props.from.slice(-6);
-    emit('update:from', newFrom);
-  },
-});
-const fromTime = computed({
-  get() {
-    return props.from.slice(-5).replaceAll('-', '/');
-  },
-  set(newValue) {
-    const newFrom = props.from.replaceAll('/', '-').slice(0, 11) + newValue;
-    emit('update:from', newFrom);
-  },
+const tempData = reactive({
+  fromDate: useDayJs().startOf('week'),
+  toDate: useDayJs().startOf('week').add(1, 'week'),
 });
 
-//  to
-const toDate = computed({
-  get() {
-    return props.to.slice(0, 10).replaceAll('-', '/');
-  },
-  set(newValue) {
-    const newTo = newValue.replaceAll('/', '-') + props.to.slice(-6);
-    emit('update:to', newTo);
-  },
+// from
+const fromFormat = computed(() => {
+  return {
+    date: tempData.fromDate.format('YYYY/MM/DD'),
+    time: tempData.fromDate.format('HH:mm'),
+  };
 });
-const toTime = computed({
-  get() {
-    return props.to.slice(-5).replaceAll('-', '/');
-  },
-  set(newValue) {
-    const newTo = props.to.slice(0, 11).replaceAll('/', '-') + newValue;
-    emit('update:to', newTo);
-  },
+const toFormat = computed(() => {
+  return {
+    date: tempData.toDate.format('YYYY/MM/DD'),
+    time: tempData.toDate.format('HH:mm'),
+  };
 });
 
 // set
 const options = computed(() => {
   return {
     fromDate: (date: string) => !!date,
-    toDate: (date: string) => date >= fromDate.value,
-    toTime: (hr: number) => Number(fromTime.value.substring(0, 2)) <= hr,
+    toDate: (date: string) =>
+      useDayJs(date).isAfter(tempData.fromDate) ||
+      useDayJs(date).isSame(tempData.fromDate),
+    toTime: (hr: number) => tempData.fromDate.hour() <= hr,
   };
 });
 const visible = reactive({
@@ -328,4 +367,3 @@ const visible = reactive({
   align-items: center;
 }
 </style>
-```

@@ -49,6 +49,8 @@ const orderInfo = computed(() => {
       return { label: t('label.buy'), color: 'blue-13' };
     case MtTypeNum.Sell:
       return { label: t('label.sell'), color: 'red' };
+    case MtTypeNum.CantTake:
+      return { label: t('label.sell'), color: 'grey' };
     default: {
       return { label: t('label.undefined'), color: 'purple' };
     }
@@ -190,8 +192,10 @@ const handleClickItem = () => {
               unelevated
               icon="shopping_bag"
               color="blue-13"
-              >開始交易</q-btn
+              :disable="order.MType === MtTypeNum.CantTake"
             >
+              開始交易
+            </q-btn>
           </div>
         </div>
       </div>

@@ -177,17 +177,17 @@
           <PickImg v-model:base64="imgs.img1" :label="$t('kyc.正面')" />
           <!-- 2 -->
           <div class="q-my-sm">{{ $t('kyc.反面') }}</div>
-          <PickImg v-model:base64="imgs.img1" :label="$t('kyc.反面')" />
+          <PickImg v-model:base64="imgs.img2" :label="$t('kyc.反面')" />
           <!-- 3 -->
           <div class="q-my-sm">{{ $t('kyc.手持證件自拍照') }}</div>
           <PickImg
-            v-model:base64="imgs.img1"
+            v-model:base64="imgs.img3"
             :label="$t('kyc.手持證件自拍照')"
           />
           <!-- 4 -->
           <div class="q-my-sm">{{ $t('kyc.銀行帳戶信息截圖') }}</div>
           <PickImg
-            v-model:base64="imgs.img1"
+            v-model:base64="imgs.img4"
             :label="$t('kyc.銀行帳戶信息截圖')"
           />
         </div>
@@ -354,6 +354,7 @@ const handleCreate = () => {
 // test
 const isTest = true;
 if (import.meta.env.DEV && isTest) {
+  console.log('on test');
   name.value = 'Ben test ' + dayjs().format('MM.DD HH:mm:ss');
   nationality.value = '民族';
   address.value = 'address';
