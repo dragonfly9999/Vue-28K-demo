@@ -19,7 +19,8 @@ type UseProps = {
 
 export const useSell1 = ({ onSuccess }: UseProps) =>
   requestProvider<SellRes, SellProps>({
-    reqFn: (props) => axiosProvider.post('/req_sell1.aspx', props),
+    reqFn: (props) =>
+      axiosProvider.post('/req_sell1.aspx', props).then(({ data }) => data),
     isManual: true,
-    onSuccess,
+    onSuccess
   });

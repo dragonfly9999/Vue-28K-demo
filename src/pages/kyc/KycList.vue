@@ -1,7 +1,7 @@
 <template>
   <div class="row q-mb-sm">
     <div class="col-3">
-      <q-btn flat color="primary" :label="$t('返回')" @click="$router.back()" />
+      <q-btn flat color="primary" :label="$t('back')" @click="$router.back()" />
     </div>
     <div class="col flex justify-center text-h6 text-weight-bold">
       {{ $t('kyc.實名驗證') }}

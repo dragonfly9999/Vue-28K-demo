@@ -14,7 +14,10 @@ type UseProps = {
 };
 export const useCheckErc = (props?: UseProps) =>
   requestProvider<CheckRes, CheckProps>({
-    reqFn: (props) => axiosProvider.post('/ChkToAddressValid.aspx', props),
+    reqFn: (props) =>
+      axiosProvider
+        .post('/ChkToAddressValid.aspx', props)
+        .then(({ data }) => data),
     isManual: true,
-    ...props,
+    ...props
   });

@@ -179,7 +179,7 @@ const handleClickItem = () => {
         <div class="q-gutter-sm">
           <div class="q-gutter-sm column items-end justify-end">
             <q-badge
-              :label="$t('訊息') + ': ' + getCount(order.token)"
+              :label="$t('transaction.訊息') + ': ' + getCount(order.token)"
               v-if="!isInstant"
             />
             <status-master :order="order" />

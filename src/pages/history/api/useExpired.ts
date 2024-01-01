@@ -3,7 +3,8 @@ import { requestProvider } from 'src/utils/requestProvider';
 
 export const useExpired = () =>
   requestProvider<Array<ExpiredOrder>>({
-    reqFn: () => axiosProvider.get('/GetTxExpired.aspx'),
+    reqFn: () =>
+      axiosProvider.get('/GetTxExpired.aspx').then(({ data }) => data),
     isManual: true,
     noFeedback: true
   });

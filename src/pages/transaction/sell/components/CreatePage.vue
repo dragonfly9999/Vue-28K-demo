@@ -46,22 +46,14 @@ const flag = new URL(`../../../../assets/${currency}.png`, import.meta.url)
         <q-btn
           flat
           color="primary"
-          :label="$t('label.back')"
+          :label="$t('返回')"
           @click="$router.back()"
         />
       </div>
-      <!-- title出售USDT -->
       <div class="col flex justify-center text-h6 text-weight-bold">
-        {{ $t('label.sell') }} USDT
+        {{ $t('transaction.出售') }} USDT
       </div>
-      <div class="col-4">
-        <!-- <div
-            class="text-caption text-right text-blue-grey-4"
-            style="margin-top: 1rem"
-          >
-            更新時間:2022/12/09 00:00:00
-          </div> -->
-      </div>
+      <div class="col-4"></div>
     </div>
 
     <q-form @submit="() => (createWarn = true)">
@@ -72,13 +64,13 @@ const flag = new URL(`../../../../assets/${currency}.png`, import.meta.url)
         <!-- 請輸入出售數量 -->
         <div class="flex items-center q-my-sm justify-between">
           <div class="text-subtitle1">
-            {{ $t('請輸入出售數量') }}
+            {{ $t('transaction.請輸入出售數量') }}
           </div>
 
           <!-- 餘額 -->
           <div class="flex items-center">
             <div class="text-grey-6 text-subtitle2">
-              {{ $t('餘額') }}
+              {{ $t('transaction.餘額') }}
             </div>
             <div class="text-green-9 text-subtitle2">
               {{ thousandTool(getBalance()?.Avb_Balance, 'CNY') }}
@@ -114,7 +106,7 @@ const flag = new URL(`../../../../assets/${currency}.png`, import.meta.url)
 
         <q-input
           outlined
-          :label="$t('我要出售')"
+          :label="$t('transaction.我要出售')"
           :model-value="form.UsdtAmt"
           @focus="
             () => {
@@ -162,7 +154,7 @@ const flag = new URL(`../../../../assets/${currency}.png`, import.meta.url)
         <q-input
           :disable="getRatesLoad()"
           outlined
-          :label="$t('我將收到')"
+          :label="$t('transaction.我將收到')"
           :model-value="price"
           @update:model-value="
             (val) => {
@@ -183,7 +175,9 @@ const flag = new URL(`../../../../assets/${currency}.png`, import.meta.url)
               if (!/^[0-9,.]+$/.test(price)) price = '0';
             }
           "
-          :rules="[(val) => numberTool(val) > 0 || $t('請輸入有效金額')]"
+          :rules="[
+            (val) => numberTool(val) > 0 || $t('transaction.請輸入有效金額'),
+          ]"
         >
           <template v-slot:append>
             <q-img width="20px" :src="flag" />
@@ -194,66 +188,58 @@ const flag = new URL(`../../../../assets/${currency}.png`, import.meta.url)
 
       <div class="q-gutter-sm q-mt-sm">
         <div class="q-my-sm text-subtitle1">
-          {{ $t('銀行卡資訊') }}
+          {{ $t('transaction.銀行卡資訊') }}
         </div>
         <q-input
           v-model="form.AccountName"
           outlined
-          :label="$t('收款姓名')"
-          :rules="[(val) => !!val || $t('請輸入收款姓名')]"
+          :label="$t('transaction.收款姓名')"
+          :rules="[(val) => !!val || $t('transaction.請輸入收款姓名')]"
         />
         <q-input
           v-model="form.AccountNumber"
           outlined
-          :label="$t('收款帳號')"
-          :rules="[(val) => !!val || $t('請輸入收款帳號')]"
+          :label="$t('transaction.收款帳號')"
+          :rules="[(val) => !!val || $t('transaction.請輸入收款帳號')]"
         />
         <q-input
           v-model="form.BankName"
           outlined
-          :label="$t('開戶銀行')"
-          :rules="[(val) => !!val || $t('請輸入開戶銀行')]"
+          :label="$t('transaction.開戶銀行')"
+          :rules="[(val) => !!val || $t('transaction.請輸入開戶銀行')]"
         />
-        <q-input v-model="form.BankBranch" outlined :label="$t('所在省市')" />
+        <q-input
+          v-model="form.BankBranch"
+          outlined
+          :label="$t('transaction.所在省市')"
+        />
       </div>
 
       <div class="q-mt-lg">
         <div class="flex justify-between">
           <div class="text-subtitle1">
-            {{ $t('訂單資訊') }}
+            {{ $t('transaction.訂單資訊') }}
           </div>
           <div class="flex items-center">
             <q-icon class="material-icons text-grey-7">schedule</q-icon>
-            <!-- 付款時間 30分鐘 -->
             <div class="text-caption text-grey-7">
-              {{ $t('付款時間 30分鐘') }}
+              {{ $t('transaction.付款時間') }}
             </div>
           </div>
         </div>
-        <div class="mycolor1 q-pa-md">
-          <!-- <div class="flex justify-between text-grey-7 text-caption">
-            <div>{{ $t('出售數量') }}</div>
-            <div>{{ form.UsdtAmt }} USDT</div>
-          </div>
-          <div class="flex justify-between text-grey-7 text-caption">
-            <div>{{ $t('交易服務費') }}(0%)</div>
-            <div>{{ 0 }} USDT</div>
-          </div>
-          <q-separator spaced /> -->
 
-          <!-- 交易數量 -->
+        <div class="mycolor1 q-pa-md">
           <div class="flex justify-between">
             <div class="text-weight-bold">
-              {{ $t('交易數量') }}
+              {{ $t('transaction.交易數量') }}
             </div>
             <div class="text-weight-bold text-body1">
               {{ thousandInput(form.UsdtAmt) }} USDT
             </div>
           </div>
-          <!-- 總金額 -->
           <div class="flex justify-between">
             <div class="text-right text-primary text-weight-bold">
-              {{ $t('總金額') }}
+              {{ $t('transaction.總金額') }}
             </div>
             <div class="text-primary text-weight-bold text-right text-body1">
               {{ thousandInput(price) + ' ' + currency }}
@@ -261,9 +247,8 @@ const flag = new URL(`../../../../assets/${currency}.png`, import.meta.url)
           </div>
         </div>
       </div>
-      <!-- 交易匯率依據訂單成立為主 -->
       <div class="text-center text-caption text-grey-6 q-mt-xs q-mb-lg">
-        {{ $t('交易匯率依據訂單成立為主') }}
+        {{ $t('transaction.交易匯率依據訂單成立為主') }}
       </div>
 
       <div class="flex no-wrap items-start q-my-md">
@@ -307,7 +292,7 @@ const flag = new URL(`../../../../assets/${currency}.png`, import.meta.url)
         type="submit"
         class="full-width"
         color="blue-13"
-        :label="$t('開始配對')"
+        :label="$t('transaction.開始配對')"
       />
     </q-form>
   </q-card>

@@ -15,7 +15,10 @@ type UseProps = {
 
 export const useCheckTrc = (props?: UseProps) =>
   requestProvider<CheckRes, CheckProps>({
-    reqFn: (props) => axiosProvider.post('/ChkToAddressValid2.aspx', props),
+    reqFn: (props) =>
+      axiosProvider
+        .post('/ChkToAddressValid2.aspx', props)
+        .then(({ data }) => data),
     isManual: true,
-    ...props,
+    ...props
   });

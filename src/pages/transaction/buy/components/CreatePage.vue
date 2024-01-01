@@ -63,7 +63,7 @@ const handleConfirm = () => {
         />
       </div>
       <div class="col flex justify-center text-h6 text-weight-bold">
-        {{ $t('購買USDT') }}
+        {{ $t('transaction.購買USDT') }}
       </div>
       <div class="col-4">
         <!-- <div class="text-caption text-right text-blue-grey-4" style="margin-top: 1rem;">
@@ -78,13 +78,13 @@ const handleConfirm = () => {
       <div>
         <!--請輸入購買數量  -->
         <div class="q-my-sm text-subtitle1">
-          {{ $t('請輸入購買數量') }}
+          {{ $t('transaction.請輸入購買數量') }}
         </div>
         <!-- 我要購買input -->
         <q-input
           :loading="getRatesLoad()"
           :disable="getRatesLoad()"
-          :label="$t('我要購買')"
+          :label="$t('transaction.我要購買')"
           outlined
           :model-value="form.UsdtAmt"
           @focus="
@@ -128,7 +128,7 @@ const handleConfirm = () => {
       <!-- 我將支付input -->
       <div class="q-mt-md">
         <q-input
-          :label="$t(' 我將支付')"
+          :label="$t('transaction.我將支付')"
           :loading="getRatesLoad()"
           :disable="getRatesLoad()"
           outlined
@@ -147,7 +147,9 @@ const handleConfirm = () => {
               if (numberTool(price) < 1) price = '0';
             }
           "
-          :rules="[(val) => numberTool(val) > 0 || $t('請輸入金額')]"
+          :rules="[
+            (val) => numberTool(val) > 0 || $t('transaction.請輸入金額'),
+          ]"
           @blur="
             () => {
               if (!/^[0-9,.]+$/.test(price)) price = '0';
@@ -163,11 +165,11 @@ const handleConfirm = () => {
 
       <div class="q-mt-lg">
         <div class="q-my-sm text-subtitle1">
-          {{ $t('輸入銀行卡持有人姓名') }}
+          {{ $t('transaction.輸入銀行卡持有人姓名') }}
         </div>
         <q-input
-          :rules="[(val) => !!val || $t('請輸入銀行卡持有人姓名')]"
-          :label="$t('姓名')"
+          :rules="[(val) => !!val || $t('transaction.輸入銀行卡持有人姓名')]"
+          :label="$t('transaction.姓名')"
           outlined
           v-model="form.ClientName"
         />
@@ -176,31 +178,20 @@ const handleConfirm = () => {
       <div class="q-mt-lg">
         <div class="flex justify-between">
           <div class="text-subtitle1">
-            {{ $t('訂單資訊') }}
+            {{ $t('transaction.訂單資訊') }}
           </div>
           <div class="flex items-center">
-            <!-- <img src="../pages/auth/img/time.png" /> -->
-            <!-- 付款時間 -->
             <div class="text-caption text-grey-7">
-              {{ $t('付款時間: 30分鐘') }}
+              {{ $t('transaction.付款時間') }}
             </div>
           </div>
         </div>
+        <!-- 數量 -->
         <div class="mycolor1 q-pa-md">
-          <!-- <div class="flex justify-between text-grey-7 text-caption">
-              <div>{{ $t('購買數量') }}</div>
-              <div>{{ form.UsdtAmt }} USDT</div>
-            </div>
-            <div class="flex justify-between text-grey-7 text-caption">
-              <div>{{ $t('手續費') }}(0%)</div>
-              <div>{{ 0 }} USDT</div>
-            </div>
-            <q-separator spaced /> -->
           <div>
             <div class="flex justify-between">
-              <!-- 交易數量 -->
               <div class="text-weight-bold">
-                {{ $t('交易數量') }}
+                {{ $t('transaction.交易數量') }}
               </div>
               <div class="text-weight-bold text-body1">
                 {{ form.UsdtAmt }} USDT
@@ -209,7 +200,7 @@ const handleConfirm = () => {
             <div class="flex justify-between">
               <!-- 總金額 -->
               <div class="text-right text-primary text-weight-bold">
-                {{ $t('總金額') }}
+                {{ $t('transaction.總金額') }}
               </div>
               <div class="text-primary text-weight-bold text-right text-body1">
                 {{ thousandTool(price, 'CNY') + ' ' + currency }}
@@ -220,7 +211,7 @@ const handleConfirm = () => {
       </div>
       <!-- 交易匯率依據訂單成立為主 -->
       <div class="text-center text-caption text-grey-6 q-mt-xs q-mb-lg">
-        {{ $t('交易匯率依據訂單成立為主') }}
+        {{ $t('transaction.交易匯率依據訂單成立為主') }}
       </div>
 
       <!--  -->
@@ -264,7 +255,7 @@ const handleConfirm = () => {
         rounded
         class="full-width"
         color="blue-13"
-        :label="$t('開始配對')"
+        :label="$t('transaction.開始配對')"
         type="submit"
       />
     </q-form>

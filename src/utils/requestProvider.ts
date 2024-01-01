@@ -24,7 +24,7 @@ export const requestProvider = <DATA, Params = unknown>({
   onSuccess,
   onError,
   onAfter,
-  noFeedback,
+  noFeedback
 }: ProviderProps<DATA, Params>) => {
   const { t } = useI18n();
   const requestInstance = useRequest(reqFn, {
@@ -34,16 +34,16 @@ export const requestProvider = <DATA, Params = unknown>({
       if (useCode) {
         Notify.create({
           type: 'negative',
-          message: t(`error.${error.response?.data.code}`),
+          message: t(`error.api.${error.response?.data.code}`),
           position: 'top-right',
-          timeout: 2000,
+          timeout: 2000
         });
 
         switch (useCode.toString()) {
           case '91': {
             // 強制登出，流程跟登出一樣，但使用ts的寫法。
             axiosProvider.post('/Req_AutoPick.aspx', {
-              mode: 0,
+              mode: 0
             });
             setTimeout(() => {
               useStorage().clearStorageSync();
@@ -60,7 +60,7 @@ export const requestProvider = <DATA, Params = unknown>({
           type: 'positive',
           message: t('success'),
           position: 'top-right',
-          timeout: 500,
+          timeout: 500
         });
       }
       if (onSuccess) onSuccess(res);
@@ -68,7 +68,7 @@ export const requestProvider = <DATA, Params = unknown>({
     onAfter: (params) => {
       !!onAfter && onAfter(params);
     },
-    manual: isManual,
+    manual: isManual
   });
   const useData = computed(() => requestInstance.data.value?.data);
   return { ...requestInstance, data: useData };

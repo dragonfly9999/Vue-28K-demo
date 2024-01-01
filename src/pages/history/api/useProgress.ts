@@ -3,7 +3,8 @@ import { requestProvider } from 'src/utils/requestProvider';
 
 export const useProgress = () =>
   requestProvider<Array<OrderRecord>>({
-    reqFn: () => axiosProvider.get('/GetTxPendings.aspx'),
+    reqFn: () =>
+      axiosProvider.get('/GetTxPendings.aspx').then(({ data }) => data),
     isManual: true,
     noFeedback: true
   });

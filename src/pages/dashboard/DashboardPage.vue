@@ -30,13 +30,13 @@ onMounted(() => {
 });
 </script>
 <template>
-  <div class="q-gutter-y-md q-mt-md width900" >
+  <div class="q-gutter-y-md q-mt-md width900">
     <!-- 交易列表 -->
     <div class="flex items-center justify-between">
       <div class="flex items-center q-mr-md">
         <q-img :src="progressPng" width="20px" />
         <div class="text-h6 text-weight-bold">
-          {{ isAgent ? $t('label.instant_transaction') : $t('交易進行中') }}
+          {{ isAgent ? $t('dashboard.即時訂單') : $t('dashboard.交易進行中') }}
         </div>
       </div>
       <div class="flex items-center" v-if="isAgent">
@@ -106,7 +106,7 @@ onMounted(() => {
         v-if="isAgent"
       >
         <!-- 即時訂單 -->
-        <q-tab name="1" :label="$t('label.instant_transaction')">
+        <q-tab name="1" :label="$t('dashboard.即時訂單')">
           <q-badge
             color="red"
             :label="getOrders('instant')?.length"

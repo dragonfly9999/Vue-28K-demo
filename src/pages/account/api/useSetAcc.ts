@@ -8,7 +8,8 @@ type UseProps = {
 
 export const useSetAcc = (props: UseProps) =>
   requestProvider<null, Omit<AccRes, 'H_id'>>({
-    reqFn: (props) => axiosProvider.post('/SetAgentAcc.aspx', props),
+    reqFn: (props) =>
+      axiosProvider.post('/SetAgentAcc.aspx', props).then(({ data }) => data),
     isManual: true,
     ...props
   });

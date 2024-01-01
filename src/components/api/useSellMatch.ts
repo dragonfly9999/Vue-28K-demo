@@ -11,7 +11,10 @@ type UseProps = {
 
 export const useSellMatch = (props?: UseProps) => {
   return requestProvider<OrderRecord, MatchProps>({
-    reqFn: (props) => axiosProvider.post('/Req_SellMatch1.aspx', props),
+    reqFn: (props) =>
+      axiosProvider
+        .post('/Req_SellMatch1.aspx', props)
+        .then(({ data }) => data),
 
     isManual: true,
     ...props

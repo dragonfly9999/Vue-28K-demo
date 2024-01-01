@@ -12,6 +12,7 @@ export type AccRes = Record<AccNum, string> & { H_id: number };
 
 export const useAccHistory = () =>
   requestProvider<Array<AccRes>>({
-    reqFn: () => axiosProvider.get('/GetAgentAccHistory.aspx'),
+    reqFn: () =>
+      axiosProvider.get('/GetAgentAccHistory.aspx').then(({ data }) => data),
     isManual: false
   });

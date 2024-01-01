@@ -10,6 +10,9 @@ type PayProps = {
 
 export const usePay = () =>
   requestProvider<PayRes, PayProps>({
-    reqFn: (props) => axiosProvider.post('/Req_SellMatch2.aspx', props),
+    reqFn: (props) =>
+      axiosProvider
+        .post('/Req_SellMatch2.aspx', props)
+        .then(({ data }) => data),
     isManual: true
   });

@@ -9,13 +9,13 @@ const { data: history, loading } = useHisotry();
     <!-- Header -->
     <div class="flex">
       <div class="text-h6 text-weight-bold">
-        {{ $t('transaction.recent') }}
+        {{ $t('transaction.最近交易') }}
       </div>
       <q-space />
       <q-btn
         flat
         color="blue-13"
-        :label="$t('transaction.all_transaction_history') + '>'"
+        :label="$t('transaction.所有交易紀錄')"
         to="history"
         style="text-decoration: none"
       />

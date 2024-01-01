@@ -10,6 +10,6 @@ type WalletRes = {
 
 export const useWallet = () =>
   requestProvider<WalletRes>({
-    reqFn: () => axiosProvider.get('/GetWallet.aspx'),
+    reqFn: () => axiosProvider.get('/GetWallet.aspx').then(({ data }) => data),
     isManual: false
   });

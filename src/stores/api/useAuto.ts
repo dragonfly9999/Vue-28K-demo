@@ -10,14 +10,18 @@ type AutoMode = {
 
 export const useAuto = (ready: ComputedRef<boolean>) =>
   requestProvider<AutoMode, AutoProps>({
-    reqFn: (mode) =>
-      axiosProvider.post('/Req_AutoPick.aspx', {
-        mode: mode === undefined ? -1 : mode,
-      }),
+    reqFn: (mode) => {
+      const request = axiosProvider
+        .post('/Req_AutoPick.aspx', {
+          mode: mode === undefined ? -1 : mode
+        })
+        .then(({ data }) => data);
+      return request;
+    },
     isManual: false,
     config: {
       pollingInterval: -1,
       refreshOnWindowFocus: false,
-      ready,
-    },
+      ready
+    }
   });

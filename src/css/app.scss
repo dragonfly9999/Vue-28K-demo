@@ -11,6 +11,10 @@ div.d {
   padding: 5px;
 }
 
+.test_dotted {
+  border: 2px dotted orange;
+}
+
 .q-header {
   display: flex;
   align-items: center;
@@ -101,16 +105,15 @@ li {
 .width900 {
   max-width: 900px;
   margin: auto;
-  padding:0 0.2rem
+  padding: 0 0.2rem;
 }
 .width480 {
   max-width: 480px;
   margin: auto;
-  padding:0 0.2rem
+  padding: 0 0.2rem;
 }
 .width600 {
   max-width: 600px;
   margin: auto;
-  padding:1rem
-
+  padding: 1rem;
 }

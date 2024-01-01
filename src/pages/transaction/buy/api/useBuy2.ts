@@ -13,7 +13,8 @@ type UseProps = {
 };
 export const useBuy2 = (props?: UseProps) =>
   requestProvider<BuyRes, BuyProps>({
-    reqFn: (props) => axiosProvider.post('/Req_Buy2.aspx', props),
+    reqFn: (props) =>
+      axiosProvider.post('/Req_Buy2.aspx', props).then(({ data }) => data),
     isManual: true,
-    ...props,
+    ...props
   });

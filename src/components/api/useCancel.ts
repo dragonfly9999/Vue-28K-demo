@@ -14,7 +14,10 @@ type UseProps = {
 
 export const useCancel = (props?: UseProps) =>
   requestProvider<CancelRes, CancelProps>({
-    reqFn: (props) => axiosProvider.post('/Req_CancelOrder.aspx', props),
+    reqFn: (props) =>
+      axiosProvider
+        .post('/Req_CancelOrder.aspx', props)
+        .then(({ data }) => data),
     isManual: true,
     ...props
   });

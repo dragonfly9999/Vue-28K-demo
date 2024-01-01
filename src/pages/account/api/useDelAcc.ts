@@ -11,7 +11,10 @@ type UseProps = {
 
 export const useDelAcc = (props: UseProps) =>
   requestProvider<null, DelProps>({
-    reqFn: (props) => axiosProvider.post('/Req_AgentAccHistory.aspx', props),
+    reqFn: (props) =>
+      axiosProvider
+        .post('/Req_AgentAccHistory.aspx', props)
+        .then(({ data }) => data),
     isManual: true,
     ...props
   });

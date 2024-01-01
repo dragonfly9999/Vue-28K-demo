@@ -23,7 +23,7 @@
         <q-btn
           outline
           color="primary"
-          :label="$t('返回')"
+          :label="$t('back')"
           @click="() => (leavingWarning = false)"
         />
         <!-- 確認btn -->

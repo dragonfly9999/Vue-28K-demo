@@ -3,7 +3,8 @@ import { requestProvider } from 'src/utils/requestProvider';
 
 export const useHisotry = () =>
   requestProvider<Array<OrderRecord>>({
-    reqFn: () => axiosProvider.get('/GetTxHistory.aspx'),
+    reqFn: () =>
+      axiosProvider.get('/GetTxHistory.aspx').then(({ data }) => data),
     isManual: false,
     config: {
       cacheKey: 'history',

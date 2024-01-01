@@ -133,6 +133,6 @@ type WebsocketOptions = {
 
 type UseProps<DATA = unknown, Params = unknown> = {
   onSuccess?: (res?: VirgilRes<DATA>) => void;
-  onError?: () => void;
+  onError?: (error?: unknown) => void;
   onAfter?: (args?: Params) => void;
 };

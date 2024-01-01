@@ -1,6 +1,10 @@
 import { AccNum } from 'src/pages/account/api';
 import { MasterTypeNum } from 'src/utils/NumberTool';
 import kyc from './kyc';
+import error from './error';
+import auth from './auth';
+import dashboard from './dashboard';
+import transaction from './transaction';
 
 export default {
   name: '中文',
@@ -10,17 +14,27 @@ export default {
   交易: '交易',
   購買: '購買',
   出售: '出售',
+  連線中: '連線中',
+  返回: '返回',
   kyc,
+  auth,
+  dashboard,
+  transaction,
   cancel: {
     title: '即將離開',
     content: '注意！資料將不會儲存'
   },
+  countryCode: {
+    886: '台灣+886',
+    852: '香港+852',
+    65: '新加坡+65',
+    86: '中國+86',
+    84: '越南+84',
+    81: '日本+81'
+  },
+  success: '成功',
+  新增帳戶: '新增帳戶',
   label: {
-    login: '登入',
-    country_code: '國碼',
-    phone: '手機',
-    password: '密碼',
-    forget_password: '忘記密碼',
     welcome: '歡迎登入',
     logout: '登出',
     transfer: '轉帳',
@@ -31,7 +45,6 @@ export default {
     inProgress: '進行中',
     real_balance: '結餘',
     avb_balance: '可提',
-    instant_transaction: '即時訂單',
     notify: '通知',
     beep: '提示',
     auto: '自動接單',
@@ -80,65 +93,6 @@ export default {
   account: {
     success: '資料提交成功'
   },
-
-  transaction: {
-    detail: '詳細記錄',
-    pairing: '配對中',
-    payment_required: '需付款',
-    inProgress: '對方確認中',
-    appeal: '申訴中',
-    complete: '完成',
-    opponent_preparing: '對方準備中',
-    need_confirm_payment: '需確認收款',
-    cantTake: '餘額不足',
-    cancel: '取消',
-    over_time: '訂單超時',
-    quantity: '數量',
-    amount: '金額',
-    rate: '匯率',
-    time: '時間',
-    recent: '最近交易',
-    name: '交易方姓名',
-    all_transaction_history: '所有交易紀錄',
-    status: '狀態',
-    handling_fee: '手續費',
-    payee: '姓名',
-    payer: '付款方',
-    beneficiary: '收款方',
-    bank_name: '銀行名稱',
-    code: {
-      TWD: '銀行代碼',
-      CNY: '所在省市',
-      VND: '銀行名稱'
-    },
-    city: '所在省市',
-    account_number: '銀行帳號',
-    complete_time: '完成時間',
-    order_number: '訂單號',
-    contract_number: '合約書編號',
-    remark: '備註',
-    conversation_record: '對話紀錄',
-    total_amount: '金額',
-    payment_completed: '已完成付款',
-    confirmCancel: '確認取消',
-    title_index: '交易USDT',
-    title_confirm_cancel: '是否要取消訂單',
-    title_confirm_appeal: '是否要申訴',
-    title_not_yet_verified: '無法交易',
-    title_caution: '請注意',
-    title_check_info: '請確認以下資訊',
-    title_cny: '人民幣CNY 交易須知',
-    order_time: '訂單建立時間',
-    deal_canceled: '交易取消',
-    transaction_complete: '交易完成',
-    transaction_details: '交易明細',
-    transaction_dialog_window: '交易對話',
-    message_notification_tone: '訊息提醒',
-    preset_hint2: '設為預設帳戶：以此做為交易時的 收款帳戶',
-    input_message: '輸入訊息...',
-    payment_time: '付款時間',
-    sell_info: '付款方資料'
-  },
   transaction_history: {
     title: '交易紀錄',
     label: {
@@ -183,7 +137,7 @@ export default {
       }
     }
   },
-
+  購買USDT: '購買USDT',
   buy: {
     //buy step
     step_hint_buy_title_1: '提交訂單',
@@ -245,7 +199,8 @@ export default {
     payer_account_name: '付款方姓名',
     appeal_hint: '您已提出申訴，稍後客服人員會在「交易對話」與交易雙方進行協調'
   },
-
+  開始配對: '開始配對',
+  配對中: '配對中',
   rate: {
     title: '參考匯率: ', // new
     update: '更新時間',
@@ -260,7 +215,6 @@ export default {
     VND: '越南盾'
   },
   warn: {
-    login: '請確認您正在訪問 k100.com',
     hint_not_yet_verified: '請先完成以下帳戶驗證',
     hint_transaction_notes_1: 'ATM轉帳時請註記持有人的',
     hint_transaction_notes_2: '真實姓名',
@@ -363,65 +317,5 @@ export default {
     }
   },
 
-  error: {
-    input: {
-      empty: '欄位不能為空'
-    },
-    圖片上傳失敗: '圖片上傳失敗',
-    simple_input: '請輸入欄位',
-    country_code: '請選擇國碼',
-    phone: '請輸入完整電話號碼',
-    pass: '驗證通過',
-    password: '密碼錯誤',
-    complete: '尚有項目未填寫',
-    account: {
-      not_exist: '此號碼尚未註冊',
-      exist: '此號碼已被註冊過'
-    },
-    verification: {
-      send: '已發送驗證碼',
-      error: '輸入驗證碼不相符'
-    },
-    avb_balance: '超過餘額',
-    e401: '未能提供！！', // 不知道會是發生什麼
-    titles: {
-      transaction: '交易',
-      change: '快速兌換',
-      login: '登入',
-      register: '註冊',
-      dashBoard: '首頁',
-      forget: '忘記密碼',
-      kyc: '實名驗證',
-      transfer: '轉帳',
-      defaultError: '錯誤'
-    },
-    // ##### handler
-    usdt: '交易數量不能低於100',
-    isPassTwenty: '請先升到20歲',
-    bankSet: '請選擇交易用銀行卡',
-    inputPhone: '只能輸入數字',
-    idNumber: '不能輸入特殊符號',
-    qr: '現在的設備不支援相機功能',
-    Agreement: '請選擇轉出協定',
-    // ##### Api
-    0: '成功',
-    1: '發生嚴重錯誤',
-    10: '帳號或密碼錯誤',
-    11: '此號碼已被註冊',
-    12: '創建失敗', // 建立帳號時
-    13: '請完成所有的欄位', // POST 所有的API時 有參數空缺或是多餘
-    14: '輸入資料格式錯誤', // POST 所有的API時
-    15: 'Token 錯誤',
-    16: '無效買賣',
-    17: '此帳號尚未註冊',
-    21: '重複發送', // 忘記密碼
-    22: '簡訊驗證碼錯誤', // 建立帳號
-    30: '無效的錢包地址', // 轉帳
-    31: '不能轉到自己的錢包',
-    32: '餘額不足', // 在賣 Usdt 時賣的數量超過可提金額
-    33: '測試帳號阻擋', // 在賣 Usdt 時賣的數量超過可提金額
-    90: '沒有攜帶登入驗證',
-    91: '狀態已過期，請重新登入', // 這邊普遍是發生在使用者的登入過期的情況，所有在Get 的 Api 時 都會驗證使用者的登入狀況
-    92: '無效使用者' // BUY / SEll Agent
-  }
+  error
 };

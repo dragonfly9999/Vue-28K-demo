@@ -15,10 +15,12 @@ type UseProps = {
 export const useBuy1 = ({ onSuccess }: UseProps) =>
   requestProvider<BuyRes, BuyProps>({
     reqFn: (props: BuyProps) =>
-      axiosProvider.post('/Req_Buy1.aspx', {
-        ...props,
-        UsdtAmt: import.meta.env.DEV ? 30 : props.UsdtAmt,
-      }),
+      axiosProvider
+        .post('/Req_Buy1.aspx', {
+          ...props,
+          UsdtAmt: import.meta.env.DEV ? 30 : props.UsdtAmt
+        })
+        .then(({ data }) => data),
     isManual: true,
-    onSuccess,
+    onSuccess
   });

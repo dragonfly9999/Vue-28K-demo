@@ -15,7 +15,8 @@ type UseProps = {
 
 export const useTransTrc = (props?: UseProps) =>
   requestProvider<TransRes, TransProps>({
-    reqFn: (props) => axiosProvider.post('/Req_Transfer2.aspx', props),
+    reqFn: (props) =>
+      axiosProvider.post('/Req_Transfer2.aspx', props).then(({ data }) => data),
     isManual: true,
-    ...props,
+    ...props
   });
