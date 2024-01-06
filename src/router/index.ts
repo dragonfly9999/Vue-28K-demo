@@ -9,7 +9,6 @@ import {
 import routes from './routes';
 import { useStorage } from 'vue3-storage';
 
-const storage = useStorage();
 export default route(function (/* { store, ssrContext } */) {
   const createHistory = process.env.SERVER
     ? createMemoryHistory
@@ -24,8 +23,10 @@ export default route(function (/* { store, ssrContext } */) {
   });
 
   Router.beforeEach((to, _, next) => {
+    const vueStorage = useStorage();
+
     if (to.meta.requiresAuth) {
-      const loginSession = storage?.getStorageSync('login_session');
+      const loginSession = vueStorage?.getStorageSync('login_session');
       if (!!loginSession) {
         next();
       } else {
