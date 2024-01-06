@@ -1,119 +1,3 @@
-<script setup lang="ts">
-import { thousandTool } from 'src/utils/NumberTool';
-import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
-import { useStorage } from 'vue3-storage';
-import dayjs from 'dayjs';
-import { MtTypeNum } from 'src/stores/live';
-import { useBuyMatch, useSellMatch } from './api';
-import {
-  useKeyStore,
-  useOrderStore,
-  useStateStore,
-  useThirdStore,
-} from 'src/stores';
-import { copyToClipboard, useQuasar } from 'quasar';
-import StatusMaster from 'src/pages/transaction/components/StatusMaster.vue';
-const quasar = useQuasar();
-const props = defineProps<{
-  order: LiveOrder;
-  isInstant: boolean;
-  isCleanCount?: boolean;
-}>();
-
-//
-const { currency } = useStateStore();
-const { pressing } = useKeyStore();
-const { t } = useI18n();
-const router = useRouter();
-const storage = useStorage();
-const { setOrderWs } = useOrderStore();
-const { setWebSockets, getCount, handleResetCount } = useThirdStore();
-const { run: matchBuy, loading: loadingBuy } = useBuyMatch({
-  onTriger: () => {
-    setWebSockets(props.order.token);
-    setOrderWs(props.order.token);
-  },
-});
-const { run: matchSell, loading: loadingSell } = useSellMatch({
-  onSuccess: () => {
-    setWebSockets(props.order.token);
-    setOrderWs(props.order.token);
-  },
-});
-// DOM
-const orderInfo = computed(() => {
-  switch (props.order.MType) {
-    case MtTypeNum.Buy:
-      return { label: t('label.buy'), color: 'blue-13' };
-    case MtTypeNum.Sell:
-      return { label: t('label.sell'), color: 'red' };
-    case MtTypeNum.CantTake:
-      return { label: t('label.sell'), color: 'grey' };
-    default: {
-      return { label: t('label.undefined'), color: 'purple' };
-    }
-  }
-});
-
-// handler
-const handleMatch = () => {
-  if (props.order.MType === MtTypeNum.Sell) {
-    matchBuy({
-      Token: props.order.token,
-    });
-  } else {
-    matchSell({
-      Token: props.order.token,
-    });
-  }
-};
-
-const handleCopy = (value: string) => {
-  copyToClipboard(value)
-    .then(() => {
-      quasar.notify({
-        position: 'top-right',
-        color: 'positive',
-        message: '已複製',
-      });
-    })
-    .catch(() => {
-      quasar.notify({
-        position: 'top-right',
-        color: 'negative',
-        message: '複製失敗',
-      });
-    });
-};
-
-const handleClickItem = () => {
-  if (pressing() === 'Control') {
-    const copyStr =
-      '交易方姓名：' +
-      props.order?.P5?.split('|')?.[0] +
-      '\n' +
-      '金額: ' +
-      thousandTool(props.order.D2, 'CNY');
-    handleCopy(copyStr);
-  } else if (pressing() === 'c') {
-    const copyStr =
-      '交易方姓名：' +
-      props.order?.P5?.split('|')?.[0] +
-      '\n' +
-      '金額(CNY): ' +
-      thousandTool(props.order.D2, 'CNY');
-    handleCopy(copyStr);
-  } else {
-    if (props.isCleanCount) handleResetCount(props.order.token);
-    router.push({
-      name: props.order?.MType === MtTypeNum.Buy ? 'buy' : 'sell',
-      query: { token: props.order.token },
-    });
-  }
-};
-</script>
 <template>
   <q-item :clickable="!isInstant" v-ripple @click="handleClickItem">
     <q-item-section class="q-pa-xs">
@@ -122,7 +6,7 @@ const handleClickItem = () => {
         <div>
           <!-- type ##### class 注意空格 -->
           <div :class="'text-h6 text-' + orderInfo.color + ' text-weight-bold'">
-            {{ orderInfo.label }}
+            {{ `${orderInfo.label} ${channelLabel}` }}
           </div>
           <!-- currency -->
           <q-badge :color="orderInfo.color">USDT/{{ currency }}</q-badge>
@@ -203,5 +87,138 @@ const handleClickItem = () => {
     <!-- 詳細內容 -->
   </q-item>
 </template>
+
+<script setup lang="ts">
+import { thousandTool } from 'src/utils/NumberTool';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+import { useStorage } from 'vue3-storage';
+import dayjs from 'dayjs';
+import { MtTypeNum } from 'src/stores/live';
+import { useBuyMatch, useSellMatch } from './api';
+import {
+  useKeyStore,
+  useOrderStore,
+  useStateStore,
+  useThirdStore,
+} from 'src/stores';
+import { copyToClipboard, useQuasar } from 'quasar';
+import StatusMaster from 'src/pages/transaction/components/StatusMaster.vue';
+const quasar = useQuasar();
+const props = defineProps<{
+  order: LiveOrder;
+  isInstant: boolean;
+  isCleanCount?: boolean;
+}>();
+
+//
+const { currency } = useStateStore();
+const { pressing } = useKeyStore();
+const { t } = useI18n();
+const router = useRouter();
+const storage = useStorage();
+const { setOrderWs } = useOrderStore();
+const { setWebSockets, getCount, handleResetCount } = useThirdStore();
+const { run: matchBuy, loading: loadingBuy } = useBuyMatch({
+  onTriger: () => {
+    setWebSockets(props.order.token);
+    setOrderWs(props.order.token);
+  },
+});
+const { run: matchSell, loading: loadingSell } = useSellMatch({
+  onSuccess: () => {
+    setWebSockets(props.order.token);
+    setOrderWs(props.order.token);
+  },
+});
+// DOM
+const channelLabel = computed(() => {
+  if (!props.order.Channel) return '';
+  if (props.order.Channel === -1) return 'All';
+  if (props.order.Channel === 0) return 'BVAC';
+  if (props.order.Channel === 1) return 'Demo K100U';
+  if (props.order.Channel === 2) return '88U';
+  if (props.order.Channel === 3) return 'U88';
+  if (props.order.Channel === 4) return 'JP88';
+  if (props.order.Channel === 5) return 'K100U com';
+  if (props.order.Channel === 6) return 'U28 Exchange';
+  if (props.order.Channel === 7) return 'V100U com';
+  if (props.order.Channel === 9) return 'Fxcoin';
+  if (props.order.Channel === 10) return 'K200U';
+  if (props.order.Channel === 11) return 'K100 net';
+  return props.order.Channel;
+});
+const orderInfo = computed(() => {
+  switch (props.order.MType) {
+    case MtTypeNum.Buy:
+      return { label: t('label.buy'), color: 'blue-13' };
+    case MtTypeNum.Sell:
+      return { label: t('label.sell'), color: 'red' };
+    case MtTypeNum.CantTake:
+      return { label: t('label.sell'), color: 'grey' };
+    default: {
+      return { label: t('label.undefined'), color: 'purple' };
+    }
+  }
+});
+
+// handler
+const handleMatch = () => {
+  if (props.order.MType === MtTypeNum.Sell) {
+    matchBuy({
+      Token: props.order.token,
+    });
+  } else {
+    matchSell({
+      Token: props.order.token,
+    });
+  }
+};
+
+const handleCopy = (value: string) => {
+  copyToClipboard(value)
+    .then(() => {
+      quasar.notify({
+        position: 'top-right',
+        color: 'positive',
+        message: '已複製',
+      });
+    })
+    .catch(() => {
+      quasar.notify({
+        position: 'top-right',
+        color: 'negative',
+        message: '複製失敗',
+      });
+    });
+};
+
+const handleClickItem = () => {
+  if (pressing() === 'Control') {
+    const copyStr =
+      '交易方姓名：' +
+      props.order?.P5?.split('|')?.[0] +
+      '\n' +
+      '金額: ' +
+      thousandTool(props.order.D2, 'CNY');
+    handleCopy(copyStr);
+  } else if (pressing() === 'c') {
+    const copyStr =
+      '交易方姓名：' +
+      props.order?.P5?.split('|')?.[0] +
+      '\n' +
+      '金額(CNY): ' +
+      thousandTool(props.order.D2, 'CNY');
+    handleCopy(copyStr);
+  } else {
+    if (props.isCleanCount) handleResetCount(props.order.token);
+    router.push({
+      name: props.order?.MType === MtTypeNum.Buy ? 'buy' : 'sell',
+      query: { token: props.order.token },
+    });
+  }
+};
+</script>
 
 <style scoped></style>

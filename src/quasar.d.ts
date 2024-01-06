@@ -92,6 +92,7 @@ type PendingOrder = {
 };
 
 interface LiveOrder {
+  Channel?: number;
   Order_StatusID: number;
   MType: number;
   DeltaTime: number;

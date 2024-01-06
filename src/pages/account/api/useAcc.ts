@@ -8,7 +8,8 @@ export const useAcc = () => {
     [AccNum.Name]: '',
     [AccNum.Account]: '',
     [AccNum.BankID]: '',
-    [AccNum.Branch]: ''
+    [AccNum.Branch]: '',
+    [AccNum.Channel]: -1
   });
   const request = requestProvider<Omit<AccRes, 'H_id'>>({
     reqFn: () =>

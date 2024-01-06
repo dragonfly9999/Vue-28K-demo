@@ -5,6 +5,7 @@ import error from './error';
 import auth from './auth';
 import dashboard from './dashboard';
 import transaction from './transaction';
+import account from './account';
 
 export default {
   name: '中文',
@@ -20,6 +21,7 @@ export default {
   auth,
   dashboard,
   transaction,
+  account,
   cancel: {
     title: '即將離開',
     content: '注意！資料將不會儲存'
@@ -90,9 +92,6 @@ export default {
     3: '會員A'
   },
 
-  account: {
-    success: '資料提交成功'
-  },
   transaction_history: {
     title: '交易紀錄',
     label: {

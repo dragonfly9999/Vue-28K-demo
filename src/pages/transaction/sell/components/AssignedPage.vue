@@ -1,23 +1,3 @@
-<script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import { getLeaseTime } from 'src/utils/TimeMaster';
-import StepperMaster from 'src/components/StepperMaster.vue';
-import PriceInfo from 'src/components/PriceInfo.vue';
-import { onBeforeUnmount, onMounted, ref } from 'vue';
-import PunctuationMaster from 'src/components/PunctuationMaster.vue';
-import { thousandTool } from 'src/utils/NumberTool';
-
-defineProps<{ order?: OrderStatus }>();
-const timeInterval = ref<NodeJS.Timeout>();
-const deltaTime = ref(0);
-//
-const { t } = useI18n();
-
-onMounted(() => {
-  timeInterval.value = setInterval(() => (deltaTime.value += 1), 1000);
-});
-onBeforeUnmount(() => clearInterval(timeInterval.value));
-</script>
 <template>
   <q-card class="full-width no-border no-shadow">
     <!-- 步驟 -->
@@ -138,5 +118,27 @@ onBeforeUnmount(() => clearInterval(timeInterval.value));
     </div>
   </q-card>
 </template>
+
+<script setup lang="ts">
+// import CopyButton from 'src/components/CopyButton.vue';
+import { useI18n } from 'vue-i18n';
+import { getLeaseTime } from 'src/utils/TimeMaster';
+import StepperMaster from 'src/components/StepperMaster.vue';
+import PriceInfo from 'src/components/PriceInfo.vue';
+import { onBeforeUnmount, onMounted, ref } from 'vue';
+import PunctuationMaster from 'src/components/PunctuationMaster.vue';
+import { thousandTool } from 'src/utils/NumberTool';
+
+defineProps<{ order?: OrderStatus }>();
+const timeInterval = ref<NodeJS.Timeout>();
+const deltaTime = ref(0);
+//
+const { t } = useI18n();
+
+onMounted(() => {
+  timeInterval.value = setInterval(() => (deltaTime.value += 1), 1000);
+});
+onBeforeUnmount(() => clearInterval(timeInterval.value));
+</script>
 
 <style scoped></style>

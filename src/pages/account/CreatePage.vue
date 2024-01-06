@@ -1,41 +1,3 @@
-<script setup lang="ts">
-import { onBeforeUnmount, reactive, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { AccNum, AccRes } from './api/useAccHistory';
-import { useRouter } from 'vue-router';
-import { useSetAcc } from './api';
-import CancelVerification from 'src/components/CancelVerification.vue';
-const timeIntervale = ref<NodeJS.Timeout>();
-const { t } = useI18n();
-const router = useRouter();
-const { run: set } = useSetAcc({
-  onSuccess: () => {
-    timeIntervale.value = setInterval(() => {
-      if (time.value > 0) {
-        time.value -= 1;
-      } else {
-        router.push({ name: 'account' });
-      }
-    }, 1000);
-  },
-});
-// DOM
-const time = ref(5);
-const formData = reactive<Omit<AccRes, 'H_id'>>({
-  [AccNum.Account]: '',
-  [AccNum.Name]: '',
-  [AccNum.BankID]: '',
-  [AccNum.Branch]: '',
-});
-const visible = reactive({
-  warn: false,
-  redirect: false,
-});
-//
-onBeforeUnmount(() => {
-  clearInterval(timeIntervale.value);
-});
-</script>
 <template>
   <q-page class="width480">
     <q-card class="q-pa-sm q-ma-sm q-mt-md q-mb-xl">
@@ -47,6 +9,7 @@ onBeforeUnmount(() => {
               [AccNum.Name]: formData[AccNum.Name],
               [AccNum.BankID]: formData[AccNum.BankID],
               [AccNum.Branch]: formData[AccNum.Branch],
+              [AccNum.Channel]: formData[AccNum.Channel]?.value ?? null,
             })
         "
       >
@@ -88,7 +51,7 @@ onBeforeUnmount(() => {
 
             <div>
               <!-- 銀行戶名 -->
-              <div class="q-my-sm">{{ $t(`label.CNY.${AccNum.Name}`) }}</div>
+              <div>{{ $t(`label.CNY.${AccNum.Name}`) }}</div>
               <q-input
                 outlined
                 v-model="formData[AccNum.Name]"
@@ -98,9 +61,9 @@ onBeforeUnmount(() => {
                 ]"
               />
             </div>
+            <!-- 銀行帳號 -->
             <div>
-              <!-- 銀行帳號 -->
-              <div class="q-my-sm">{{ $t(`label.CNY.${AccNum.Account}`) }}</div>
+              <div>{{ $t(`label.CNY.${AccNum.Account}`) }}</div>
               <q-input
                 outlined
                 v-model="formData[AccNum.Account]"
@@ -110,9 +73,9 @@ onBeforeUnmount(() => {
                 ]"
               />
             </div>
+            <!-- 銀行名稱 -->
             <div>
-              <!-- 銀行名稱 -->
-              <div class="q-my-sm">{{ $t(`label.CNY.${AccNum.BankID}`) }}</div>
+              <div>{{ $t(`label.CNY.${AccNum.BankID}`) }}</div>
               <q-input
                 outlined
                 v-model="formData[AccNum.BankID]"
@@ -122,9 +85,9 @@ onBeforeUnmount(() => {
                 ]"
               />
             </div>
+            <!-- 所在省市 -->
             <div>
-              <!-- 所在省市 -->
-              <div class="q-my-sm">{{ $t(`label.CNY.${AccNum.Branch}`) }}</div>
+              <div>{{ $t(`label.CNY.${AccNum.Branch}`) }}</div>
               <q-input
                 outlined
                 v-model="formData[AccNum.Branch]"
@@ -133,6 +96,31 @@ onBeforeUnmount(() => {
                     (val?.length > 0 && !!val) || t('error.simple_input'),
                 ]"
               />
+            </div>
+
+            <!-- 設定頻道 -->
+            <div>
+              <div>{{ $t('account.頻道') }}</div>
+              <q-select
+                v-model="formData.P5"
+                :label="$t('account.請設定通道')"
+                outlined
+                :options="[
+                  { label: 'All', value: -1 },
+                  { label: 'BVAC', value: 0 },
+                  { label: 'Demo K100U', value: 1 },
+                  // { label: '88U', value: 2 },
+                  // { label: 'U88', value: 3 },
+                  // { label: 'JP88', value: 4 },
+                  { label: 'K100U com', value: 5 },
+                  // { label: 'U28 Exchange', value: 6 },
+                  // { label: 'V100U com', value: 7 },
+                  // { label: 'Fxcoin', value: 9 },
+                  // { label: 'K200U', value: 10 },
+                  // { label: 'K100 net', value: 11 },
+                ]"
+              >
+              </q-select>
             </div>
 
             <!-- buttons -->
@@ -169,5 +157,52 @@ onBeforeUnmount(() => {
     <CancelVerification @confirm="() => router.push({ name: 'account' })" />
   </q-dialog>
 </template>
+
+<script setup lang="ts">
+import { onBeforeUnmount, reactive, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { AccNum, AccRes } from './api/useAccHistory';
+import { useRouter } from 'vue-router';
+import { useSetAcc } from './api';
+import CancelVerification from 'src/components/CancelVerification.vue';
+const timeIntervale = ref<NodeJS.Timeout>();
+const { t } = useI18n();
+const router = useRouter();
+const { run: set } = useSetAcc({
+  onSuccess: () => {
+    timeIntervale.value = setInterval(
+      () => {
+        if (time.value > 0) {
+          time.value -= 1;
+        } else {
+          router.push({ name: 'account' });
+        }
+      },
+      import.meta.env.DEV ? 10 : 1000
+    );
+  },
+});
+// DOM
+const time = ref(5);
+const formData = reactive<
+  Omit<AccRes, 'H_id' | AccNum.Channel> & {
+    [AccNum.Channel]: { label: string; value: number } | null;
+  }
+>({
+  [AccNum.Account]: '',
+  [AccNum.Name]: '',
+  [AccNum.BankID]: '',
+  [AccNum.Branch]: '',
+  [AccNum.Channel]: null,
+});
+const visible = reactive({
+  warn: false,
+  redirect: false,
+});
+//
+onBeforeUnmount(() => {
+  clearInterval(timeIntervale.value);
+});
+</script>
 
 <style scoped></style>

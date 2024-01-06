@@ -1,56 +1,3 @@
-<script setup lang="ts">
-import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
-import { useAccHistory, AccNum, useDelAcc } from './api';
-import { useSetAcc } from './api';
-import { useAcc } from './api';
-import { thousandInput } from 'src/utils/NumberTool';
-import CheckCard from 'src/components/CheckCard.vue';
-import Flag from 'src/assets/CNY.png';
-
-const { t } = useI18n();
-const router = useRouter();
-const { data: accs, loading, refresh: reStory } = useAccHistory();
-const { request, tempAcc } = useAcc();
-const { data: acc, refresh: reAcc } = request;
-
-const currentAcc = computed(() => {
-  if (!accs.value) return;
-  return accs.value?.find(
-    (accInfo) =>
-      accInfo.P1 === acc.value?.P1 &&
-      accInfo.P2 === acc.value?.P2 &&
-      accInfo.P3 === acc.value?.P3 &&
-      accInfo.P4 === acc.value?.P4
-  );
-});
-const otherAccs = computed(() => {
-  if (!accs.value) return [];
-  const pureAccs = [...accs.value];
-  const currentIndex = pureAccs.findIndex(
-    (accInfo) => accInfo.P1 === acc.value?.P1
-  );
-  pureAccs.splice(currentIndex, 1);
-  return pureAccs;
-});
-const { run: set } = useSetAcc({
-  onSuccess: () => {
-    reStory();
-    reAcc();
-  },
-});
-const { run: del } = useDelAcc({
-  onSuccess: () => {
-    reStory();
-    reAcc();
-    delID.value = undefined;
-  },
-});
-
-const delID = ref<number>();
-// DOM
-</script>
 <template>
   <q-page class="width900">
     <q-card class="q-pa-md myshadow">
@@ -87,214 +34,38 @@ const delID = ref<number>();
                 <img :src="Flag" />
               </q-avatar>
             </q-item-section>
-            <!-- ()帳戶 -->
+            <!-- 帳戶 -->
             <q-item-section>
-              <div class="text-subtitle1">CNY{{ $t('label.account') }}</div>
+              <div class="text-subtitle1">CNY{{ $t('account.帳戶') }}</div>
             </q-item-section>
-            <!-- ()帳戶數量 -->
+            <!-- 帳戶數量 -->
             <div class="q-pa-md flex justify-end">
               <div class="text-subtitle2 text-grey-6">
-                {{ $t('transaction.quantity') + thousandInput(accs?.length) }}
+                {{ $t('account.帳戶數量') + thousandInput(accs?.length) }}
               </div>
             </div>
           </div>
 
-          <!-- cards -->
+          <!-- 新增帳戶 -->
           <q-card-section style="padding: 0">
             <div class="row">
-              <!-- card 1 -->
-              <div class="col-12 col-md-4 col-sm-6">
-                <!-- card 1 -->
-                <q-card class="q-pa-md q-ma-sm" flat bordered>
-                  <!-- 編輯帳戶 -->
-                  <div
-                    v-for="(AccKey, aki) in Object.values(AccNum)"
-                    :key="aki"
-                  >
-                    <div class="text-grey-6 text-caption">
-                      {{ t(`label.CNY.P1`) }}
-                    </div>
-                    <div class="flex items-center justify-end cursor-pointer">
-                      {{ tempAcc[AccKey] }}
-                      <q-popup-edit
-                        :model-value="tempAcc[AccKey]"
-                        v-slot="scope"
-                        touch-position
-                        persistent
-                        buttons
-                        @save="
-                          (value, initValue) => {
-                            if (value !== initValue && currentAcc) {
-                              set({
-                                ...tempAcc,
-                                [AccKey]: tempAcc[AccKey],
-                              });
-                              del({
-                                H_id: currentAcc.H_id,
-                              });
-                            }
-                          }
-                        "
-                        :label-set="$t('label.confirm')"
-                        :label-cancel="$t('transaction.cancel')"
-                      >
-                        <q-input
-                          v-model="scope.value"
-                          dense
-                          autofocus
-                          counter
-                          @keyup.enter="() => scope.set()"
-                        />
-                      </q-popup-edit>
-                      <q-icon
-                        flat
-                        round
-                        name="edit"
-                        color="blue-13"
-                        class="q-ml-xs"
-                      />
-                    </div>
-                    <div style="border: 0.25px dashed #eeeeee"></div>
-                  </div>
-
-                  <q-card-actions
-                    align="right"
-                    class="q-gutter-x-sm"
-                    style="padding: 0; margin-top: 15px"
-                  >
-                    <!-- 設為預設帳戶 btn -->
-                    <!-- if帳戶數量=0，新增第一個帳戶後，自動設為預設 -->
-                    <!-- 變成預設帳戶後，點亮這顆星  -->
-                    <!-- 變成預設帳戶後，disable不可點擊 -->
-                    <q-checkbox
-                      :model-value="true"
-                      checked-icon="star"
-                      unchecked-icon="star_border"
-                      color="orange"
-                    >
-                      <!-- hint -->
-                      <q-tooltip>
-                        {{ $t('label.preset_hint2') }}
-                      </q-tooltip>
-                    </q-checkbox>
-
-                    <!-- 刪除帳戶 btn-->
-                    <!-- 變成預設帳戶後，disable不可點擊 -->
-                    <q-btn disable flat round color="blue-13" icon="delete">
-                    </q-btn>
-                  </q-card-actions>
-                </q-card>
-              </div>
-
               <div
                 class="col-12 col-md-4 col-sm-6"
-                v-for="(Acc, Ai) in otherAccs"
+                v-for="(Acc, Ai) in showAccs"
                 :key="Ai"
               >
-                <!-- card 1 -->
-                <q-card class="q-pa-md q-ma-sm" flat bordered>
-                  <!-- 編輯帳戶 -->
-                  <div
-                    v-for="(AccKey, aki) in Object.values(AccNum)"
-                    :key="aki"
-                  >
-                    <div class="text-grey-6 text-caption">
-                      {{ t(`label.CNY.${AccKey}`) }}
-                    </div>
-                    <div class="flex items-center justify-end cursor-pointer">
-                      {{ Acc[AccKey] }}
-                      <q-popup-edit
-                        v-model="Acc[AccKey]"
-                        v-slot="scope"
-                        touch-position
-                        persistent
-                        buttons
-                        @save="
-                          (value, initValue) => {
-                            if (value !== initValue) {
-                              set({
-                                [AccNum.Account]: Acc[AccNum.Account],
-                                [AccNum.Name]: Acc[AccNum.Name],
-                                [AccNum.BankID]: Acc[AccNum.BankID],
-                                [AccNum.Branch]: Acc[AccNum.Branch],
-                                [AccKey]: value,
-                              });
-                              del({
-                                H_id: Acc.H_id,
-                              });
-                            }
-                          }
-                        "
-                        :label-set="$t('label.confirm')"
-                        :label-cancel="$t('transaction.cancel')"
-                      >
-                        <q-input
-                          v-model="scope.value"
-                          dense
-                          autofocus
-                          counter
-                          @keyup.enter="() => scope.set()"
-                        />
-                      </q-popup-edit>
-                      <q-icon
-                        flat
-                        round
-                        name="edit"
-                        color="blue-13"
-                        class="q-ml-xs"
-                      />
-                    </div>
-                    <div style="border: 0.25px dashed #eeeeee"></div>
-                  </div>
-
-                  <q-card-actions
-                    align="right"
-                    class="q-gutter-x-sm"
-                    style="padding: 0; margin-top: 15px"
-                  >
-                    <!-- 設為預設帳戶 btn -->
-                    <!-- if帳戶數量=0，新增第一個帳戶後，自動設為預設 -->
-                    <!-- 變成預設帳戶後，點亮這顆星  -->
-                    <!-- 變成預設帳戶後，disable不可點擊 -->
-                    <q-checkbox
-                      :model-value="
-                        acc?.[AccNum.Account] === Acc[AccNum.Account]
-                      "
-                      checked-icon="star"
-                      unchecked-icon="star_border"
-                      color="orange"
-                      @click="
-                        () =>
-                          set({
-                            [AccNum.Account]: Acc[AccNum.Account],
-                            [AccNum.Name]: Acc[AccNum.Name],
-                            [AccNum.BankID]: Acc[AccNum.BankID],
-                            [AccNum.Branch]: Acc[AccNum.Branch],
-                          })
-                      "
-                    >
-                      <!-- hint -->
-                      <q-tooltip>
-                        {{ $t('label.preset_hint2') }}
-                      </q-tooltip>
-                    </q-checkbox>
-
-                    <!-- 刪除帳戶 btn-->
-                    <!-- 變成預設帳戶後，disable不可點擊 -->
-                    <q-btn
-                      :disable="acc?.[AccNum.Account] === Acc[AccNum.Account]"
-                      @click="() => (delID = Acc.H_id)"
-                      flat
-                      round
-                      color="blue-13"
-                      icon="delete"
-                    >
-                    </q-btn>
-                  </q-card-actions>
-                </q-card>
+                <AccountCard
+                  :on-success="
+                    () => {
+                      del({ H_id: Acc.H_id });
+                    }
+                  "
+                  :current-acc="acc"
+                  v-model:del-i-d="delID"
+                  :acc-info="Acc"
+                />
               </div>
 
-              <!-- 新增 -->
               <div class="col-12 col-md-4 col-sm-6 q-pa-sm">
                 <q-btn
                   outline
@@ -305,7 +76,6 @@ const delID = ref<number>();
                   @click="() => router.push({ name: 'account_create' })"
                   no-caps
                 >
-                  <!-- 新增()帳戶 -->
                   {{ $t('label.add_account') }}
                 </q-btn>
               </div>
@@ -314,6 +84,8 @@ const delID = ref<number>();
         </q-list>
       </q-card>
     </q-card>
+
+    <!-- 確認是否刪除 -->
     <CheckCard
       @confirm="
       () =>
@@ -327,5 +99,46 @@ const delID = ref<number>();
     />
   </q-page>
 </template>
+
+<script setup lang="ts">
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+import { useAccHistory, useDelAcc } from './api';
+import { useAcc } from './api';
+import { thousandInput } from 'src/utils/NumberTool';
+import CheckCard from 'src/components/CheckCard.vue';
+import Flag from 'src/assets/CNY.png';
+import AccountCard from './AccountCard.vue';
+
+const { t } = useI18n();
+const router = useRouter();
+const { data: accs, loading, refresh: reStory } = useAccHistory();
+const { request } = useAcc();
+const { data: acc, refresh: reAcc } = request;
+const showAccs = computed(() =>
+  accs.value?.slice().sort((a) => {
+    if (!acc.value) return 0;
+    if (
+      a.P1 === acc.value?.P1 &&
+      a.P2 === acc.value?.P2 &&
+      a.P3 === acc.value?.P3 &&
+      a.P4 === acc.value?.P4
+    )
+      return -1;
+    return 1;
+  })
+);
+const { run: del } = useDelAcc({
+  onSuccess: () => {
+    reStory();
+    reAcc();
+    delID.value = undefined;
+  },
+});
+
+const delID = ref<number>();
+// DOM
+</script>
 
 <style scoped></style>
