@@ -45,7 +45,7 @@
           </div>
         </q-toolbar>
       </q-page-sticky>
-      <div style="margin-top:70px">
+      <div style="margin-top: 70px">
         <router-view></router-view>
       </div>
     </q-page-container>
@@ -64,7 +64,14 @@ import { thousandTool } from 'src/utils/NumberTool';
 import { useRouter } from 'vue-router';
 import ProgressBtn from './components/ProgressBtn.vue';
 import HeaderMaster from './components/HeaderMaster.vue';
-import { onBeforeUnmount, onMounted, ref, toRefs, watch } from 'vue';
+import {
+  onBeforeUnmount,
+  onErrorCaptured,
+  onMounted,
+  ref,
+  toRefs,
+  watch,
+} from 'vue';
 import { useLiveStore, useStateStore, useThirdStore } from 'src/stores';
 import instantSound from 'src/assets/sound/instants5.mp3';
 import matchSound from 'src/assets/sound/match.mp3';
@@ -73,6 +80,7 @@ import appealSound from 'src/assets/sound/owl.mp3';
 import { MtTypeNum, OrderStatusNum } from 'src/stores/live';
 import { useStorage } from 'vue3-storage';
 import { useKeyStore } from 'src/stores/key';
+import { Notify } from 'quasar';
 
 //
 const { getBalance, getBalanceLoad, refreshBalance } = useStateStore();
@@ -171,6 +179,15 @@ onMounted(() => {
 });
 onBeforeUnmount(() => {
   handleRemove();
+});
+
+onErrorCaptured((error) => {
+  Notify.create({
+    type: 'info',
+    message: 'An Error occurred: ' + error.message,
+    position: 'bottom-left',
+    timeout: 2000,
+  });
 });
 watch(hint, (newValue) => {
   if (!newValue) handleResetSound();
