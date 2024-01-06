@@ -1,9 +1,22 @@
+<!-- eslint-disable @typescript-eslint/no-unused-vars -->
 <script setup lang="ts">
+import { on } from 'events';
 import logo from 'src/assets/logo_easy.png';
 import I18nBtn from 'src/components/I18nBtn.vue';
+import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
+
+onMounted(() => {
+  // 再登入介面重整時清除 cookie
+  const cookies = document.cookie.split('; ');
+
+  for (const cookie of cookies) {
+    const [name, _] = cookie.split('=');
+    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;`;
+  }
+});
 </script>
 <template>
   <q-layout view="hHh lpr fff">

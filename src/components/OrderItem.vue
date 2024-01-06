@@ -33,7 +33,7 @@
       <div class="flex no-wrap q-py-sm items-end">
         <div class="q-gutter-xs">
           <!-- 代理顯示 交易方姓名 -->
-          <div class="flex" v-if="storage.getStorageSync('isAgent')">
+          <div class="flex" v-if="isAgent">
             <div class="text-caption text-grey-6">交易方姓名：</div>
             <div class="text-caption">{{ order?.P5?.split('|')?.[0] }}</div>
           </div>
@@ -50,11 +50,7 @@
             </div>
             <!-- 日期 -->
             <div class="text-caption">
-              {{
-                dayjs(order.CreateDate).format(
-                  'YYYY-MM-DD HH:mm:ss'
-                )
-              }}
+              {{ dayjs(order.CreateDate).format('YYYY-MM-DD HH:mm:ss') }}
             </div>
           </div>
         </div>
@@ -118,6 +114,9 @@ const { pressing } = useKeyStore();
 const { t } = useI18n();
 const router = useRouter();
 const storage = useStorage();
+
+// dom
+const isAgent = computed(() => storage.getStorageSync('isAgent'));
 const { setOrderWs } = useOrderStore();
 const { setWebSockets, getCount, handleResetCount } = useThirdStore();
 const { run: matchBuy, loading: loadingBuy } = useBuyMatch({

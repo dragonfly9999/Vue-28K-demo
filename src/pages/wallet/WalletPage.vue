@@ -1,17 +1,3 @@
-<script setup lang="ts">
-import BalanceComponent from './components/BalanceComponent.vue';
-import { ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
-import { useWallet } from './api';
-import QR from './components/QR.vue';
-
-const { t } = useI18n();
-const router = useRouter();
-const { data: wallet, loading } = useWallet();
-// DOM
-const tab = ref('TRC20');
-</script>
 <template>
   <div class="width900">
     <div class="row">
@@ -69,5 +55,20 @@ const tab = ref('TRC20');
     </q-card>
   </div>
 </template>
+
+<script setup lang="ts">
+import BalanceComponent from './components/BalanceComponent.vue';
+import { ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+import { useWallet } from './api';
+import QR from './components/QR.vue';
+
+const { t } = useI18n();
+const router = useRouter();
+const { data: wallet, loading } = useWallet();
+// DOM
+const tab = ref('TRC20');
+</script>
 
 <style scoped></style>

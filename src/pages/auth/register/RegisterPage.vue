@@ -136,7 +136,7 @@ import hooks from 'src/hooks';
 import { useRouter } from 'vue-router';
 
 const { t } = useI18n();
-const emits = defineEmits(['toLogin']);
+defineEmits(['toLogin']);
 const vueStorage = useStorage();
 const router = useRouter();
 // DOM

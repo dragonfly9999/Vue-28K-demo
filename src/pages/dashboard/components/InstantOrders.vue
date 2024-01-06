@@ -6,14 +6,16 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
-const orders = computed(() => useLiveStore().getOrders('instant'));
+const orders = computed(() =>
+  useLiveStore()
+    .getOrders('instant')
+    ?.sort((a, b) => (dayjs(b.CreateDate).isAfter(a.CreateDate) ? 1 : 0))
+);
 </script>
 <template>
   <q-list>
     <OrderItem
-      v-for="(order, index) in orders?.sort((a, b) =>
-        dayjs(b.CreateDate).isAfter(a.CreateDate) ? 1 : 0
-      )"
+      v-for="(order, index) in orders"
       :key="index"
       :order="order"
       :is-instant="true"

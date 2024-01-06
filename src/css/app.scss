@@ -11,6 +11,16 @@ div.d {
   padding: 5px;
 }
 
+.test {
+  border: 2px solid grey;
+  padding: 5px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: trnaslate(-50%, -50%);
+  z-index: 900;
+  background-color: orange;
+}
 .test_dotted {
   border: 2px dotted orange;
 }

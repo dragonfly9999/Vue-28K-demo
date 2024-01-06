@@ -24,6 +24,7 @@ const file = ref();
 const scrollArea = ref();
 const messageAudio = ref();
 const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
+const chatList = getChatList(route.query.token as string);
 // handlers
 const handleSwitch = () => {
   handleResetCount(route?.query?.token as string);
@@ -63,7 +64,7 @@ const handleSent = () => {
 };
 // WS
 onMounted(() => {
-  if (getChatList(route.query.token as string)?.length > 1) {
+  if (chatList.length > 1) {
     var element = document.getElementById('fade-in');
     if (element && window.innerWidth < 1440) {
       element.style.height = 'calc(100vh - 40px)';
@@ -129,10 +130,7 @@ onBeforeUnmount(() => {
     </q-toolbar>
 
     <q-scroll-area ref="scrollArea" class="col scroll overflow-hidden">
-      <div
-        v-for="(msg, index) in getChatList(route.query.token as string)"
-        :key="index"
-      >
+      <div v-for="(msg, index) in chatList" :key="index">
         <q-chat-message
           :name="
             (isAgent && msg.Message_Role !== 3) ||

@@ -1,43 +1,3 @@
-<script setup lang="ts">
-import RecordItem from 'src/components/RecordItem.vue';
-import { MasterTypeNum } from 'src/utils/NumberTool';
-defineProps<{
-  orders: Array<OrderRecord | ExpiredOrder> | undefined;
-  loading: boolean;
-  isExpired: boolean;
-  type: number;
-}>();
-defineEmits(['update:type']);
-
-const allType = [
-  {
-    value: 5,
-    label: '全部',
-    color: 'text-dark',
-  },
-  {
-    value: MasterTypeNum.Buy,
-    label: '購買',
-    color: 'text-blue-13',
-  },
-  {
-    value: MasterTypeNum.Sell,
-    label: '出售',
-
-    color: 'text-red',
-  },
-  {
-    value: MasterTypeNum.TransIn,
-    label: '轉入',
-    color: 'text-purple-7',
-  },
-  {
-    value: MasterTypeNum.TransOut,
-    label: '轉出',
-    color: 'text-purple-7',
-  },
-];
-</script>
 <template>
   <div class="no-margin no-padding">
     <q-tabs
@@ -80,5 +40,46 @@ const allType = [
     </q-tab-panels>
   </div>
 </template>
+
+<script setup lang="ts">
+import RecordItem from 'src/components/RecordItem.vue';
+import { MasterTypeNum } from 'src/utils/NumberTool';
+defineProps<{
+  orders: Array<OrderRecord | ExpiredOrder> | undefined;
+  loading: boolean;
+  isExpired: boolean;
+  type: number;
+}>();
+defineEmits(['update:type']);
+
+const allType = [
+  {
+    value: 5,
+    label: '全部',
+    color: 'text-dark',
+  },
+  {
+    value: MasterTypeNum.Buy,
+    label: '購買',
+    color: 'text-blue-13',
+  },
+  {
+    value: MasterTypeNum.Sell,
+    label: '出售',
+
+    color: 'text-red',
+  },
+  {
+    value: MasterTypeNum.TransIn,
+    label: '轉入',
+    color: 'text-purple-7',
+  },
+  {
+    value: MasterTypeNum.TransOut,
+    label: '轉出',
+    color: 'text-purple-7',
+  },
+];
+</script>
 
 <style scoped></style>

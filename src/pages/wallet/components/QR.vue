@@ -1,17 +1,3 @@
-<script setup lang="ts">
-import CopyButton from 'src/components/CopyButton.vue';
-import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
-
-defineProps<{
-  walletType: number;
-  img: string | undefined;
-  address: string | undefined;
-  loading: boolean;
-}>();
-const { t } = useI18n();
-const router = useRouter();
-</script>
 <template>
   <div>
     <!-- 警示標題 -->
@@ -48,7 +34,7 @@ const router = useRouter();
         <div v-else class="justify-center flex">
           <img
             style="width: 200px"
-            :src="`data:image/png; base64,${img}`"
+            :src="`data:image/png;base64,${img}`"
             alt="QR code"
           />
         </div>
@@ -99,5 +85,20 @@ const router = useRouter();
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import CopyButton from 'src/components/CopyButton.vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+
+defineProps<{
+  walletType: number;
+  img: string | undefined;
+  address: string | undefined;
+  loading: boolean;
+}>();
+const { t } = useI18n();
+const router = useRouter();
+</script>
 
 <style scoped></style>

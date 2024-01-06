@@ -14,13 +14,13 @@ const { getOrders } = useLiveStore();
 const { getAuto, getAutoLoad, updateAuto } = useStateStore();
 const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
 // DOM
-const tab = ref('1');
+const tab = ref('instant');
 //
 onMounted(() => {
   refreshBalance();
   if (!isAgent.value) {
     hint.value = false;
-    tab.value = '3';
+    tab.value = 'memberProgress';
   } else {
     hint.value = true;
   }
@@ -106,7 +106,7 @@ onMounted(() => {
         v-if="isAgent"
       >
         <!-- 即時訂單 -->
-        <q-tab name="1" :label="$t('dashboard.即時訂單')">
+        <q-tab name="instant" :label="$t('dashboard.即時訂單')">
           <q-badge
             color="red"
             :label="getOrders('instant')?.length"
@@ -115,7 +115,7 @@ onMounted(() => {
           />
         </q-tab>
         <!-- 進行中 -->
-        <q-tab name="2" :label="$t('label.inProgress')">
+        <q-tab name="progress" :label="$t('label.inProgress')">
           <q-badge
             color="red"
             :label="getOrders('progress')?.length"
@@ -127,16 +127,16 @@ onMounted(() => {
 
       <q-separator v-if="isAgent" />
 
-      <q-tab-panels v-model="tab" animated>
-        <q-tab-panel name="1" style="padding: 8px">
+      <q-tab-panels :model-value="tab" animated>
+        <q-tab-panel name="instant" style="padding: 8px">
           <InstantOrders />
         </q-tab-panel>
 
-        <q-tab-panel name="2" style="padding: 8px">
+        <q-tab-panel name="progress" style="padding: 8px">
           <ProgressOrders />
         </q-tab-panel>
         <!-- 會員的進行中訂單 -->
-        <q-tab-panel name="3" style="padding: 8px">
+        <q-tab-panel name="memberProgress" style="padding: 8px">
           <PendingOrders />
         </q-tab-panel>
       </q-tab-panels>

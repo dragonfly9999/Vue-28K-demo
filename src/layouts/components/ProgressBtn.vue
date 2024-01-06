@@ -1,18 +1,3 @@
-<script setup lang="ts">
-import OrderItem from 'src/components/OrderItem.vue';
-import { useI18n } from 'vue-i18n';
-import { useLiveStore, usePendingStore } from 'src/stores';
-import { computed, toRefs } from 'vue';
-import { useStorage } from 'vue3-storage';
-import PendingItem from 'src/components/PendingItem.vue';
-import dayjs from 'dayjs';
-
-const { getOrders } = useLiveStore();
-const { pendingInstant } = toRefs(usePendingStore());
-const { t } = useI18n();
-// DOM
-const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
-</script>
 <template>
   <q-btn
     :loading="pendingInstant.loading"
@@ -54,9 +39,7 @@ const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
       >
         <div v-if="isAgent">
           <order-item
-            v-for="(order, index) in getOrders('progress')?.sort((a, b) =>
-              dayjs(b.CreateDate).isAfter(dayjs(a.CreateDate)) ? 0 : -1
-            )"
+            v-for="(order, index) in orders"
             :key="index"
             :order="order"
             :is-instant="false"
@@ -73,5 +56,26 @@ const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
     </q-menu>
   </q-btn>
 </template>
+
+<script setup lang="ts">
+import OrderItem from 'src/components/OrderItem.vue';
+import { useI18n } from 'vue-i18n';
+import { useLiveStore, usePendingStore } from 'src/stores';
+import { computed, toRefs } from 'vue';
+import { useStorage } from 'vue3-storage';
+import PendingItem from 'src/components/PendingItem.vue';
+import dayjs from 'dayjs';
+
+const { getOrders } = useLiveStore();
+const { pendingInstant } = toRefs(usePendingStore());
+const { t } = useI18n();
+// DOM
+const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
+const orders = computed(() =>
+  getOrders('progress')?.sort((a, b) =>
+    dayjs(b.CreateDate).isAfter(dayjs(a.CreateDate)) ? 1 : -1
+  )
+);
+</script>
 
 <style scoped></style>
