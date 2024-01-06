@@ -170,7 +170,7 @@ const filterOrders = computed(() => {
 
   const result = pureOrder
     .filter((order) => {
-      const date = dayjs(order?.Date.replaceAll('.', '-'));
+      const date = dayjs(order?.Date);
       const from = dateRange.from.format('YYYY-MM-DD HH:mm');
       const to = dateRange.to.format('YYYY-MM-DD HH:mm');
       return (
@@ -203,13 +203,7 @@ const useOrders = computed(
   () =>
     filterOrders.value
       .slice()
-      .sort((a, b) =>
-        dayjs(b.Date.replaceAll('.', '-')).isBefore(
-          dayjs(a.Date.replaceAll('.', '-'))
-        )
-          ? -1
-          : 0
-      )
+      .sort((a, b) => (dayjs(b.Date).isBefore(dayjs(a.Date)) ? -1 : 0))
       .slice((current.value - 1) * 5, (current.value - 1) * 5 + 5) // page
 );
 const maxPaination = computed(() =>

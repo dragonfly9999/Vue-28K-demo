@@ -12,7 +12,7 @@ const orders = computed(() => useLiveStore().getOrders('instant'));
   <q-list>
     <OrderItem
       v-for="(order, index) in orders?.sort((a, b) =>
-        dayjs(b.CreateDate?.replaceAll('.', '-')).isAfter(a.CreateDate) ? 1 : 0
+        dayjs(b.CreateDate).isAfter(a.CreateDate) ? 1 : 0
       )"
       :key="index"
       :order="order"

@@ -371,11 +371,7 @@ const handleBackTrade = () => {
             }}
           </q-item-section>
           <q-item-section avatar>
-            {{
-              dayjs(record?.Date?.replaceAll('.', '-')).format(
-                'YYYY-MM-DD HH:mm:ss'
-              )
-            }}
+            {{ dayjs(record?.Date).format('YYYY-MM-DD HH:mm:ss') }}
           </q-item-section>
         </q-item>
         <!--訂單號 -->

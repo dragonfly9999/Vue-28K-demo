@@ -204,7 +204,7 @@ const statusInfo = computed(() => {
           <q-item-section avatar>
             {{
               dayjs(
-                dayjs(detail?.Date?.replaceAll('.', '-')).toDate().getTime() +
+                dayjs(detail?.Date).toDate().getTime() +
                   (detail?.DeltaTime ?? 0) * 1000
               ).format('YYYY-MM-DD HH:mm:ss')
             }}

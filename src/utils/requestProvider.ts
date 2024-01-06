@@ -41,7 +41,6 @@ export const requestProvider = <DATA, Params = unknown>({
 
         switch (useCode.toString()) {
           case '91': {
-            // 強制登出，流程跟登出一樣，但使用ts的寫法。
             axiosProvider.post('/Req_AutoPick.aspx', {
               mode: 0
             });

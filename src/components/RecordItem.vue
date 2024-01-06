@@ -89,7 +89,7 @@ const recordInfo = computed(() => {
 });
 
 const date = computed(() =>
-  dayjs(props.order.Date.replaceAll('.', '-')).format('YYYY-MM-DD HH:mm:ss')
+  dayjs(props.order.Date).format('YYYY-MM-DD HH:mm:ss')
 );
 </script>
 <template>

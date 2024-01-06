@@ -51,7 +51,7 @@
             <!-- 日期 -->
             <div class="text-caption">
               {{
-                dayjs(order.CreateDate.replaceAll('.', '-')).format(
+                dayjs(order.CreateDate).format(
                   'YYYY-MM-DD HH:mm:ss'
                 )
               }}

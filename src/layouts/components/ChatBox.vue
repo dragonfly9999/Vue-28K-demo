@@ -93,8 +93,8 @@ onBeforeUnmount(() => {
 });
 </script>
 <template>
-  <q-card class="q-pa-md " id="fade-in" >
-    <q-toolbar class=" q-mb-sm toolbar">
+  <q-card class="q-pa-md" id="fade-in">
+    <q-toolbar class="q-mb-sm toolbar">
       <q-badge
         v-if="getCount(route?.query?.token as string) > 0"
         color="red"
@@ -141,7 +141,7 @@ onBeforeUnmount(() => {
               : ''
           "
           :sent="isAgent ? msg.Message_Role === 3 : msg.Message_Role === 1"
-          :stamp="dayjs(msg.Sysdate.replaceAll('.', '-')).format('YYYY-MM-DD HH:mm:ss')"
+          :stamp="dayjs(msg.Sysdate).format('YYYY-MM-DD HH:mm:ss')"
           :key="msg.SysID"
           class="q-my-lg"
           :bg-color="
@@ -220,7 +220,7 @@ onBeforeUnmount(() => {
     max-height: 100vh;
     transition: height 0.3141592s;
     z-index: 6;
-    width:93vw
+    width: 93vw;
   }
 }
 @media screen and (max-width: 1280px) {
@@ -235,7 +235,6 @@ onBeforeUnmount(() => {
     transition: height 0.3141592s;
     z-index: 6;
     width: 100%;
-
   }
 }
 .toolbar {
