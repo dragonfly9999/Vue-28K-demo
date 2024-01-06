@@ -84,7 +84,7 @@ export const useThirdStore = defineStore('third', () => {
     return result;
   };
   const getChatList = (token: string) => {
-    return chatListObj?.value[token];
+    return chatListObj?.value[token] ?? [];
   };
 
   return {

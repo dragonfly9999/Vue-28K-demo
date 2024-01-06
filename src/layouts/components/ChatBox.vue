@@ -1,98 +1,3 @@
-<script setup lang="ts">
-import { useThirdStore } from 'src/stores';
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
-import { useStorage } from 'vue3-storage';
-import { handleBoforeUpload } from 'src/utils/ImageManager';
-import messageSound from 'src/assets/sound/message2.mp3';
-import dayjs from 'dayjs';
-import ImageMaster from 'src/components/ImageMaster.vue';
-const {
-  getWebSocket,
-  getChatList,
-  setOnMessage,
-  handleResetCount,
-  getCount,
-  resetOnMessage,
-} = useThirdStore();
-const route = useRoute();
-const btnIcon = ref<'arrow_drop_down' | 'arrow_drop_up'>('arrow_drop_up');
-const text = ref<string>();
-const hint = ref(true);
-const filePicker = ref();
-const file = ref();
-const scrollArea = ref();
-const messageAudio = ref();
-const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
-const chatList = getChatList(route.query.token as string);
-// handlers
-const handleSwitch = () => {
-  handleResetCount(route?.query?.token as string);
-  switch (btnIcon.value) {
-    case 'arrow_drop_down':
-      var element = document.getElementById('fade-in');
-      if (element) {
-        element.style.height = '60px';
-      }
-      btnIcon.value = 'arrow_drop_up';
-      break;
-    case 'arrow_drop_up':
-      var element = document.getElementById('fade-in');
-      if (element) {
-        element.style.height = 'calc(100vh - 40px)';
-      }
-      btnIcon.value = 'arrow_drop_down';
-      break;
-  }
-};
-
-const handleUpload = async (info: File) => {
-  const base64 = await handleBoforeUpload(info);
-  const sendObj = {
-    Message: base64,
-    Message_Type: 2,
-  };
-  getWebSocket(route.query.token as string).send(JSON.stringify(sendObj));
-};
-const handleSent = () => {
-  const sendObj = {
-    Message: text.value,
-    Message_Type: 1,
-  };
-  getWebSocket(route.query.token as string).send(JSON.stringify(sendObj));
-  text.value = undefined;
-};
-// WS
-onMounted(() => {
-  if (chatList.length > 1) {
-    var element = document.getElementById('fade-in');
-    if (element && window.innerWidth < 1440) {
-      element.style.height = 'calc(100vh - 40px)';
-    }
-    btnIcon.value = 'arrow_drop_down';
-  }
-  setOnMessage(route.query.token as string, (msg) => {
-    setTimeout(
-      () => scrollArea.value?.setScrollPercentage('vertical', 1.1, 1000),
-      100
-    );
-    if (messageAudio.value) {
-      messageAudio.value?.pause();
-      messageAudio.value.currentTime = 0;
-      if (
-        hint.value &&
-        ((useStorage().getStorageSync('isAgent') && msg?.Message_Role !== 3) ||
-          (!useStorage().getStorageSync('isAgent') && msg?.Message_Role !== 1))
-      ) {
-        messageAudio.value?.play();
-      }
-    }
-  });
-});
-onBeforeUnmount(() => {
-  resetOnMessage(route.query.token as string);
-});
-</script>
 <template>
   <q-card class="q-pa-md" id="fade-in">
     <q-toolbar class="q-mb-sm toolbar">
@@ -194,6 +99,102 @@ onBeforeUnmount(() => {
   />
   <audio :src="messageSound" ref="messageAudio" />
 </template>
+
+<script setup lang="ts">
+import { useThirdStore } from 'src/stores';
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+import { useRoute } from 'vue-router';
+import { useStorage } from 'vue3-storage';
+import { handleBoforeUpload } from 'src/utils/ImageManager';
+import messageSound from 'src/assets/sound/message2.mp3';
+import dayjs from 'dayjs';
+import ImageMaster from 'src/components/ImageMaster.vue';
+const {
+  getWebSocket,
+  getChatList,
+  setOnMessage,
+  handleResetCount,
+  getCount,
+  resetOnMessage,
+} = useThirdStore();
+const route = useRoute();
+const btnIcon = ref<'arrow_drop_down' | 'arrow_drop_up'>('arrow_drop_up');
+const text = ref<string>();
+const hint = ref(true);
+const filePicker = ref();
+const file = ref();
+const scrollArea = ref();
+const messageAudio = ref();
+const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
+const chatList = getChatList(route.query.token as string);
+// handlers
+const handleSwitch = () => {
+  handleResetCount(route?.query?.token as string);
+  switch (btnIcon.value) {
+    case 'arrow_drop_down':
+      var element = document.getElementById('fade-in');
+      if (element) {
+        element.style.height = '60px';
+      }
+      btnIcon.value = 'arrow_drop_up';
+      break;
+    case 'arrow_drop_up':
+      var element = document.getElementById('fade-in');
+      if (element) {
+        element.style.height = 'calc(100vh - 40px)';
+      }
+      btnIcon.value = 'arrow_drop_down';
+      break;
+  }
+};
+
+const handleUpload = async (info: File) => {
+  const base64 = await handleBoforeUpload(info);
+  const sendObj = {
+    Message: base64,
+    Message_Type: 2,
+  };
+  getWebSocket(route.query.token as string).send(JSON.stringify(sendObj));
+};
+const handleSent = () => {
+  const sendObj = {
+    Message: text.value,
+    Message_Type: 1,
+  };
+  getWebSocket(route.query.token as string).send(JSON.stringify(sendObj));
+  text.value = undefined;
+};
+// WS
+onMounted(() => {
+  if (chatList.length > 1) {
+    var element = document.getElementById('fade-in');
+    if (element && window.innerWidth < 1440) {
+      element.style.height = 'calc(100vh - 40px)';
+    }
+    btnIcon.value = 'arrow_drop_down';
+  }
+  setOnMessage(route.query.token as string, (msg) => {
+    setTimeout(
+      () => scrollArea.value?.setScrollPercentage('vertical', 1.1, 1000),
+      100
+    );
+    if (messageAudio.value) {
+      messageAudio.value?.pause();
+      messageAudio.value.currentTime = 0;
+      if (
+        hint.value &&
+        ((useStorage().getStorageSync('isAgent') && msg?.Message_Role !== 3) ||
+          (!useStorage().getStorageSync('isAgent') && msg?.Message_Role !== 1))
+      ) {
+        messageAudio.value?.play();
+      }
+    }
+  });
+});
+onBeforeUnmount(() => {
+  resetOnMessage(route.query.token as string);
+});
+</script>
 
 <style scoped>
 #fade-in {
