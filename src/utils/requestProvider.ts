@@ -13,7 +13,7 @@ type ProviderProps<DATA, Params = unknown> = {
   config?: any;
   onSuccess?: (args?: VirgilRes<DATA>) => void;
   onAfter?: (args?: Params[]) => void;
-  onError?: () => void;
+  onError?: (error?: unknown) => void;
   noFeedback?: boolean;
 };
 
@@ -31,7 +31,7 @@ export const requestProvider = <DATA, Params = unknown>({
     ...config,
     onError: (error: AxiosError<VirgilRes<DATA>>) => {
       const useCode = error.response?.data.code;
-      if (useCode) {
+      if (useCode && !noFeedback) {
         Notify.create({
           type: 'negative',
           message: t(`error.api.${error.response?.data.code}`),
@@ -51,7 +51,7 @@ export const requestProvider = <DATA, Params = unknown>({
           }
         }
       }
-      if (onError) onError();
+      if (onError) onError(error);
     },
     onSuccess: (res) => {
       if (isManual && !noFeedback) {

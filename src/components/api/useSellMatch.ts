@@ -5,11 +5,7 @@ type MatchProps = {
   Token: string;
 };
 
-type UseProps = {
-  onSuccess: () => void;
-};
-
-export const useSellMatch = (props?: UseProps) => {
+export const useSellMatch = ({ ...useProps }: UseProps) => {
   return requestProvider<OrderRecord, MatchProps>({
     reqFn: (props) =>
       axiosProvider
@@ -17,6 +13,6 @@ export const useSellMatch = (props?: UseProps) => {
         .then(({ data }) => data),
 
     isManual: true,
-    ...props
+    ...useProps
   });
 };

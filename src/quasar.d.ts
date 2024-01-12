@@ -132,8 +132,8 @@ type WebsocketOptions = {
   login_session: string;
 };
 
-type UseProps<DATA = unknown, Params = unknown> = {
+type UseProps<DATA = unknown, Params = unknown, Error = unknown> = {
   onSuccess?: (res?: VirgilRes<DATA>) => void;
-  onError?: (error?: unknown) => void;
+  onError?: (error?: Error) => void;
   onAfter?: (args?: Params) => void;
 };

@@ -55,7 +55,7 @@
                 :key="Ai"
               >
                 <AccountCard
-                  :on-success="
+                  :on-fresh-info="
                     () => {
                       reStory();
                       reAcc();
@@ -98,6 +98,30 @@
       :visible="delID !== undefined"
       :message="t('label.del_hint')"
     />
+    <!-- 沒有預設帳號 -->
+    <q-dialog v-model="isNoDefaultWarn">
+      <q-card
+        class="q-pa-md"
+        @click="
+          () => {
+            isNoDefaultWarn = false;
+          }
+        "
+      >
+        <div class="flex text-orange-12 items-center text-h5">
+          <q-icon
+            class="material-icons-outlined q-mr-md"
+            name="report_problem"
+          />
+          <div class="text-bold">
+            {{ $t('account.未設定預設帳號') }}
+          </div>
+        </div>
+        <div class="text-body1">
+          ({{ $t('account.設定一個帳號的頻道為全部') }})
+        </div>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
@@ -105,7 +129,7 @@
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import { useAccHistory, useDelAcc } from './api';
+import { AccNum, useAccHistory, useDelAcc } from './api';
 import { useAcc } from './api';
 import { thousandInput } from 'src/utils/NumberTool';
 import CheckCard from 'src/components/CheckCard.vue';
@@ -114,7 +138,28 @@ import AccountCard from './AccountCard.vue';
 
 const { t } = useI18n();
 const router = useRouter();
-const { data: accs, loading, refresh: reStory } = useAccHistory();
+// DOM
+const isAlreadyWarn = ref(false);
+const isNoDefaultWarn = ref(false);
+const {
+  data: accs,
+  loading,
+  refresh: reStory,
+} = useAccHistory({
+  onSuccess: (res) => {
+    if (!isAlreadyWarn.value) {
+      isNoDefaultWarn.value = !!res?.data.every(
+        (accInfo) => accInfo[AccNum.Channel] !== -1
+      );
+      if (isNoDefaultWarn.value) {
+        setTimeout(() => {
+          isNoDefaultWarn.value = false;
+          isAlreadyWarn.value = true;
+        }, 3000);
+      }
+    }
+  },
+});
 const { request } = useAcc();
 const { data: acc, refresh: reAcc } = request;
 const showAccs = computed(() =>

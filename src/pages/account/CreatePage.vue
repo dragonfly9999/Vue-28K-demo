@@ -107,14 +107,14 @@
                 outlined
                 :options="[
                   { label: 'All', value: -1 },
-                  { label: 'BVAC', value: 0 },
+                  // { label: 'BVAC', value: 0 },
                   { label: 'Demo K100U', value: 1 },
-                  // { label: '88U', value: 2 },
+                  { label: '88U', value: 2 },
                   // { label: 'U88', value: 3 },
                   // { label: 'JP88', value: 4 },
                   { label: 'K100U com', value: 5 },
-                  // { label: 'U28 Exchange', value: 6 },
-                  // { label: 'V100U com', value: 7 },
+                  { label: 'U28 Exchange', value: 6 },
+                  { label: 'V100U com', value: 7 },
                   // { label: 'Fxcoin', value: 9 },
                   // { label: 'K200U', value: 10 },
                   // { label: 'K100 net', value: 11 },

@@ -7,6 +7,7 @@ type DelProps = {
 
 type UseProps = {
   onSuccess?: () => void;
+  noFeedback?: boolean;
 };
 
 export const useDelAcc = (props: UseProps) =>

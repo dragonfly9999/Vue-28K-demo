@@ -16,13 +16,17 @@
           @save="
             (value, initValue) => {
               if (value !== initValue) {
+                isWait = true;
                 del({
                   // 修改欄位時自動新增並且預設，同時刪除原本的帳號
                   H_id: props.accInfo.H_id,
                 });
                 set({
                   ...editFields,
-                  [AccNum.Channel]: editFields[AccNum.Channel]?.value ?? null,
+                  [AccNum.Channel]:
+                    editFields[AccNum.Channel]?.value !== undefined
+                      ? editFields[AccNum.Channel]?.value ?? null
+                      : null,
                   [AccNum.Name]: value,
                 });
               }
@@ -60,13 +64,17 @@
           @save="
             (value, initValue) => {
               if (value !== initValue) {
+                isWait = true;
                 del({
                   // 修改欄位時自動新增並且預設，同時刪除原本的帳號
                   H_id: props.accInfo.H_id,
                 });
                 set({
                   ...editFields,
-                  [AccNum.Channel]: editFields[AccNum.Channel]?.value ?? null,
+                  [AccNum.Channel]:
+                    editFields[AccNum.Channel]?.value !== undefined
+                      ? editFields[AccNum.Channel]?.value ?? null
+                      : null,
                   [AccNum.Account]: value,
                 });
               }
@@ -104,13 +112,17 @@
           @save="
             (value, initValue) => {
               if (value !== initValue) {
+                isWait = true;
                 del({
                   // 修改欄位時自動新增並且預設，同時刪除原本的帳號
                   H_id: props.accInfo.H_id,
                 });
                 set({
                   ...editFields,
-                  [AccNum.Channel]: editFields[AccNum.Channel]?.value ?? null,
+                  [AccNum.Channel]:
+                    editFields[AccNum.Channel]?.value !== undefined
+                      ? editFields[AccNum.Channel]?.value ?? null
+                      : null,
                   [AccNum.BankID]: value,
                 });
               }
@@ -148,13 +160,17 @@
           @save="
             (value, initValue) => {
               if (value !== initValue) {
+                isWait = true;
                 del({
                   // 修改欄位時自動新增並且預設，同時刪除原本的帳號
                   H_id: props.accInfo.H_id,
                 });
                 set({
                   ...editFields,
-                  [AccNum.Channel]: editFields[AccNum.Channel]?.value ?? null,
+                  [AccNum.Channel]:
+                    editFields[AccNum.Channel]?.value !== undefined
+                      ? editFields[AccNum.Channel]?.value ?? null
+                      : null,
                   [AccNum.Branch]: value,
                 });
               }
@@ -192,7 +208,9 @@
           @save="
             (value, initValue) => {
               if (value !== initValue) {
-                if (initValue !== null) { // 原本就存在通路時Server會自動覆蓋原本的帳號
+                // 原本就存在通路時Server會自動覆蓋原本的帳號
+                if (initValue !== null) {
+                  isWait = true;
                   del({
                     H_id: props.accInfo.H_id,
                   });
@@ -214,14 +232,14 @@
             :label="$t('account.請設定通道')"
             :options="[
               { label: 'All', value: -1 },
-              { label: 'BVAC', value: 0 },
+              // { label: 'BVAC', value: 0 },
               { label: 'Demo K100U', value: 1 },
-              // { label: '88U', value: 2 },
+              { label: '88U', value: 2 },
               // { label: 'U88', value: 3 },
               // { label: 'JP88', value: 4 },
               { label: 'K100U com', value: 5 },
-              // { label: 'U28 Exchange', value: 6 },
-              // { label: 'V100U com', value: 7 },
+              { label: 'U28 Exchange', value: 6 },
+              { label: 'V100U com', value: 7 },
               // { label: 'Fxcoin', value: 9 },
               // { label: 'K200U', value: 10 },
               // { label: 'K100 net', value: 11 },
@@ -252,7 +270,7 @@
           () => {
             set({
               ...editFields,
-              [AccNum.Channel]: editFields[AccNum.Channel]?.value ?? null,
+              [AccNum.Channel]: accInfo[AccNum.Channel],
             });
           }
         "
@@ -279,7 +297,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, watch, reactive } from 'vue';
+import { computed, watch, reactive, ref } from 'vue';
 import { useDelAcc, useSetAcc } from './api';
 import { AccRes } from './api/useAccHistory';
 import { AccNum } from './api/useAccHistory';
@@ -288,7 +306,7 @@ import { useI18n } from 'vue-i18n';
 const props = defineProps<{
   accInfo: AccRes;
   currentAcc: Omit<AccRes, 'H_id'> | undefined;
-  onSuccess?: () => void;
+  onFreshInfo?: () => void;
   delID: number | undefined;
 }>();
 defineEmits(['update:delID']);
@@ -331,12 +349,22 @@ const isCurrentAcc = computed(() => {
     props.accInfo[AccNum.Branch] === props.currentAcc[AccNum.Branch]
   );
 });
+
+// run
+const isWait = ref(false);
 const { run: set } = useSetAcc({
   onSuccess: () => {
-    if (props.onSuccess) props.onSuccess();
+    if (isWait.value) isWait.value = false;
+    else if (props.onFreshInfo) props.onFreshInfo();
   },
 });
-const { run: del } = useDelAcc({});
+const { run: del } = useDelAcc({
+  onSuccess: () => {
+    if (isWait.value) isWait.value = false;
+    else if (props.onFreshInfo) props.onFreshInfo();
+  },
+  noFeedback: true,
+});
 
 watch(
   () => props.accInfo.H_id,

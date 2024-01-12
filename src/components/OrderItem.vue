@@ -120,7 +120,7 @@ const isAgent = computed(() => storage.getStorageSync('isAgent'));
 const { setOrderWs } = useOrderStore();
 const { setWebSockets, getCount, handleResetCount } = useThirdStore();
 const { run: matchBuy, loading: loadingBuy } = useBuyMatch({
-  onTriger: () => {
+  onSuccess: () => {
     setWebSockets(props.order.token);
     setOrderWs(props.order.token);
   },

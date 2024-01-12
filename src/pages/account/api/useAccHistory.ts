@@ -11,7 +11,7 @@ export enum AccNum {
 
 export type AccRes = Record<AccNum, string | number | null> & { H_id: number };
 
-export const useAccHistory = () =>
+export const useAccHistory = ({ ...useProps }: UseProps<Array<AccRes>>) =>
   requestProvider<Array<AccRes>>({
     reqFn: () => {
       const request = axiosProvider
@@ -19,5 +19,6 @@ export const useAccHistory = () =>
         .then(({ data }) => data);
       return request;
     },
-    isManual: false
+    isManual: false,
+    ...useProps
   });
