@@ -6,7 +6,7 @@ type DelProps = {
 };
 
 type UseProps = {
-  onSuccess: () => void;
+  onSuccess?: () => void;
 };
 
 export const useDelAcc = (props: UseProps) =>

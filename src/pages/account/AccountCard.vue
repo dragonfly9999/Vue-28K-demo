@@ -176,6 +176,11 @@
           @save="
             (value, initValue) => {
               if (value !== initValue) {
+                if (initValue !== null) {
+                  del({
+                    H_id: props.accInfo.H_id,
+                  });
+                }
                 set({
                   ...editFields,
                   [AccNum.Channel]: value.value,
@@ -259,7 +264,7 @@
 
 <script setup lang="ts">
 import { computed, watch, reactive } from 'vue';
-import { useSetAcc } from './api';
+import { useDelAcc, useSetAcc } from './api';
 import { AccRes } from './api/useAccHistory';
 import { AccNum } from './api/useAccHistory';
 import { useI18n } from 'vue-i18n';
@@ -315,6 +320,7 @@ const { run: set } = useSetAcc({
     if (props.onSuccess) props.onSuccess();
   },
 });
+const { run: del } = useDelAcc({});
 
 watch(
   () => props.accInfo.H_id,
