@@ -84,9 +84,12 @@
           />
         </div>
       </q-form>
-      <div class="flex justify-end q-px-md">
+      <div class="flex justify-end q-px-md q-gutter-md">
         <router-link to="register" class="text-blue">
           <q-btn dense unelevated> {{ $t('auth.註冊') }} </q-btn>
+        </router-link>
+        <router-link to="forget" class="text-blue">
+          <q-btn dense unelevated> {{ $t('auth.忘記密碼') }} </q-btn>
         </router-link>
       </div>
     </q-card>
