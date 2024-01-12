@@ -16,6 +16,10 @@
           @save="
             (value, initValue) => {
               if (value !== initValue) {
+                del({
+                  // 修改欄位時自動新增並且預設，同時刪除原本的帳號
+                  H_id: props.accInfo.H_id,
+                });
                 set({
                   ...editFields,
                   [AccNum.Channel]: editFields[AccNum.Channel]?.value ?? null,
@@ -56,6 +60,10 @@
           @save="
             (value, initValue) => {
               if (value !== initValue) {
+                del({
+                  // 修改欄位時自動新增並且預設，同時刪除原本的帳號
+                  H_id: props.accInfo.H_id,
+                });
                 set({
                   ...editFields,
                   [AccNum.Channel]: editFields[AccNum.Channel]?.value ?? null,
@@ -96,6 +104,10 @@
           @save="
             (value, initValue) => {
               if (value !== initValue) {
+                del({
+                  // 修改欄位時自動新增並且預設，同時刪除原本的帳號
+                  H_id: props.accInfo.H_id,
+                });
                 set({
                   ...editFields,
                   [AccNum.Channel]: editFields[AccNum.Channel]?.value ?? null,
@@ -136,6 +148,10 @@
           @save="
             (value, initValue) => {
               if (value !== initValue) {
+                del({
+                  // 修改欄位時自動新增並且預設，同時刪除原本的帳號
+                  H_id: props.accInfo.H_id,
+                });
                 set({
                   ...editFields,
                   [AccNum.Channel]: editFields[AccNum.Channel]?.value ?? null,
@@ -176,7 +192,7 @@
           @save="
             (value, initValue) => {
               if (value !== initValue) {
-                if (initValue !== null) {
+                if (initValue !== null) { // 原本就存在通路時Server會自動覆蓋原本的帳號
                   del({
                     H_id: props.accInfo.H_id,
                   });
