@@ -1,34 +1,3 @@
-<script setup lang="ts">
-import { useLiveStore, useStateStore, useThirdStore } from 'src/stores';
-import { computed, onMounted, ref, toRefs } from 'vue';
-import InstantOrders from './components/InstantOrders.vue';
-import ProgressOrders from './components/ProgressOrders.vue';
-import RecentHistory from './components/RecentHistory.vue';
-import progressPng from 'src/assets/in-progress.png';
-import { useStorage } from 'vue3-storage';
-import PendingOrders from './components/PendingOrders.vue';
-
-const { hint } = toRefs(useThirdStore());
-const { refreshBalance } = useStateStore();
-const { getOrders } = useLiveStore();
-const { getAuto, getAutoLoad, updateAuto } = useStateStore();
-const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
-// DOM
-const tab = ref('instant');
-//
-onMounted(() => {
-  refreshBalance();
-  if (!isAgent.value) {
-    hint.value = false;
-    tab.value = 'memberProgress';
-  } else {
-    hint.value = true;
-  }
-  if (import.meta.env.DEV) {
-    hint.value = false;
-  }
-});
-</script>
 <template>
   <div class="q-gutter-y-md q-mt-md width900">
     <!-- 交易列表 -->
@@ -145,5 +114,32 @@ onMounted(() => {
     <RecentHistory />
   </div>
 </template>
+
+<script setup lang="ts">
+import { useLiveStore, useStateStore, useThirdStore } from 'src/stores';
+import { computed, onMounted, ref, toRefs } from 'vue';
+import InstantOrders from './components/InstantOrders.vue';
+import ProgressOrders from './components/ProgressOrders.vue';
+import RecentHistory from './components/RecentHistory.vue';
+import progressPng from 'src/assets/in-progress.png';
+import { useStorage } from 'vue3-storage';
+import PendingOrders from './components/PendingOrders.vue';
+
+const { hint } = toRefs(useThirdStore());
+const { refreshBalance } = useStateStore();
+const { getOrders } = useLiveStore();
+const { getAuto, getAutoLoad, updateAuto } = useStateStore();
+const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
+// DOM
+const tab = ref('instant');
+//
+onMounted(() => {
+  refreshBalance();
+  if (!isAgent.value) {
+    hint.value = false;
+    tab.value = 'memberProgress';
+  }
+});
+</script>
 
 <style scoped></style>

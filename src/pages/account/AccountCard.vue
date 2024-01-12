@@ -267,7 +267,7 @@ import { useI18n } from 'vue-i18n';
 const props = defineProps<{
   accInfo: AccRes;
   currentAcc: Omit<AccRes, 'H_id'> | undefined;
-  onSuccess: () => void;
+  onSuccess?: () => void;
   delID: number | undefined;
 }>();
 defineEmits(['update:delID']);
@@ -310,7 +310,11 @@ const isCurrentAcc = computed(() => {
     props.accInfo[AccNum.Branch] === props.currentAcc[AccNum.Branch]
   );
 });
-const { run: set } = useSetAcc({ onSuccess: props.onSuccess });
+const { run: set } = useSetAcc({
+  onSuccess: () => {
+    if (props.onSuccess) props.onSuccess();
+  },
+});
 
 watch(
   () => props.accInfo.H_id,

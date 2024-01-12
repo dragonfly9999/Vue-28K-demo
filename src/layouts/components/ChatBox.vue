@@ -120,13 +120,13 @@ const {
 const route = useRoute();
 const btnIcon = ref<'arrow_drop_down' | 'arrow_drop_up'>('arrow_drop_up');
 const text = ref<string>();
-const hint = ref(true);
+const hint = ref(false);
 const filePicker = ref();
 const file = ref();
 const scrollArea = ref();
 const messageAudio = ref();
 const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
-const chatList = getChatList(route.query.token as string);
+const chatList = computed(() => getChatList(route.query.token as string));
 // handlers
 const handleSwitch = () => {
   handleResetCount(route?.query?.token as string);
@@ -166,7 +166,8 @@ const handleSent = () => {
 };
 // WS
 onMounted(() => {
-  if (chatList.length > 1) {
+  // 當有訊息時自動彈起
+  if (chatList.value.length > 1) {
     var element = document.getElementById('fade-in');
     if (element && window.innerWidth < 1440) {
       element.style.height = 'calc(100vh - 40px)';
@@ -190,6 +191,11 @@ onMounted(() => {
       }
     }
   });
+
+  // 當全局的hint沒有被關閉時自動開啟訊息提醒
+  if (useThirdStore().hint) {
+    setTimeout(() => (hint.value = true), 500);
+  }
 });
 onBeforeUnmount(() => {
   resetOnMessage(route.query.token as string);

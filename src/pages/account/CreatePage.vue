@@ -159,12 +159,13 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, reactive, ref } from 'vue';
+import { onBeforeUnmount, onMounted, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { AccNum, AccRes } from './api/useAccHistory';
 import { useRouter } from 'vue-router';
 import { useSetAcc } from './api';
 import CancelVerification from 'src/components/CancelVerification.vue';
+import dayjs from 'dayjs';
 const timeIntervale = ref<NodeJS.Timeout>();
 const { t } = useI18n();
 const router = useRouter();
@@ -199,7 +200,16 @@ const visible = reactive({
   warn: false,
   redirect: false,
 });
-//
+
+// live cycle
+onMounted(() => {
+  if (import.meta.env.DEV) {
+    formData[AccNum.Name] = '測試戶名' + dayjs().format('YYYYMM-DD HH:ss');
+    formData[AccNum.Account] = '374892374' + dayjs().format('ss');
+    formData[AccNum.BankID] = '測試銀行';
+    formData[AccNum.Branch] = '測試省分';
+  }
+});
 onBeforeUnmount(() => {
   clearInterval(timeIntervale.value);
 });

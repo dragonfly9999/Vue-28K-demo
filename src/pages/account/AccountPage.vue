@@ -57,7 +57,8 @@
                 <AccountCard
                   :on-success="
                     () => {
-                      del({ H_id: Acc.H_id });
+                      reStory();
+                      reAcc();
                     }
                   "
                   :current-acc="acc"

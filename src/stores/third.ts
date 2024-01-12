@@ -5,7 +5,7 @@ import messageSound from 'src/assets/sound/message2.mp3';
 import { useStorage } from 'vue3-storage';
 
 export const useThirdStore = defineStore('third', () => {
-  const hint = ref(true);
+  const hint = ref(false);
   const unReadCount = ref<{ [key: string]: number }>({});
   const chatListObj = ref<{ [key: string]: Array<ChatRes> }>({});
   const webSockets = ref<{ [key: string]: WebSocketClient }>({});
@@ -45,7 +45,7 @@ export const useThirdStore = defineStore('third', () => {
         reconnectInterval: 2000,
         isChat: true,
         order_token: token,
-        login_session,
+        login_session
       });
       chatWS.connect();
       chatWS.onMessage = (msg) => {
@@ -96,6 +96,6 @@ export const useThirdStore = defineStore('third', () => {
     setOnMessage,
     removeChat,
     handleResetCount,
-    getCount,
+    getCount
   };
 });
