@@ -163,19 +163,41 @@
               outlined
               :label="t('transfer.label.i_want_to_transfer')"
               v-model="transAmt"
-              :error-message="t('error.32')"
               @focus="() => transAmt === 0 && (transAmt = undefined)"
-              :rules="[(val) => numberTool(val) > 1]"
-              @update:model-value="(value) => (transAmt = thousandInput(value))"
+              lazy-rules
+              :rules="[
+                (val) => !!val || $t('error.input.empty'),
+                (val) =>
+                  numberTool(val) < (getBalance()?.Avb_Balance ?? 0) ||
+                  $t('error.api.32'),
+              ]"
+              @update:model-value="
+                (value) => {
+                  if (numberTool(value) < (getBalance()?.Avb_Balance ?? 0)) {
+                    transAmt = thousandInput(value);
+                  } else {
+                    transAmt = thousandInput(getBalance()?.Avb_Balance);
+                  }
+                }
+              "
+              @blur="
+                () => {
+                  const avB = getBalance()?.Avb_Balance;
+                  if (avB === undefined) return;
+                  if (numberTool(transAmt) === avB) {
+                    transAmt = thousandInput(Math.floor(avB));
+                  }
+                }
+              "
             >
               <template v-slot:append>
                 <div class="text-grey-5 text-subtitle2">USDT</div>
               </template>
             </q-input>
 
+            <!-- 剩餘 -->
             <div v-if="transAmt > 1">
               <div class="flex justify-end">
-                <!-- 剩餘 -->
                 <div class="text-grey-6 text-subtitle2">
                   {{ $t('transfer.label.remaining') }}
                 </div>
@@ -184,8 +206,7 @@
             </div>
           </div>
 
-          
-          <!--  -->
+          <!-- 聲明 -->
           <div class="flex no-wrap items-start q-my-md">
             <q-checkbox v-model="isPassTwenty" dense />
             <!-- 我已滿20歲已閱讀並同意 -->
