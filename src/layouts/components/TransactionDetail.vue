@@ -100,7 +100,7 @@ const statusInfo = computed(() => {
         <!-- 數量 -->
         <q-item style="min-height: 36px">
           <q-item-section class="text-dark">
-            {{ $t('transaction.quantity') }}(USDT)
+            {{ $t('transaction.數量') }}(USDT)
           </q-item-section>
           <q-item-section
             avatar

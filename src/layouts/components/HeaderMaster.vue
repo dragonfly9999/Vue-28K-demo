@@ -1,36 +1,3 @@
-<script setup lang="ts">
-import langs from 'src/i18n';
-import I18nBtn from 'src/components/I18nBtn.vue';
-import { useLiveStore, useStateStore } from 'src/stores';
-import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
-import { useStorage } from 'vue3-storage';
-import RateBar from 'src/components/RateBar.vue';
-import NavBar from 'src/components/NavBar.vue';
-import logo from 'src/assets/logo_easy.png';
-
-const { updateAuto, getRates } = useStateStore();
-const router = useRouter();
-const { t } = useI18n();
-const storage = useStorage();
-const i18n = useI18n();
-const { cleanLive } = useLiveStore();
-// DOM
-const drawerRight = ref(false);
-const isAgent = computed(() => storage.getStorageSync('isAgent'));
-
-const logout = () => {
-  if (useStorage().getStorageSync('isAgent')) {
-    updateAuto(0);
-  }
-  setTimeout(() => {
-    cleanLive();
-    storage.clearStorageSync();
-    router.push({ name: 'login' });
-  }, 100);
-};
-</script>
 <template>
   <q-header reveal class="q-pa-md" style="background: #242e47; z-index: 5">
     <!-- Large -->
@@ -271,5 +238,39 @@ const logout = () => {
     </div>
   </q-drawer>
 </template>
+
+<script setup lang="ts">
+import langs from 'src/i18n';
+import I18nBtn from 'src/components/I18nBtn.vue';
+import { useLiveStore, useStateStore } from 'src/stores';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+import { useStorage } from 'vue3-storage';
+import RateBar from 'src/components/RateBar.vue';
+import NavBar from 'src/components/NavBar.vue';
+import logo from 'src/assets/logo_easy.png';
+
+const { updateAuto, getRates } = useStateStore();
+const router = useRouter();
+const { t } = useI18n();
+const storage = useStorage();
+const i18n = useI18n();
+const { cleanLive } = useLiveStore();
+// DOM
+const drawerRight = ref(false);
+const isAgent = computed(() => storage.getStorageSync('isAgent'));
+
+const logout = () => {
+  if (useStorage().getStorageSync('isAgent')) {
+    updateAuto(0);
+  }
+  setTimeout(() => {
+    cleanLive();
+    storage.clearStorageSync();
+    router.push({ name: 'login' });
+  }, 100);
+};
+</script>
 
 <style scoped></style>

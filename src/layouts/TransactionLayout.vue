@@ -46,7 +46,7 @@
 
 <script setup lang="ts">
 import WaitCard from 'src/pages/transaction/components/WaitCard.vue';
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { OrderStatusNum } from 'src/stores/live';
 import ChatBox from './components/ChatBox.vue';

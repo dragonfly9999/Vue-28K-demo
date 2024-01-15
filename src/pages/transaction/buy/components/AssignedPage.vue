@@ -1,70 +1,3 @@
-<script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue';
-import { getLeaseTime } from 'src/utils/TimeMaster';
-import { thousandTool } from 'src/utils/NumberTool';
-import { OrderStatusNum } from 'src/stores/live';
-import StepperMaster from 'src/components/StepperMaster.vue';
-import PriceInfo from 'src/components/PriceInfo.vue';
-import BuyConfirm from './BuyConfirm.vue';
-import { useBuy2, usePay } from '../api';
-import { useRoute } from 'vue-router';
-import CancelConfirm from 'src/components/CancelConfirm.vue';
-import { handleBoforeUpload } from 'src/utils/ImageManager';
-import { useThirdStore } from 'src/stores';
-import PunctuationMaster from 'src/components/PunctuationMaster.vue';
-import { useStorage } from 'vue3-storage';
-import CopyButton from 'src/components/CopyButton.vue';
-
-defineProps<{ order?: OrderStatus }>();
-//
-const route = useRoute();
-const { t } = useI18n();
-const { run: pay } = usePay();
-const { run: buy } = useBuy2();
-const { getWebSocket } = useThirdStore();
-// DOM
-const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
-let TimeInterval: NodeJS.Timeout;
-const deltaTime = ref(0);
-const filePicker = ref();
-const file = ref();
-const visible = reactive({
-  payWarn: false,
-  cancelWarn: false,
-});
-
-// handlers
-const handleUpload = async (info: File) => {
-  const base64 = await handleBoforeUpload(info);
-  const sendObj = {
-    Message: base64,
-    Message_Type: 2,
-  };
-  getWebSocket(route.query.token as string).send(JSON.stringify(sendObj));
-  handleConfirm();
-};
-const handleConfirm = () => {
-  if (isAgent.value) {
-    pay({
-      Token: route?.query.token as string,
-    });
-  } else {
-    buy({
-      Token: route?.query.token as string,
-    });
-  }
-};
-// cycle
-onMounted(() => {
-  TimeInterval = setInterval(() => {
-    deltaTime.value += 1;
-  }, 1000);
-});
-onBeforeUnmount(() => {
-  clearInterval(TimeInterval);
-});
-</script>
 <template>
   <q-card class="full-width no-border no-shadow">
     <!-- 步驟 -->
@@ -178,7 +111,7 @@ onBeforeUnmount(() => {
 
       <PunctuationMaster :label="order?.Tx_HASH" />
 
-      <div class="q-gutter-y-md">
+      <div class="q-gutter-y-sm">
         <!--已完成付款btn  -->
         <q-btn
           class="full-width"
@@ -199,7 +132,7 @@ onBeforeUnmount(() => {
           class="full-width"
           color="blue-13"
           v-close-popup
-          :label="t('transaction.deal_canceled')"
+          :label="t('transaction.交易取消')"
           @click="() => (visible.cancelWarn = true)"
         />
       </div>
@@ -239,5 +172,73 @@ onBeforeUnmount(() => {
     ref="filePicker"
   />
 </template>
+
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue';
+import { getLeaseTime } from 'src/utils/TimeMaster';
+import { thousandTool } from 'src/utils/NumberTool';
+import { OrderStatusNum } from 'src/stores/live';
+import StepperMaster from 'src/components/StepperMaster.vue';
+import PriceInfo from 'src/components/PriceInfo.vue';
+import BuyConfirm from './BuyConfirm.vue';
+import { useBuy2, usePay } from '../api';
+import { useRoute } from 'vue-router';
+import CancelConfirm from 'src/components/CancelConfirm.vue';
+import { handleBoforeUpload } from 'src/utils/ImageManager';
+import { useThirdStore } from 'src/stores';
+import PunctuationMaster from 'src/components/PunctuationMaster.vue';
+import { useStorage } from 'vue3-storage';
+import CopyButton from 'src/components/CopyButton.vue';
+
+defineProps<{ order?: OrderStatus }>();
+//
+const route = useRoute();
+const { t } = useI18n();
+const { run: pay } = usePay();
+const { run: buy } = useBuy2();
+const { getWebSocket } = useThirdStore();
+// DOM
+const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
+let TimeInterval: NodeJS.Timeout;
+const deltaTime = ref(0);
+const filePicker = ref();
+const file = ref();
+const visible = reactive({
+  payWarn: false,
+  cancelWarn: false,
+});
+
+// handlers
+const handleUpload = async (info: File) => {
+  const base64 = await handleBoforeUpload(info);
+  const sendObj = {
+    Message: base64,
+    Message_Type: 2,
+  };
+  getWebSocket(route.query.token as string).send(JSON.stringify(sendObj));
+  handleConfirm();
+};
+const handleConfirm = () => {
+  if (isAgent.value) {
+    pay({
+      Token: route?.query.token as string,
+    });
+  } else {
+    buy({
+      Token: route?.query.token as string,
+    });
+  }
+};
+// cycle
+onMounted(() => {
+  TimeInterval = setInterval(() => {
+    deltaTime.value += 1;
+  }, 1000);
+});
+onBeforeUnmount(() => {
+  clearInterval(TimeInterval);
+});
+</script>
 
 <style scoped></style>

@@ -7,6 +7,7 @@ import dashboard from './dashboard';
 import transaction from './transaction';
 import account from './account';
 import main from './main';
+import transfer from './transfer';
 
 export default {
   name: '中文',
@@ -25,6 +26,23 @@ export default {
   transaction,
   account,
   main,
+  transfer,
+  error,
+  // 錢包wallet
+  wallet: {
+    title: '我的錢包',
+    label: {
+      warning_title: '請確認您所選擇的協議種類',
+      warning_text_1: '請確保所選協議種類與接收錢包或交易所的協議種類相符。',
+      warning_text_2: '否則您將無法找回已丟失的加密貨幣。',
+      address: '錢包地址',
+      hint: '您可以使用此錢包地址接收其他人的加密貨幣',
+      record: '查看紀錄',
+      back_front_page: '返回主頁',
+      avb_balance: '可提',
+      real_balance: '結餘'
+    }
+  },
   cancel: {
     title: '即將離開',
     content: '注意！資料將不會儲存'
@@ -61,7 +79,6 @@ export default {
     rate: '匯率',
     skip: '略過',
     upload_image: '上傳圖片',
-    back_front_page: '返回主頁',
     appeal: '申訴',
     confirm: '確認',
     remark: '備註',
@@ -88,7 +105,6 @@ export default {
     beep_hint: '即時訂單提示音',
     auto_hint: '有即時訂單時，系統自動接受配對'
   },
-
   chatName: {
     1: '會員A',
     2: '客服',
@@ -240,84 +256,15 @@ export default {
     cancel: '資料將不會儲存，需重新輸入資料',
     bank_hint: '請務必確保您所輸入的資料，與您的銀行帳戶資訊一致。'
   },
-  country_code: {
-    886: '台灣+886',
-    852: '香港+852',
-    65: '新加坡+65',
-    86: '中國+86',
-    84: '越南+84',
-    63: '菲律賓+63'
-  },
-
   btn: {
     next_step: '下一步',
     confirm_transfer: '確認轉出',
     cancel: '取消'
-  },
-
-  transfer: {
-    title: '轉出',
-    label: {
-      verify_password: '請輸入會員密碼',
-      verify_now: '驗證',
-      premium: '轉帳手續費',
-      agreement: '選擇協議種類',
-      to: '轉出至',
-      nav: '地址簿',
-      remark: '地址備註',
-      remark_text: '備註內容(非必填)',
-      transferAmt: '數量',
-      address: '錢包地址',
-      balance: '錢包餘額',
-      popularize: '平台互轉免手續費',
-      expect: '預計到帳',
-      enter_transferAmt: '請輸入轉出數量',
-      i_want_to_transfer: '我要轉出',
-      transfer_quantity: '轉出數量',
-      remaining: '剩餘',
-      order_info: '訂單資訊'
-    },
-    warn: {
-      title: '潛在風險警告',
-      content: '我信任....',
-      agree: '我信任這個地址，並同意繼續'
-    },
-    check: {
-      title: '請確認訂單資訊',
-      agreement: '協議種類',
-      address: '錢包地址',
-      remark: '地址備註',
-      transferAmt: '數量',
-      premium: '手續費',
-      expect: '預計到帳'
-    },
-    submit: {
-      content: '訂單提交成功',
-      nav: '返回主頁',
-      automatically_return: '秒後自動返回主頁'
-    }
   },
   isTwenty: {
     agree: '我已滿20歲 已閱讀並同意',
     disclaimer: '免責聲明',
     terms: '使用條款',
     privacy: '隱私權條款'
-  },
-  // 錢包wallet
-  wallet: {
-    title: '我的錢包',
-    label: {
-      warning_title: '請確認您所選擇的協議種類',
-      warning_text_1: '請確保所選協議種類與接收錢包或交易所的協議種類相符。',
-      warning_text_2: '否則您將無法找回已丟失的加密貨幣。',
-      address: '錢包地址',
-      hint: '您可以使用此錢包地址接收其他人的加密貨幣',
-      record: '查看紀錄',
-      back_front_page: '返回主頁',
-      avb_balance: '可提',
-      real_balance: '結餘'
-    }
-  },
-
-  error
+  }
 };

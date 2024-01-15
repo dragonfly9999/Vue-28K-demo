@@ -82,7 +82,7 @@ const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
         @click="() => router.push({ name: 'dashboard' })"
         color="blue-13"
         class="full-width"
-        :label="$t('label.back_front_page')"
+        :label="$t('transaction.返回主頁')"
       />
       <!-- <q-btn flat color="blue-13" label="交易明細" />  -->
     </div>

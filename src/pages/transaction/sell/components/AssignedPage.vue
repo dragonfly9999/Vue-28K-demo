@@ -97,7 +97,7 @@
             <td class="text-body1 text-weight-bold text-dark">
               {{ information.content }}
             </td>
-            <CopyButton :value="information.content" />
+            <!-- <CopyButton :value="information.content" /> -->
           </tr>
         </table>
       </div>
