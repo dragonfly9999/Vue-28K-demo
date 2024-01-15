@@ -57,7 +57,7 @@
       <audio loop :src="appealSound" ref="appealAudio" />
     </div>
 
-    <no-hint-warn v-model:visible="noHintWarn" />
+    <NoHintWarn v-model:visible="noHintWarn" />
   </q-layout>
 </template>
 
@@ -68,7 +68,6 @@ import { useRouter } from 'vue-router';
 import ProgressBtn from './components/ProgressBtn.vue';
 import HeaderMaster from './components/HeaderMaster.vue';
 import {
-  computed,
   onBeforeUnmount,
   onErrorCaptured,
   onMounted,

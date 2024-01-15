@@ -173,13 +173,10 @@ onMounted(() => {
 });
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 div.whetherTwenty {
   transition: height 0.5s ease-in-out;
   height: 0px;
   overflow-y: hidden;
-  &.error {
-    height: 20px;
-  }
 }
 </style>
