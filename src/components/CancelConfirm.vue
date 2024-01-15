@@ -29,7 +29,7 @@ defineProps<{ token: string }>();
       <q-btn
         unelevated
         color="blue-13"
-        :label="t('transaction.confirmCancel')"
+        :label="t('transaction.確認取消')"
         @click="
           () =>
             cancel({

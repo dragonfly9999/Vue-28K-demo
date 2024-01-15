@@ -257,7 +257,6 @@
     </q-form>
   </q-card>
 
-  <!-- dialog -->
   <!-- 警告 -->
   <q-dialog
     persistent
@@ -290,8 +289,14 @@ import CreateWarn from '../../buy/components/CreateWarn.vue';
 import { useSell1 } from '../api';
 import { useRouter } from 'vue-router';
 
-const { getBalance, getRates, currency, getBalanceLoad, getRatesLoad } =
-  useStateStore();
+const {
+  getBalance,
+  getRates,
+  currency,
+  getBalanceLoad,
+  getRatesLoad,
+  onRatesSuccess,
+} = useStateStore();
 const router = useRouter();
 const { pendingInstant } = usePendingStore();
 const flag = new URL(`../../../../assets/${currency}.png`, import.meta.url)
@@ -323,21 +328,35 @@ const { run: create, loading } = useSell1({
 
 // life cycle
 onMounted(() => {
-  setTimeout(() => {
-    // 開發時自動填入
-    if (isTest) {
-      form.AccountName = '曹美麗';
-      form.AccountNumber = '123456789';
-      form.BankBranch = '曹省';
-      form.BankName = '美麗銀行';
-      form.UsdtAmt = '100';
-      price.value = 1234;
-      isPassTwenty.value = true;
+  // 開發時自動填入
+  if (isTest) {
+    onRatesSuccess.test = (rates) => {
+      setTimeout(() => {
+        price.value = rates?.RMB_SELL
+          ? numberTool(form.UsdtAmt) * numberTool(rates.RMB_SELL)
+          : 700;
+      }, 100);
+    };
+
+    form.AccountName = '曹美麗';
+    form.AccountNumber = '123456789';
+    form.BankBranch = '曹省';
+    form.BankName = '美麗銀行';
+    form.UsdtAmt = '100';
+    isPassTwenty.value = true;
+    const rates = getRates();
+
+    if (rates) {
+      price.value = numberTool(form.UsdtAmt) * numberTool(rates.RMB_SELL);
+    }
+
+    // scroll
+    setTimeout(() => {
       const domElement = document.documentElement;
       const scrollPath = domElement.scrollHeight - domElement.clientHeight;
       domElement.scrollTo({ top: scrollPath, behavior: 'smooth' });
-    }
-  }, 1000);
+    }, 1000);
+  }
 });
 </script>
 

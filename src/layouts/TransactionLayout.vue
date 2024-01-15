@@ -60,12 +60,10 @@ import { useI18n } from 'vue-i18n';
 const { t } = useI18n();
 const q = useQuasar();
 const route = useRoute();
-const { setWebSockets, removeChat } = useThirdStore();
+const { setWebSockets, removeChat, getChatList } = useThirdStore();
 const { setOrderWs, getStatus, removeOrder } = useOrderStore();
 const token = computed(() => route.query?.token as string);
 const orderStatus = computed(() => getStatus(token.value));
-const watchTest = ref();
-
 //
 onMounted(() => {
   // 清除多餘
@@ -78,23 +76,32 @@ watch(
   token,
   (newValue) => {
     if (newValue) {
-      setWebSockets(newValue);
-      setOrderWs(newValue);
       // 等待連接
-      q.loading.show({
-        message: t('連線中'),
+      let isWaitChat = !getChatList(newValue);
+      let isWaitOrderStatus = !orderStatus.value;
+      if (isWaitChat || isWaitOrderStatus) {
+        q.loading.show({
+          message: t('連線中'),
+        });
+      }
+
+      // 設定連接
+      setWebSockets(newValue, () => {
+        isWaitChat = false;
+        if (!isWaitChat && !isWaitOrderStatus) {
+          q.loading.hide();
+        }
       });
-      setTimeout(() => {
-        q.loading.hide();
-      }, 600);
+      setOrderWs(newValue, () => {
+        isWaitOrderStatus = false;
+        if (!isWaitChat && !isWaitOrderStatus) {
+          q.loading.hide();
+        }
+      });
     }
   },
   { immediate: true }
 );
-watch(watchTest, (newValue) => {
-  if (newValue) {
-  }
-});
 </script>
 
 <style scoped>

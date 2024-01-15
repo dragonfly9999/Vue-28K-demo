@@ -29,45 +29,50 @@ export const useThirdStore = defineStore('third', () => {
       }
     });
   };
-  const setWebSockets = (token: string) => {
-    const tokenArray = Object.entries(webSockets?.value).map(([key]) => key);
-
-    if (tokenArray.every((key) => key !== token)) {
-      // set on message
-      const tokens = Object.entries(chatListObj?.value).map(([key]) => key);
-      if (!tokens.includes(token)) {
-        resetOnMessage(token);
-      }
-      // WS
-      const chatURL = isAgent ? '/ws_ChatOrder3.ashx' : '/WS_ChatOrder.ashx';
-      const chatWS = new WebSocketClient(chatURL, {
-        reconnectEnabled: true,
-        reconnectInterval: 2000,
-        isChat: true,
-        order_token: token,
-        login_session
-      });
-      chatWS.connect();
-      chatWS.onMessage = (msg) => {
-        if (msg?.data && typeof msg?.data === 'string') {
-          const newList: Array<ChatRes> | ChatRes = JSON.parse(msg.data);
-          if (Array.isArray(newList)) {
-            chatListObj.value[token] = newList.reverse();
-          } else {
-            chatListObj.value[token].push(newList);
-            if (onMessages?.value?.[token]) onMessages?.value?.[token](newList);
-            if (
-              (isAgent && newList?.Message_Role !== 3) ||
-              (!isAgent && newList.Message_Role === 3)
-            )
-              unReadCount.value[token] = unReadCount.value[token]
-                ? unReadCount.value[token] + 1
-                : 1;
-          }
-        }
-      };
-      webSockets.value[token] = chatWS;
+  const setWebSockets = (token: string, onOpen?: () => void) => {
+    const isAlreadyConnected =
+      Object.keys(webSockets?.value).findIndex(
+        (socketKey) => socketKey === token
+      ) !== -1;
+    if (isAlreadyConnected) return;
+    // set on message
+    const tokens = Object.entries(chatListObj?.value).map(([key]) => key);
+    if (!tokens.includes(token)) {
+      resetOnMessage(token);
     }
+    // WS
+    const chatURL = isAgent ? '/ws_ChatOrder3.ashx' : '/WS_ChatOrder.ashx';
+    const chatWS = new WebSocketClient(chatURL, {
+      reconnectEnabled: true,
+      reconnectInterval: 2000,
+      isChat: true,
+      order_token: token,
+      login_session
+    });
+    chatWS.connect();
+    chatWS.onMessage = (msg) => {
+      if (msg?.data && typeof msg?.data === 'string') {
+        const newList: Array<ChatRes> | ChatRes = JSON.parse(msg.data);
+        if (Array.isArray(newList)) {
+          chatListObj.value[token] = newList.reverse();
+        } else {
+          chatListObj.value[token].push(newList);
+          if (onMessages?.value?.[token]) onMessages?.value?.[token](newList);
+          if (
+            (isAgent && newList?.Message_Role !== 3) ||
+            (!isAgent && newList.Message_Role === 3)
+          )
+            unReadCount.value[token] = unReadCount.value[token]
+              ? unReadCount.value[token] + 1
+              : 1;
+        }
+      }
+    };
+    chatWS.onOpen = () => {
+      console.info('ChatWs open !, token:', token);
+      if (onOpen) onOpen();
+    };
+    webSockets.value[token] = chatWS;
   };
   //
   const handleResetCount = (token: string) => (unReadCount.value[token] = 0);

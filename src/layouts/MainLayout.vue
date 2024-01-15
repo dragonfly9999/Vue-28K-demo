@@ -126,7 +126,7 @@ onMounted(() => {
 
   // hint
   const isAgent = vueStorage.getStorageSync('isAgent');
-  if (!hint.value && isAgent) {
+  if (!hint.value && isAgent && import.meta.env.PROD) {
     noHintWarn.value = true;
   }
 
