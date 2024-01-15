@@ -247,6 +247,7 @@ const price = ref('0');
 const isPassTwenty = ref(false);
 // mutation
 const { run: create, loading } = useBuy1({
+  isTest: false, // 測試時自定義送出的金額
   onSuccess: (res) => {
     pairWarn.value = false;
     const token = res?.data.order_token;
@@ -262,11 +263,6 @@ const { run: create, loading } = useBuy1({
 // handler
 const handleConfirm = () => {
   const UsdtAmt = numberTool(form.UsdtAmt);
-  console.log('on confirm ', {
-    form: { ...form },
-    price: price.value,
-    UsdtAmt,
-  });
   create({
     ClientName: form.ClientName,
     UsdtAmt,

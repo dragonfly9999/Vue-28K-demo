@@ -13,14 +13,17 @@ type SellProps = {
   UsdtAmt: number;
 };
 
-type UseProps = {
-  onSuccess: (args?: VirgilRes<SellRes>) => void;
-};
-
-export const useSell1 = ({ onSuccess }: UseProps) =>
-  requestProvider<SellRes, SellProps>({
-    reqFn: (props) =>
-      axiosProvider.post('/req_sell1.aspx', props).then(({ data }) => data),
+export const useSell1 = ({ ...useProps }: UseProps<SellRes>) => {
+  const vueRequest = requestProvider<SellRes, SellProps>({
+    reqFn: (props) => {
+      const request = axiosProvider
+        .post('/req_sell1.aspx', props)
+        .then(({ data }) => data);
+      return request;
+    },
     isManual: true,
-    onSuccess
+    ...useProps
   });
+
+  return vueRequest;
+};

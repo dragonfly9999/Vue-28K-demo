@@ -1,43 +1,3 @@
-<script setup lang="ts">
-import StepperMaster from 'src/components/StepperMaster.vue';
-import { usePendingStore, useStateStore } from 'src/stores';
-import { numberTool, thousandInput, thousandTool } from 'src/utils/NumberTool';
-import { reactive, ref } from 'vue';
-import 'vue-i18n';
-import CreateWarn from '../../buy/components/CreateWarn.vue';
-import { useSell1 } from '../api';
-import { useRouter } from 'vue-router';
-
-const { getBalance, getRates, currency, getBalanceLoad, getRatesLoad } =
-  useStateStore();
-const isTest = import.meta.env.DEV;
-const router = useRouter();
-const { pendingInstant } = usePendingStore();
-const { run: create, loading } = useSell1({
-  onSuccess: (res) => {
-    createWarn.value = false;
-    const token = res?.data.order_token;
-    pendingInstant.refresh();
-    useStateStore().refreshBalance();
-    if (token) {
-      router.push({ name: 'sell', query: { token } });
-    }
-  },
-});
-// DOM
-const form = reactive({
-  AccountName: isTest ? '曹美麗' : '',
-  AccountNumber: isTest ? '123456789' : '',
-  BankBranch: isTest ? '' : '',
-  BankName: isTest ? '822' : '',
-  UsdtAmt: isTest ? '100' : '0',
-});
-const price = ref();
-const isPassTwenty = ref(false);
-const createWarn = ref(false);
-const flag = new URL(`../../../../assets/${currency}.png`, import.meta.url)
-  .href;
-</script>
 <template>
   <q-card class="q-pa-md">
     <div class="row items-center">
@@ -319,5 +279,47 @@ const flag = new URL(`../../../../assets/${currency}.png`, import.meta.url)
     />
   </q-dialog>
 </template>
+
+<script setup lang="ts">
+import StepperMaster from 'src/components/StepperMaster.vue';
+import { usePendingStore, useStateStore } from 'src/stores';
+import { numberTool, thousandInput, thousandTool } from 'src/utils/NumberTool';
+import { reactive, ref } from 'vue';
+import 'vue-i18n';
+import CreateWarn from '../../buy/components/CreateWarn.vue';
+import { useSell1 } from '../api';
+import { useRouter } from 'vue-router';
+
+const { getBalance, getRates, currency, getBalanceLoad, getRatesLoad } =
+  useStateStore();
+const router = useRouter();
+const { pendingInstant } = usePendingStore();
+const flag = new URL(`../../../../assets/${currency}.png`, import.meta.url)
+  .href;
+const isTest = import.meta.env.DEV;
+// DOM
+const form = reactive({
+  AccountName: isTest ? '曹美麗' : '',
+  AccountNumber: isTest ? '123456789' : '',
+  BankBranch: isTest ? '' : '',
+  BankName: isTest ? '822' : '',
+  UsdtAmt: isTest ? '100' : '0',
+});
+const price = ref();
+const isPassTwenty = ref(false);
+const createWarn = ref(false);
+// mutation
+const { run: create, loading } = useSell1({
+  onSuccess: (res) => {
+    createWarn.value = false;
+    const token = res?.data.order_token;
+    pendingInstant.refresh();
+    useStateStore().refreshBalance();
+    if (token) {
+      router.push({ name: 'sell', query: { token } });
+    }
+  },
+});
+</script>
 
 <style scoped></style>
