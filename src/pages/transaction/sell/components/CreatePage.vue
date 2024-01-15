@@ -284,7 +284,7 @@
 import StepperMaster from 'src/components/StepperMaster.vue';
 import { usePendingStore, useStateStore } from 'src/stores';
 import { numberTool, thousandInput, thousandTool } from 'src/utils/NumberTool';
-import { reactive, ref } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
 import 'vue-i18n';
 import CreateWarn from '../../buy/components/CreateWarn.vue';
 import { useSell1 } from '../api';
@@ -299,11 +299,11 @@ const flag = new URL(`../../../../assets/${currency}.png`, import.meta.url)
 const isTest = import.meta.env.DEV;
 // DOM
 const form = reactive({
-  AccountName: isTest ? '曹美麗' : '',
-  AccountNumber: isTest ? '123456789' : '',
-  BankBranch: isTest ? '' : '',
-  BankName: isTest ? '822' : '',
-  UsdtAmt: isTest ? '100' : '0',
+  AccountName: '',
+  AccountNumber: '',
+  BankBranch: '',
+  BankName: '',
+  UsdtAmt: '0',
 });
 const price = ref();
 const isPassTwenty = ref(false);
@@ -319,6 +319,25 @@ const { run: create, loading } = useSell1({
       router.push({ name: 'sell', query: { token } });
     }
   },
+});
+
+// life cycle
+onMounted(() => {
+  setTimeout(() => {
+    // 開發時自動填入
+    if (isTest) {
+      form.AccountName = '曹美麗';
+      form.AccountNumber = '123456789';
+      form.BankBranch = '曹省';
+      form.BankName = '美麗銀行';
+      form.UsdtAmt = '100';
+      price.value = 1234;
+      isPassTwenty.value = true;
+      const domElement = document.documentElement;
+      const scrollPath = domElement.scrollHeight - domElement.clientHeight;
+      domElement.scrollTo({ top: scrollPath, behavior: 'smooth' });
+    }
+  }, 1000);
 });
 </script>
 
