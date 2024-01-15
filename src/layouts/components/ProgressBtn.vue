@@ -1,6 +1,6 @@
 <template>
   <q-btn
-    :loading="pendingInstant.loading"
+    :loading="pendingStore.pendingInstant.loading"
     no-caps
     rounded
     unelevated
@@ -9,22 +9,16 @@
     style="width: fit-content"
     class="q-px-sm"
     padding="5px 20px"
-    :disable="
-      !(
-        getOrders('progress').length !== 0 ||
-        (pendingInstant?.data?.length ?? 0) !== 0
-      )
-    "
+    :disable="isDisable"
   >
     <q-badge
       color="red"
       floating
       v-if="
-        getOrders('progress').length > 0 ||
-        (pendingInstant?.data?.length ?? 0) > 0
+        getOrders('progress').length > 0 || (pendingOrders?.length ?? 0) > 0
       "
     >
-      {{ getOrders('progress').length || pendingInstant?.data?.length }}
+      {{ getOrders('progress').length || pendingOrders?.length }}
     </q-badge>
 
     <q-menu
@@ -45,9 +39,21 @@
             :is-instant="false"
           />
         </div>
+        <div v-else-if="pendingStore.pendingInstant.loading">
+          <q-item
+            clickable
+            v-ripple
+            class="q-pa-md"
+            v-for="(order, index) in pendingOrders"
+            :key="index"
+          >
+            <q-skeleton type="rect" width="260px" height="130px" />
+          </q-item>
+        </div>
+
         <div v-else>
           <pending-item
-            v-for="(order, index) in pendingInstant?.data"
+            v-for="(order, index) in pendingOrders"
             :key="index"
             :order="order"
           />
@@ -61,21 +67,29 @@
 import OrderItem from 'src/components/OrderItem.vue';
 import { useI18n } from 'vue-i18n';
 import { useLiveStore, usePendingStore } from 'src/stores';
-import { computed, toRefs } from 'vue';
+import { computed } from 'vue';
 import { useStorage } from 'vue3-storage';
 import PendingItem from 'src/components/PendingItem.vue';
 import dayjs from 'dayjs';
 
 const { getOrders } = useLiveStore();
-const { pendingInstant } = toRefs(usePendingStore());
+const pendingStore = usePendingStore();
 const { t } = useI18n();
 // DOM
+const pendingOrders = computed(() => pendingStore.pendingInstant.data);
 const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
-const orders = computed(() =>
-  getOrders('progress')?.sort((a, b) =>
+const isDisable = computed(() => {
+  if (isAgent.value) {
+    return getOrders('progress').length === 0;
+  }
+  return pendingOrders.value && pendingOrders.value.length === 0;
+});
+const orders = computed(() => {
+  const pureOrders = getOrders('progress').slice();
+  return pureOrders.sort((a, b) =>
     dayjs(b.CreateDate).isAfter(dayjs(a.CreateDate)) ? 1 : -1
-  )
-);
+  );
+});
 </script>
 
 <style scoped></style>

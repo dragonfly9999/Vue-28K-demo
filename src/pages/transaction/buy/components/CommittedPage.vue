@@ -1,14 +1,3 @@
-<script setup lang="ts">
-import PunctuationMaster from 'src/components/PunctuationMaster.vue';
-import StepperMaster from 'src/components/StepperMaster.vue';
-import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
-defineProps<{ order: OrderStatus | undefined }>();
-//
-const { t } = useI18n();
-const router = useRouter();
-// Dom
-</script>
 <template>
   <q-card class="full-width no-border no-shadow" style="min-height: 600px">
     <StepperMaster :order="order" />
@@ -31,11 +20,27 @@ const router = useRouter();
         unelevated
         class="full-width"
         color="blue-13"
-        :label="t('label.back_front_page')"
-        @click="() => router.push({ name: 'dashboard' })"
+        :label="$t('transaction.返回主頁')"
+        @click="() => $router.push({ name: 'dashboard' })"
       />
     </div>
   </q-card>
 </template>
+
+<script setup lang="ts">
+import PunctuationMaster from 'src/components/PunctuationMaster.vue';
+import StepperMaster from 'src/components/StepperMaster.vue';
+import { onMounted } from 'vue';
+defineProps<{ order: OrderStatus | undefined }>();
+// Dom
+
+onMounted(() => {
+  // scroll
+  setTimeout(() => {
+    const domElement = document.documentElement;
+    domElement.scrollTo({ top: 0, behavior: 'smooth' });
+  }, 100);
+});
+</script>
 
 <style scoped></style>

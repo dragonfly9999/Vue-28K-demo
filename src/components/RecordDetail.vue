@@ -146,9 +146,9 @@ const statusInfo = computed(() => {
           case OrderStatusNum.Complete:
             return t('transaction.complete');
           case OrderStatusNum.Cancel:
-            return t('transaction.deal_canceled');
+            return t('transaction.交易取消');
           case OrderStatusNum.TimeOut:
-            return t('transaction.deal_canceled');
+            return t('transaction.交易取消');
           default:
             return t('label.undefined');
         }
@@ -165,9 +165,9 @@ const statusInfo = computed(() => {
           case OrderStatusNum.Complete:
             return t('transaction.complete');
           case OrderStatusNum.Cancel:
-            return t('transaction.deal_canceled');
+            return t('transaction.交易取消');
           case OrderStatusNum.TimeOut:
-            return t('transaction.deal_canceled');
+            return t('transaction.交易取消');
           default:
             return t('label.undefined');
         }
@@ -189,9 +189,9 @@ const statusInfo = computed(() => {
         case OrderStatusNum.Complete:
           return t('transaction.complete');
         case OrderStatusNum.Cancel:
-          return t('transaction.deal_canceled');
+          return t('transaction.交易取消');
         case OrderStatusNum.TimeOut:
-          return t('transaction.deal_canceled');
+          return t('transaction.交易取消');
         default:
           return t('label.undefined');
       }
@@ -208,9 +208,9 @@ const statusInfo = computed(() => {
         case OrderStatusNum.Complete:
           return t('transaction.complete');
         case OrderStatusNum.Cancel:
-          return t('transaction.deal_canceled');
+          return t('transaction.交易取消');
         case OrderStatusNum.TimeOut:
-          return t('transaction.deal_canceled');
+          return t('transaction.交易取消');
         default:
           return t('label.undefined');
       }
@@ -250,7 +250,7 @@ const handleBackTrade = () => {
         <!-- 數量 -->
         <q-item style="min-height: 36px">
           <q-item-section class="text-dark">
-            {{ $t('transaction.quantity') }}(USDT)
+            {{ $t('transaction.數量') }}(USDT)
           </q-item-section>
           <q-item-section
             avatar

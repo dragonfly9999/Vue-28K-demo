@@ -1,25 +1,5 @@
-<script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import StepperMaster from 'src/components/StepperMaster.vue';
-import { useRouter } from 'vue-router';
-import { onMounted, ref } from 'vue';
-import PunctuationMaster from 'src/components/PunctuationMaster.vue';
-import TransactionDetail from './TransactionDetail.vue';
-import { usePendingStore } from 'src/stores';
-defineProps<{ order: OrderStatus | undefined }>();
-//
-const { t } = useI18n();
-const router = useRouter();
-const { pendingInstant } = usePendingStore();
-// DOM
-const isVisibleDetail = ref(false);
-// Live
-onMounted(() => {
-  pendingInstant.refresh();
-});
-</script>
 <template>
-  <q-card class="width600 ">
+  <q-card class="width600">
     <StepperMaster :order="order" />
 
     <div class="text-center column items-center justify-center">
@@ -29,20 +9,20 @@ onMounted(() => {
         {{ t('transaction.transaction_complete') }}
       </div>
       <!-- 訂單號 -->
-      <div class="q-ma-sm text-body-1 text-grey-8  items-center">
+      <div class="q-ma-sm text-body-1 text-grey-8 items-center">
         Tx Hash：
         <PunctuationMaster color="black" :label="order?.Tx_HASH" />
       </div>
     </div>
 
-    <div class="text-center justify-center q-pa-md q-gutter-y-md">
+    <div class="text-center justify-center q-pa-md q-gutter-y-sm">
       <!--返回主頁 -->
       <q-btn
         rounded
         unelevated
         class="full-width q-mb-sm"
         color="blue-13"
-        :label="t('label.back_front_page')"
+        :label="$t('transaction.返回主頁')"
         @click="() => router.push({ name: 'dashboard' })"
       />
       <!-- 交易明細-->
@@ -61,5 +41,32 @@ onMounted(() => {
     <TransactionDetail />
   </q-dialog>
 </template>
+
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+import StepperMaster from 'src/components/StepperMaster.vue';
+import { useRouter } from 'vue-router';
+import { onMounted, ref } from 'vue';
+import PunctuationMaster from 'src/components/PunctuationMaster.vue';
+import TransactionDetail from './TransactionDetail.vue';
+import { usePendingStore } from 'src/stores';
+defineProps<{ order: OrderStatus | undefined }>();
+//
+const { t } = useI18n();
+const router = useRouter();
+const { pendingInstant } = usePendingStore();
+// DOM
+const isVisibleDetail = ref(false);
+// Live
+onMounted(() => {
+  pendingInstant.refresh();
+
+  // scroll
+  setTimeout(() => {
+    const domElement = document.documentElement;
+    domElement.scrollTo({ top: 0, behavior: 'smooth' });
+  }, 100);
+});
+</script>
 
 <style scoped></style>

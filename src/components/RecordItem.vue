@@ -120,7 +120,7 @@ const date = computed(() =>
           v-if="'UsdtAmt' in order && order?.UsdtAmt"
         >
           <div class="text-caption text-grey-6">
-            {{ $t('transaction.quantity') }}(USDT)
+            {{ $t('transaction.數量') }}(USDT)
           </div>
           <div :class="'text-body1 text-weight-bold text-' + recordInfo.color">
             {{ thousandTool(order?.UsdtAmt, 'USDT') }}

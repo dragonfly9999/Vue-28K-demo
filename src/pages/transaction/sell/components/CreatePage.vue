@@ -355,7 +355,7 @@ onMounted(() => {
       const domElement = document.documentElement;
       const scrollPath = domElement.scrollHeight - domElement.clientHeight;
       domElement.scrollTo({ top: scrollPath, behavior: 'smooth' });
-    }, 1000);
+    }, 100);
   }
 });
 </script>

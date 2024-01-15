@@ -31,7 +31,7 @@
                 emit-value
                 :options="
                   ['886', '852', '65', '86', '84', '63']?.map((code) => ({
-                    label: t(`country_code.${code}`),
+                    label: $t(`countryCode.${code}`),
                     value: code,
                   }))
                 "

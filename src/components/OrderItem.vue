@@ -16,7 +16,7 @@
         <!-- 數量 -->
         <div class="items-center text-right">
           <div class="text-caption text-grey-7">
-            {{ $t('transaction.quantity') }}<span>(USDT)</span>
+            {{ $t('transaction.數量') }}<span>(USDT)</span>
           </div>
           <div :class="'text-body1 text-weight-bold text-' + orderInfo.color">
             {{ thousandTool(order.UsdtAmt, 'USDT') }}
