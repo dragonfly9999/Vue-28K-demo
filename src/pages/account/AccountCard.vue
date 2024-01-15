@@ -231,15 +231,15 @@
             outlined
             :label="$t('account.請設定通道')"
             :options="[
-              { label: 'All', value: -1 },
+              { label: 'B-All', value: -1 },
               // { label: 'BVAC', value: 0 },
-              { label: 'Demo K100U', value: 1 },
-              { label: '88U', value: 2 },
+              // { label: 'Demo K100U', value: 1 },
+              // { label: '88U', value: 2 },
               // { label: 'U88', value: 3 },
               // { label: 'JP88', value: 4 },
               { label: 'K100U com', value: 5 },
-              { label: 'U28 Exchange', value: 6 },
-              { label: 'V100U com', value: 7 },
+              // { label: 'U28 Exchange', value: 6 },
+              // { label: 'V100U com', value: 7 },
               // { label: 'Fxcoin', value: 9 },
               // { label: 'K200U', value: 10 },
               // { label: 'K100 net', value: 11 },
@@ -326,7 +326,7 @@ const editFields = reactive<
 
 const channelLabel = computed(() => {
   if (props.accInfo[AccNum.Channel] === null) return t('account.未設定頻道');
-  if (props.accInfo[AccNum.Channel] === -1) return 'All';
+  if (props.accInfo[AccNum.Channel] === -1) return 'B-All';
   if (props.accInfo[AccNum.Channel] === 0) return 'BVAC';
   if (props.accInfo[AccNum.Channel] === 1) return 'Demo K100U';
   if (props.accInfo[AccNum.Channel] === 2) return '88U';

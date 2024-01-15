@@ -1,101 +1,3 @@
-<script setup lang="ts">
-import { addressOptions } from './data';
-import { useStateStore } from 'src/stores';
-import { numberTool, thousandInput, thousandTool } from 'src/utils/NumberTool';
-import { computed, reactive, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useStorage } from 'vue3-storage';
-import TransferTitle from './components/TransferTitle.vue';
-import QrReader from 'src/components/QrReader.vue';
-import { useCheckErc, useCheckTrc } from './api';
-import TransWarn from './components/TransWarn.vue';
-import { useRouter } from 'vue-router';
-
-const router = useRouter();
-const { t } = useI18n();
-const { getRates, getBalance } = useStateStore();
-const { run: checkErc } = useCheckErc({
-  onSuccess: () => {
-    address.verify = true;
-  },
-  onError: () => {
-    address.verify = false;
-  },
-});
-const { run: checkTrc } = useCheckTrc({
-  onSuccess: () => {
-    address.verify = true;
-  },
-  onError: () => {
-    address.verify = false;
-  },
-});
-// DOM
-const form = ref();
-const agreement = ref();
-const address = reactive<{ value: string; verify: boolean }>({
-  value: '',
-  verify: false,
-});
-const remark = ref();
-const transAmt = ref();
-const isPassTwenty = ref(false);
-const timeInterval = ref<NodeJS.Timeout>();
-const duration = ref(0);
-const visible = reactive({
-  scanner: false,
-});
-//
-const remain = computed(() => {
-  const result = (getBalance()?.Avb_Balance ?? 0) - transAmt.value;
-  return thousandTool(result, 'USDT');
-});
-const premium = computed(() => {
-  switch (agreement.value) {
-    case 'trc':
-      return thousandTool(getRates()?.TransferHandle2, 'USDT');
-    case 'erc':
-      return thousandTool(getRates()?.TransferHandle, 'USDT');
-    default:
-      return undefined;
-  }
-});
-
-const handleSetAddress = (newAddress?: string) => {
-  visible.scanner = false;
-  if (newAddress) {
-    address.value = newAddress;
-  }
-};
-const handleSubmit = () => {
-  console.log('on submit');
-  switch (agreement.value) {
-    case 'trc': {
-      checkTrc({
-        ToAddress: address.value,
-      });
-      break;
-    }
-    case 'erc': {
-      checkErc({
-        ToAddress: address.value,
-      });
-      break;
-    }
-    default:
-      return undefined;
-  }
-};
-const handleSuccess = () => {
-  timeInterval.value = setInterval(() => {
-    duration.value += 1;
-    if (duration.value > 4 && timeInterval.value) {
-      clearInterval(timeInterval.value as NodeJS.Timeout);
-      router.push({ name: 'dashboard' });
-    }
-  }, 1000);
-};
-</script>
 <template>
   <div class="width480">
     <q-card class="q-pa-sm q-ma-sm q-mb-xl myshadow">
@@ -282,53 +184,7 @@ const handleSuccess = () => {
             </div>
           </div>
 
-          <!-- 訂單資訊 -->
-          <!-- <div class="q-mt-lg">
-            <div class="text-subtitle1">
-              {{ $t('transfer.label.order_info') }}
-            </div>
-            <div class="mycolor1 q-pa-md">
-              轉出數量
-              <div
-                class="flex items-baseline justify-between text-grey-7 text-caption"
-              >
-                <div>{{ $t('transfer.label.transfer_quantity') }}</div>
-                <div>{{ transAmt }} USDT</div>
-              </div>
-              手續費
-              <div
-                class="flex items-baseline justify-between text-grey-7 text-caption"
-              >
-                <div>{{ $t('transfer.label.premium') }}</div>
-                <div>{{ premium }} USDT</div>
-              </div>
-
-              會員互轉免手續費
-              <div
-                class="flex items-baseline justify-between text-grey-7 text-caption"
-              >
-                <div>{{ $t('transfer.label.premium') }}</div>
-                <div>{{ $t('transfer.label.popularize') }}!</div>
-              </div>
-
-              <q-separator class="q-my-sm" />
-              預計到帳
-              <div class="flex justify-between">
-                <div class="text-right text-blue-13 text-weight-bold">
-                  {{ $t('transfer.label.expect') }}
-                </div>
-                <div class="text-blue-13 text-weight-bold text-body1">
-                  {{
-                    thousandTool(
-                      numberTool(transAmt) + numberTool(premium),
-                      'USDT'
-                    )
-                  }}
-                  USDT
-                </div>
-              </div>
-            </div>
-          </div> -->
+          
           <!--  -->
           <div class="flex no-wrap items-start q-my-md">
             <q-checkbox v-model="isPassTwenty" dense />
@@ -408,5 +264,104 @@ const handleSuccess = () => {
 
   <QrReader v-model="visible.scanner" @on-scan="handleSetAddress" />
 </template>
+
+<script setup lang="ts">
+import { addressOptions } from './data';
+import { useStateStore } from 'src/stores';
+import { numberTool, thousandInput, thousandTool } from 'src/utils/NumberTool';
+import { computed, reactive, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useStorage } from 'vue3-storage';
+import TransferTitle from './components/TransferTitle.vue';
+import QrReader from 'src/components/QrReader.vue';
+import { useCheckErc, useCheckTrc } from './api';
+import TransWarn from './components/TransWarn.vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+const { t } = useI18n();
+const { getRates, getBalance } = useStateStore();
+const { run: checkErc } = useCheckErc({
+  onSuccess: () => {
+    address.verify = true;
+  },
+  onError: () => {
+    address.verify = false;
+  },
+});
+const { run: checkTrc } = useCheckTrc({
+  onSuccess: () => {
+    address.verify = true;
+  },
+  onError: () => {
+    address.verify = false;
+  },
+});
+// DOM
+const form = ref();
+const agreement = ref();
+const address = reactive<{ value: string; verify: boolean }>({
+  value: '',
+  verify: false,
+});
+const remark = ref();
+const transAmt = ref();
+const isPassTwenty = ref(false);
+const timeInterval = ref<NodeJS.Timeout>();
+const duration = ref(0);
+const visible = reactive({
+  scanner: false,
+});
+//
+const remain = computed(() => {
+  const result = (getBalance()?.Avb_Balance ?? 0) - transAmt.value;
+  return thousandTool(result, 'USDT');
+});
+const premium = computed(() => {
+  switch (agreement.value) {
+    case 'trc':
+      return thousandTool(getRates()?.TransferHandle2, 'USDT');
+    case 'erc':
+      return thousandTool(getRates()?.TransferHandle, 'USDT');
+    default:
+      return undefined;
+  }
+});
+
+const handleSetAddress = (newAddress?: string) => {
+  visible.scanner = false;
+  if (newAddress) {
+    address.value = newAddress;
+  }
+};
+const handleSubmit = () => {
+  console.log('on submit');
+  switch (agreement.value) {
+    case 'trc': {
+      checkTrc({
+        ToAddress: address.value,
+      });
+      break;
+    }
+    case 'erc': {
+      checkErc({
+        ToAddress: address.value,
+      });
+      break;
+    }
+    default:
+      return undefined;
+  }
+};
+const handleSuccess = () => {
+  timeInterval.value = setInterval(() => {
+    duration.value += 1;
+    if (duration.value > 4 && timeInterval.value) {
+      clearInterval(timeInterval.value as NodeJS.Timeout);
+      router.push({ name: 'dashboard' });
+    }
+  }, 1000);
+};
+</script>
 
 <style scoped></style>
