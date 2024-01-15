@@ -1,3 +1,49 @@
+<template>
+  <div id="background">
+    <div class="row">
+      <RouterView />
+      <q-card
+        class="col-12 col-md-4 no-border no-shadow"
+        v-if="
+          !!orderStatus &&
+          [
+            OrderStatusNum.Assigned,
+            OrderStatusNum.Appeal,
+            OrderStatusNum.Committed,
+          ].includes(orderStatus?.Order_StatusID)
+        "
+      >
+        <ChatBox />
+      </q-card>
+    </div>
+    <!-- Transaction Status -->
+    <div class="col-12 q-pa-md" v-if="!!orderStatus">
+      <TradeComplete
+        :order="orderStatus"
+        v-if="orderStatus?.Order_StatusID === OrderStatusNum.Complete"
+      />
+      <CancelSuccess
+        v-else-if="
+          [OrderStatusNum.Cancel].includes(orderStatus?.Order_StatusID)
+        "
+        :order="orderStatus"
+      />
+      <TimeOut
+        v-else-if="
+          [OrderStatusNum.TimeOut].includes(orderStatus?.Order_StatusID)
+        "
+        :order="orderStatus"
+      />
+      <WaitCard
+        v-else-if="
+          [OrderStatusNum.Matching].includes(orderStatus?.Order_StatusID)
+        "
+        :orderStatus="orderStatus"
+      />
+    </div>
+  </div>
+</template>
+
 <script setup lang="ts">
 import WaitCard from 'src/pages/transaction/components/WaitCard.vue';
 import { onMounted, ref, watch } from 'vue';
@@ -50,50 +96,6 @@ watch(watchTest, (newValue) => {
   }
 });
 </script>
-<template>
-  <div id="background">
-    <div class="row">
-      <RouterView />
-      <q-card
-        class="col-12 col-md-4 no-border no-shadow"
-        v-if="
-          [
-            OrderStatusNum.Assigned,
-            OrderStatusNum.Appeal,
-            OrderStatusNum.Committed,
-          ].includes(orderStatus?.Order_StatusID ?? 0)
-        "
-      >
-        <ChatBox />
-      </q-card>
-    </div>
-    <!-- Transaction Status -->
-    <div class="col-12 q-pa-md" >
-      <TradeComplete
-        :order="orderStatus"
-        v-if="orderStatus?.Order_StatusID === OrderStatusNum.Complete"
-      />
-      <CancelSuccess
-        v-else-if="
-          [OrderStatusNum.Cancel].includes(orderStatus?.Order_StatusID ?? -5)
-        "
-        :order="orderStatus"
-      />
-      <TimeOut
-        v-else-if="
-          [OrderStatusNum.TimeOut].includes(orderStatus?.Order_StatusID ?? -5)
-        "
-        :order="orderStatus"
-      />
-      <WaitCard
-        v-else-if="
-          [OrderStatusNum.Matching].includes(orderStatus?.Order_StatusID ?? -5)
-        "
-        :orderStatus="orderStatus"
-      />
-    </div>
-  </div>
-</template>
 
 <style scoped>
 #background {

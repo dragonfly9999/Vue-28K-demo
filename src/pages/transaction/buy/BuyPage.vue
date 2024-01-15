@@ -1,3 +1,23 @@
+<template>
+  <div class="col-12 column items-center" v-if="!orderStatus">
+    <CreatePage />
+  </div>
+  <div class="col-xs-12 col-lg-8 column items-center" v-else>
+    <AssignedPage
+      v-if="
+        [OrderStatusNum.Appeal, OrderStatusNum.Assigned].includes(
+          orderStatus.Order_StatusID
+        )
+      "
+      :order="orderStatus"
+    />
+    <CommittedPage
+      v-else-if="orderStatus.Order_StatusID === OrderStatusNum.Committed"
+      :order="orderStatus"
+    />
+  </div>
+</template>
+
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
@@ -10,24 +30,5 @@ const route = useRoute();
 const { getStatus } = useOrderStore();
 const orderStatus = computed(() => getStatus(route.query?.token as string));
 </script>
-<template>
-  <div class="col-12 column items-center" v-if="!orderStatus">
-    <CreatePage />
-  </div>
-  <div class="col-xs-12 col-lg-8 column items-center">
-    <AssignedPage
-      v-if="
-        [OrderStatusNum.Appeal, OrderStatusNum.Assigned].includes(
-          orderStatus?.Order_StatusID ?? -1
-        )
-      "
-      :order="orderStatus"
-    />
-    <CommittedPage
-      v-else-if="orderStatus?.Order_StatusID === OrderStatusNum.Committed"
-      :order="orderStatus"
-    />
-  </div>
-</template>
 
 <style scoped></style>

@@ -84,13 +84,49 @@
           />
         </div>
       </q-form>
-      <div class="flex justify-end q-px-md q-gutter-md">
-        <router-link to="register" class="text-blue">
-          <q-btn dense unelevated> {{ $t('auth.註冊') }} </q-btn>
-        </router-link>
-        <router-link to="forget" class="text-blue">
-          <q-btn dense unelevated> {{ $t('auth.忘記密碼') }} </q-btn>
-        </router-link>
+      <div class="flex justify-between q-px-md items-center">
+        <div class="q-gutter-md">
+          <q-btn
+            dense
+            size="small"
+            v-if="isTest"
+            @click="
+              () => {
+                countryCode = 86;
+                phone_number = 938265860;
+                password = '123456';
+              }
+            "
+            color="orange"
+            outline
+          >
+            會員
+          </q-btn>
+          <q-btn
+            dense
+            size="small"
+            v-if="isTest"
+            @click="
+              () => {
+                countryCode = 886;
+                phone_number = 9809806674;
+                password = '000000';
+              }
+            "
+            color="blue"
+            outline
+          >
+            代理
+          </q-btn>
+        </div>
+        <div class="q-gutter-md">
+          <router-link to="register" class="text-blue">
+            <q-btn dense unelevated> {{ $t('auth.註冊') }} </q-btn>
+          </router-link>
+          <router-link to="forget" class="text-blue">
+            <q-btn dense unelevated> {{ $t('auth.忘記密碼') }} </q-btn>
+          </router-link>
+        </div>
       </div>
     </q-card>
   </div>

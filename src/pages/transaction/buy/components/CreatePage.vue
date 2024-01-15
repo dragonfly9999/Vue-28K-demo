@@ -1,55 +1,3 @@
-<script setup lang="ts">
-import StepperMaster from 'src/components/StepperMaster.vue';
-import {
-  useOrderStore,
-  usePendingStore,
-  useStateStore,
-  useThirdStore,
-} from 'src/stores';
-import { numberTool, thousandInput, thousandTool } from 'src/utils/NumberTool';
-import { reactive, ref } from 'vue';
-import repeat2 from 'src/assets/icon _repeat2_.png';
-import CreateWarn from './CreateWarn.vue';
-import { useBuy1 } from '../api/useBuy1';
-import { useRouter } from 'vue-router';
-
-const router = useRouter();
-const { pendingInstant } = usePendingStore();
-const { setOrderWs } = useOrderStore();
-const { setWebSockets } = useThirdStore();
-const { run: create, loading } = useBuy1({
-  onSuccess: (res) => {
-    pairWarn.value = false;
-    const token = res?.data.order_token;
-    pairWarn.value = false;
-    pendingInstant.refresh();
-    useStateStore().refreshBalance();
-    if (token) {
-      setOrderWs(token);
-      setWebSockets(token);
-      router.push({ name: 'buy', query: { token } });
-    }
-  },
-});
-const { getRates, getRatesLoad, currency } = useStateStore();
-// DOM
-const form = reactive({
-  UsdtAmt: '0',
-  ClientName: '',
-});
-const price = ref('0');
-const isPassTwenty = ref(false);
-const pairWarn = ref(false);
-const flag = new URL(`../../../../assets/${currency}.png`, import.meta.url)
-  .href;
-const handleConfirm = () => {
-  const UsdtAmt = numberTool(form.UsdtAmt);
-  create({
-    ClientName: form.ClientName,
-    UsdtAmt,
-  });
-};
-</script>
 <template>
   <q-card class="q-pa-md">
     <!-- Title -->
@@ -65,11 +13,7 @@ const handleConfirm = () => {
       <div class="col flex justify-center text-h6 text-weight-bold">
         {{ $t('transaction.購買USDT') }}
       </div>
-      <div class="col-4">
-        <!-- <div class="text-caption text-right text-blue-grey-4" style="margin-top: 1rem;">
-                更新時間:2022/12/09 00:00:00
-                </div> -->
-      </div>
+      <div class="col-4"></div>
     </div>
 
     <!-- 步驟 -->
@@ -143,7 +87,7 @@ const handleConfirm = () => {
             }
           "
           @focus="
-            {
+            () => {
               if (numberTool(price) < 1) price = '0';
             }
           "
@@ -269,5 +213,65 @@ const handleConfirm = () => {
     <CreateWarn :loading="loading" @confirm="handleConfirm" />
   </q-dialog>
 </template>
+
+<script setup lang="ts">
+import StepperMaster from 'src/components/StepperMaster.vue';
+import {
+  useOrderStore,
+  usePendingStore,
+  useStateStore,
+  useThirdStore,
+} from 'src/stores';
+import { numberTool, thousandInput, thousandTool } from 'src/utils/NumberTool';
+import { reactive, ref } from 'vue';
+import repeat2 from 'src/assets/icon _repeat2_.png';
+import CreateWarn from './CreateWarn.vue';
+import { useBuy1 } from '../api/useBuy1';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+const pairWarn = ref(false);
+const { pendingInstant } = usePendingStore();
+const { setOrderWs } = useOrderStore();
+const { setWebSockets } = useThirdStore();
+
+const { getRates, getRatesLoad, currency } = useStateStore();
+const flag = new URL(`../../../../assets/${currency}.png`, import.meta.url)
+  .href;
+// DOM state
+const form = reactive({
+  UsdtAmt: '0',
+  ClientName: '',
+});
+const price = ref('0');
+const isPassTwenty = ref(false);
+// mutation
+const { run: create, loading } = useBuy1({
+  onSuccess: (res) => {
+    pairWarn.value = false;
+    const token = res?.data.order_token;
+    pendingInstant.refresh();
+    useStateStore().refreshBalance();
+    if (token) {
+      setOrderWs(token);
+      setWebSockets(token);
+      router.push({ name: 'buy', query: { token } });
+    }
+  },
+});
+// handler
+const handleConfirm = () => {
+  const UsdtAmt = numberTool(form.UsdtAmt);
+  console.log('on confirm ', {
+    form: { ...form },
+    price: price.value,
+    UsdtAmt,
+  });
+  create({
+    ClientName: form.ClientName,
+    UsdtAmt,
+  });
+};
+</script>
 
 <style scoped></style>

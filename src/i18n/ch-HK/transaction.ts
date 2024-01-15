@@ -38,7 +38,6 @@ export default {
   conversation_record: '對話紀錄',
   total_amount: '金額',
   payment_completed: '已完成付款',
-  confirmCancel: '確認取消',
   title_index: '交易USDT',
   title_confirm_cancel: '是否要取消訂單',
   title_confirm_appeal: '是否要申訴',
@@ -57,6 +56,7 @@ export default {
   payment_time: '付款時間',
   sell_info: '付款方資料',
   購買USDT: '購買USDT',
+  出售USDT: '出售USDT',
   請輸入購買數量: '請輸入購買數量',
   我要購買: '我要購買',
   我將支付: '我將支付',
@@ -83,5 +83,17 @@ export default {
   開戶銀行: '開戶銀行',
   請輸入開戶銀行: '請輸入開戶銀行',
   所在省市: '所在省市',
-  
+  createWarn: {
+    title: '請注意',
+    hint: '轉帳時請勿註記任何關於數字貨幣相關文字，匯款資料不符時將不受理交易服務，並退還收款金額，相關手續費會於退款時一倂扣除，謝謝。'
+  },
+  配對中: '配對中',
+  數量: '數量',
+  金額: '金額',
+  取消訂單: '取消訂單',
+  確認取消: '確認取消',
+  cancelWarn: {
+    title: '是否要取消訂單',
+    content: '注意! 若您已完成銀行轉帳，請勿取消此筆訂單'
+  }
 };

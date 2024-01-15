@@ -17,6 +17,7 @@ export default {
   出售: '出售',
   連線中: '連線中',
   返回: '返回',
+  確認: '確認',
   kyc,
   auth,
   dashboard,
