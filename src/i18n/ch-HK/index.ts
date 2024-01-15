@@ -6,6 +6,7 @@ import auth from './auth';
 import dashboard from './dashboard';
 import transaction from './transaction';
 import account from './account';
+import main from './main';
 
 export default {
   name: '中文',
@@ -23,6 +24,7 @@ export default {
   dashboard,
   transaction,
   account,
+  main,
   cancel: {
     title: '即將離開',
     content: '注意！資料將不會儲存'

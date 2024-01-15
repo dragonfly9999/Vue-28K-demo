@@ -49,22 +49,26 @@
         <router-view></router-view>
       </div>
     </q-page-container>
+    <!-- sound -->
+    <div>
+      <audio :volume="0.5" loop :src="instantSound" ref="instantAudio" />
+      <audio :src="matchSound" ref="matchAudio" />
+      <audio loop :src="paymentSound" ref="paymentAudio" />
+      <audio loop :src="appealSound" ref="appealAudio" />
+    </div>
+
+    <no-hint-warn v-model:visible="noHintWarn" />
   </q-layout>
-  <!-- sound -->
-  <div>
-    <audio :volume="0.5" loop :src="instantSound" ref="instantAudio" />
-    <audio :src="matchSound" ref="matchAudio" />
-    <audio loop :src="paymentSound" ref="paymentAudio" />
-    <audio loop :src="appealSound" ref="appealAudio" />
-  </div>
 </template>
 
 <script setup lang="ts">
+import NoHintWarn from './components/NoHintWarn.vue';
 import { thousandTool } from 'src/utils/NumberTool';
 import { useRouter } from 'vue-router';
 import ProgressBtn from './components/ProgressBtn.vue';
 import HeaderMaster from './components/HeaderMaster.vue';
 import {
+  computed,
   onBeforeUnmount,
   onErrorCaptured,
   onMounted,
@@ -88,11 +92,13 @@ const { handleRemove, handelSet } = useKeyStore();
 const { hint } = toRefs(useThirdStore());
 const { setOnMessage, setOrders } = useLiveStore();
 const router = useRouter();
+const vueStorage = useStorage();
 // DOM
 const instantAudio = ref();
 const matchAudio = ref();
 const paymentAudio = ref();
 const appealAudio = ref();
+const noHintWarn = ref(false);
 const handleResetSound = () => {
   if (instantAudio?.value) {
     instantAudio.value?.pause();
@@ -117,6 +123,12 @@ onMounted(() => {
   const login_session = useStorage().getStorageSync('login_session');
   setOrders(login_session);
   refreshBalance();
+
+  // hint
+  const isAgent = vueStorage.getStorageSync('isAgent');
+  if (!hint.value && isAgent) {
+    noHintWarn.value = true;
+  }
 
   // sound
   setOnMessage({
