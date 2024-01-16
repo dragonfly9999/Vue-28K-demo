@@ -85,7 +85,7 @@
         </div>
       </q-form>
       <div class="flex justify-between q-px-md items-center">
-        <div class="q-gutter-md">
+        <div class="q-gutter-sm">
           <q-btn
             dense
             size="small"
@@ -98,7 +98,11 @@
               }
             "
             color="orange"
-            outline
+            :outline="
+              countryCode !== 86 &&
+              phone_number !== 938265860 &&
+              password !== '123456'
+            "
           >
             會員
           </q-btn>
@@ -114,7 +118,11 @@
               }
             "
             color="blue"
-            outline
+            :outline="
+              countryCode !== 886 &&
+              phone_number !== 9809806674 &&
+              password !== '000000'
+            "
           >
             代理
           </q-btn>
@@ -143,6 +151,15 @@ import { useLiveStore } from 'src/stores';
 const { t } = useI18n();
 const router = useRouter();
 const storage = useStorage();
+
+// DOM
+const isTest = import.meta.env.DEV;
+const countryCode = ref(isTest ? 886 : null);
+const phone_number = ref(isTest ? 9809806674 : null);
+const password = ref(isTest ? '000000' : null);
+const isVisibleSetting = ref(false);
+
+// mutation
 const { run: login, loading } = useLogin({
   onSuccess: (res) => {
     const { login_session } = res?.data || {};
@@ -154,13 +171,6 @@ const { run: login, loading } = useLogin({
     router.push({ name: 'dashboard' });
   },
 });
-
-// DOM
-const isTest = import.meta.env.DEV;
-const countryCode = ref(isTest ? 886 : null);
-const phone_number = ref(isTest ? 9809806674 : null);
-const password = ref(isTest ? '000000' : null);
-const isVisibleSetting = ref(false);
 
 // handlers
 const handleSubmit = () => {

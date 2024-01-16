@@ -2,7 +2,6 @@
   <q-page class="width1440">
     <!-- header -->
     <div class="row q-mb-sm">
-      <!-- 返回btn -->
       <div class="col-4">
         <q-btn
           flat
@@ -13,88 +12,31 @@
       </div>
       <!-- title 帳戶管理-->
       <div class="col flex justify-center text-h6 text-weight-bold">
-        {{ $t('label.account') }}
+        {{ $t('account.帳戶管理') }}
       </div>
       <div class="col-4"></div>
     </div>
     <div class="row">
+      <!-- 設定通道 -->
       <div class="col-12 col-md-3 q-pa-sm">
-        <q-card class="q-pa-md myshadow">
-          <q-card-section class="text-subtitle1">
-            <q-avatar
-              icon="edit_road"
-              size="sm"
-              color="blue-13"
-              text-color="white"
-              class="q-mr-md"
-            />
-            設定通道
-          </q-card-section>
-
-          <div class="q-pa-sm">
-            <q-select
-              stack-label
-              filled
-              color="blue-13"
-              standout="bg-blue-13 text-white"
-              label="全部通道"
-              v-model="channel_1"
-              :options="accountOptioins"
-            />
-          </div>
-          <div class="q-pa-sm">
-            <q-select
-              stack-label
-              filled
-              color="blue-13"
-              standout="bg-blue-13 text-white"
-              label="K100U.com"
-              v-model="channel_2"
-              :options="accountOptioins"
-              @click="
-                () => {
-                  isRepeat = true;
-                }
-              "
-            />
-          </div>
-          <div class="q-pa-sm">
-            <q-select
-              stack-label
-              filled
-              color="blue-13"
-              standout="bg-blue-13 text-white"
-              label="K200U.uk"
-              v-model="channel_3"
-              :options="accountOptioins"
-            />
-          </div>
-          <div class="q-pa-sm">
-            <q-select
-              stack-label
-              filled
-              color="blue-13"
-              standout="bg-blue-13 text-white"
-              label="K100U.net"
-              v-model="channel_4"
-              :options="accountOptioins"
-            />
-          </div>
-          <q-card-actions align="right">
-            <q-btn unelevated disable color="blue-13" label="儲存" padding="5px 20px" />
-          </q-card-actions>
-        </q-card>
+        <components.SetChannels
+          :accs="accs"
+          :show-accs="showAccs"
+          @refresh="
+            () => {
+              reStory();
+            }
+          "
+        />
       </div>
+      <!-- CNY 帳戶 -->
       <div class="col-12 col-md-9 q-pa-sm">
         <q-card class="q-pa-md myshadow">
           <q-card class="q-pa-sm">
-            <q-spinner-tail
-              color="blue-13"
-              size="2em"
-              :thickness="10"
-              v-if="loading"
-            />
-            <q-list v-else>
+            <q-inner-loading :showing="loading">
+              <q-spinner-tail color="blue-13" size="2em" :thickness="10" />
+            </q-inner-loading>
+            <q-list>
               <div class="flex">
                 <q-item-section avatar class="q-pa-sm">
                   <q-avatar size="sm">
@@ -108,34 +50,34 @@
                 <!-- 帳戶數量 -->
                 <div class="q-pa-md flex justify-end">
                   <div class="text-subtitle2 text-grey-6">
-                    {{ $t('account.帳戶數量') + thousandInput(accs?.length) }}
+                    {{
+                      $t('account.帳戶數量') + thousandInput(showAccs?.length)
+                    }}
                   </div>
                 </div>
               </div>
 
-              <!-- 新增帳戶 -->
               <q-card-section style="padding: 0">
                 <div class="row">
+                  <!-- 帳戶 -->
                   <div
                     class="col-12 col-md-4 col-sm-6"
                     v-for="(Acc, Ai) in showAccs"
                     :key="Ai"
                   >
-                    <AccountCard
-                      :on-fresh-info="
-                        () => {
-                          reStory();
-                          reAcc();
-                        }
-                      "
+                    <components.AccountCard
                       :current-acc="acc"
                       v-model:del-i-d="delID"
                       :acc-info="Acc"
+                      :loading="loading || underDel || setting"
+                      @edit="handleMutiEditField"
                     />
                   </div>
 
+                  <!-- 新增帳戶 -->
                   <div class="col-12 col-md-4 col-sm-6 q-pa-sm">
                     <q-btn
+                      v-if="!loading"
                       outline
                       color="blue-13"
                       icon="add"
@@ -156,75 +98,13 @@
     </div>
     <!-- 確認是否刪除 -->
     <CheckCard
-      @confirm="
-      () =>
-        del({
-          H_id: delID as number
-        })
-    "
+      @confirm="handleMutiDel"
       @close="() => (delID = undefined)"
       :visible="delID !== undefined"
       :message="t('label.del_hint')"
     />
     <!-- 沒有預設帳號 -->
-    <q-dialog v-model="isNoDefaultWarn">
-      <q-card
-        class="q-pa-md"
-        @click="
-          () => {
-            isNoDefaultWarn = false;
-          }
-        "
-      >
-        <div class="flex text-orange-12 items-center text-h5">
-          <q-icon
-            class="material-icons-outlined q-mr-md"
-            name="report_problem"
-          />
-          <div class="text-bold">
-            {{ $t('account.未設定預設帳號') }}
-          </div>
-        </div>
-        <div class="text-body1">
-          ({{ $t('account.設定一個帳號的頻道為全部') }})
-        </div>
-      </q-card>
-    </q-dialog>
-    <!-- 帳號使用中，是否取代 -->
-    <q-dialog v-model="isRepeat" persistent>
-      <q-card class="q-pa-md">
-        <div class="text-orange-12 text-center text-h5">
-          <q-icon name="report_problem" size="60px" />
-          <div class="text-bold">
-            此帳戶已在使用，如果接受，它將從【{'某通道'}】中移除。
-          </div>
-        </div>
-        <q-card-actions vertical>
-          <q-btn
-            unelevated
-            class="full-width"
-            color="blue-13"
-            label="接受並重新設定【{'某通道'}】帳戶"
-            @click="
-              () => {
-                isRepeat = false;
-              }
-            "
-          />
-          <q-btn
-            class="full-width"
-            color="blue-13"
-            outline
-            label="取消"
-            @click="
-              () => {
-                isRepeat = false;
-              }
-            "
-          />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
+    <components.NoDefaultWarn v-model:visible="isNoDefaultWarn" />
   </q-page>
 </template>
 
@@ -232,19 +112,23 @@
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import { AccNum, useAccHistory, useDelAcc } from './api';
+import { AccNum, useAccHistory, useDelAcc, useSetAcc } from './api';
 import { useAcc } from './api';
 import { thousandInput } from 'src/utils/NumberTool';
 import CheckCard from 'src/components/CheckCard.vue';
 import Flag from 'src/assets/CNY.png';
-import AccountCard from './AccountCard.vue';
+import components from './components';
+import { AccRes } from './api/useAccHistory';
 
 const { t } = useI18n();
 const router = useRouter();
 // DOM
 const isAlreadyWarn = ref(false);
 const isNoDefaultWarn = ref(false);
-const isRepeat = ref(false);
+const delID = ref<number>();
+
+// ##### query
+// history
 const {
   data: accs,
   loading,
@@ -264,47 +148,142 @@ const {
     }
   },
 });
+// default Acc
 const { request } = useAcc();
 const { data: acc, refresh: reAcc } = request;
-const showAccs = computed(() =>
-  accs.value?.slice().sort((a) => {
-    if (!acc.value) return 0;
-    if (
-      a.P1 === acc.value?.P1 &&
-      a.P2 === acc.value?.P2 &&
-      a.P3 === acc.value?.P3 &&
-      a.P4 === acc.value?.P4
-    )
-      return -1;
-    return 1;
-  })
-);
-const { run: del } = useDelAcc({
+const showAccs = computed<Array<AccRes>>(() => {
+  const pureAccsInfo = accs.value?.slice().map((accInfo) => ({
+    value:
+      accInfo[AccNum.Name]?.toString() ??
+      '' + accInfo[AccNum.Account]?.toString() ??
+      '' + accInfo[AccNum.BankID]?.toString() ??
+      '' + accInfo[AccNum.Branch]?.toString() ??
+      '',
+    id: accInfo.H_id,
+  }));
+  const setAccValue =
+    Array.from(new Set(pureAccsInfo?.map((mapInfo) => mapInfo.value))) ?? [];
+  const setAccs = setAccValue.map((mapValue) => {
+    const setInfo = pureAccsInfo?.find(
+      (findInfo) => findInfo.value === mapValue
+    );
+    const setAcc = accs.value
+      ?.slice()
+      .find((findAcc) => findAcc.H_id === setInfo?.id);
+    return setAcc;
+  }) as Array<AccRes>;
+  return setAccs;
+});
+
+// del
+const editWait = ref(false);
+const { run: del, loading: underDel } = useDelAcc({
   onSuccess: () => {
-    reStory();
-    reAcc();
-    delID.value = undefined;
+    if (!editWait.value) {
+      reStory();
+      reAcc();
+      delID.value = undefined;
+    } else {
+      editWait.value = false;
+    }
   },
 });
 
-const delID = ref<number>();
-// DOM
-// alan
-const channel_1 = ref('未設定');
-const channel_2 = ref('未設定');
-const channel_3 = ref('未設定');
-const channel_4 = ref('未設定');
-const accountOptioins = [
-  { label: '未設定', value: null },
-  {
-    label: '王曉明 | 0000000000000016 | 招商銀行 | 深圳西鄉分行',
-    value: -1,
+// set
+const { run: set, loading: setting } = useSetAcc({
+  onSuccess: () => {
+    if (!editWait.value) {
+      reStory();
+      reAcc();
+      delID.value = undefined;
+    } else {
+      editWait.value = false;
+    }
   },
-  {
-    label: '王曉明 | 0000000000000099 | 平安銀行 | 北京總行',
-    value: 5,
-  },
-];
+});
+
+// ##### handler
+const handleMutiDel = (propsID?: number) => {
+  const delAcc = accs.value?.find(
+    (findAcc) => findAcc.H_id === delID.value || findAcc.H_id === propsID
+  );
+  if (!delAcc) return;
+  const pureAccsInfo = accs.value?.slice().map((accInfo) => ({
+    value:
+      accInfo[AccNum.Name]?.toString() ??
+      '' + accInfo[AccNum.Account]?.toString() ??
+      '' + accInfo[AccNum.BankID]?.toString() ??
+      '' + accInfo[AccNum.Branch]?.toString() ??
+      '',
+    id: accInfo.H_id,
+  }));
+  const delAccInfo =
+    delAcc[AccNum.Name]?.toString() ??
+    '' + delAcc[AccNum.Account]?.toString() ??
+    '' + delAcc[AccNum.BankID]?.toString() ??
+    '' + delAcc[AccNum.Branch]?.toString() ??
+    '';
+
+  const delIDs = pureAccsInfo
+    ?.filter((filterInfo) => filterInfo.value === delAccInfo)
+    .map((mapInfo) => mapInfo.id);
+  delIDs?.forEach((forID) =>
+    del({
+      H_id: forID,
+    })
+  );
+};
+
+const handleMutiEditField = ({
+  field,
+  value,
+  id,
+}: {
+  field: AccNum;
+  value: string;
+  id: number;
+}) => {
+  const delAcc = accs.value?.find((findAcc) => findAcc.H_id === id);
+  if (!delAcc) return;
+  const pureAccsInfo = accs.value?.slice().map((accInfo) => ({
+    value:
+      accInfo[AccNum.Name]?.toString() ??
+      '' + accInfo[AccNum.Account]?.toString() ??
+      '' + accInfo[AccNum.BankID]?.toString() ??
+      '' + accInfo[AccNum.Branch]?.toString() ??
+      '',
+    id: accInfo.H_id,
+  }));
+  const delAccInfo =
+    delAcc[AccNum.Name]?.toString() ??
+    '' + delAcc[AccNum.Account]?.toString() ??
+    '' + delAcc[AccNum.BankID]?.toString() ??
+    '' + delAcc[AccNum.Branch]?.toString() ??
+    '';
+
+  const delIDs =
+    pureAccsInfo
+      ?.filter((filterInfo) => filterInfo.value === delAccInfo)
+      .map((mapInfo) => mapInfo.id) ?? [];
+
+  delIDs.forEach((forID) => {
+    editWait.value = true;
+    const editAcc = accs.value?.find((findAcc) => findAcc.H_id === forID);
+    if (!editAcc) return;
+    // 修改欄位時自動新增並且預設，同時刪除原本的帳號
+    del({
+      H_id: editAcc.H_id,
+    });
+    set({
+      [AccNum.Name]: editAcc[AccNum.Name],
+      [AccNum.Account]: editAcc[AccNum.Account],
+      [AccNum.BankID]: editAcc[AccNum.BankID],
+      [AccNum.Branch]: editAcc[AccNum.Branch],
+      [AccNum.Channel]: editAcc[AccNum.Channel],
+      [field]: value,
+    });
+  });
+};
 </script>
 
 <style scoped></style>

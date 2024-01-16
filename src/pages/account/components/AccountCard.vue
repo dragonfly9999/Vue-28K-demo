@@ -8,6 +8,7 @@
       <div class="flex items-center justify-end cursor-pointer">
         {{ accInfo[AccNum.Name] }}
         <q-popup-edit
+          :disable="loading"
           v-model="editFields[AccNum.Name]"
           v-slot="scope"
           touch-position
@@ -16,19 +17,7 @@
           @save="
             (value, initValue) => {
               if (value !== initValue) {
-                isWait = true;
-                del({
-                  // 修改欄位時自動新增並且預設，同時刪除原本的帳號
-                  H_id: props.accInfo.H_id,
-                });
-                set({
-                  ...editFields,
-                  [AccNum.Channel]:
-                    editFields[AccNum.Channel]?.value !== undefined
-                      ? editFields[AccNum.Channel]?.value ?? null
-                      : null,
-                  [AccNum.Name]: value,
-                });
+                $emit('edit', { field: AccNum.Name, value, id: accInfo.H_id });
               }
             }
           "
@@ -36,6 +25,7 @@
           :label-cancel="$t('transaction.cancel')"
         >
           <q-input
+            :loading="loading"
             v-model="scope.value"
             dense
             autofocus
@@ -61,21 +51,14 @@
           touch-position
           persistent
           buttons
+          :disable="loading"
           @save="
             (value, initValue) => {
               if (value !== initValue) {
-                isWait = true;
-                del({
-                  // 修改欄位時自動新增並且預設，同時刪除原本的帳號
-                  H_id: props.accInfo.H_id,
-                });
-                set({
-                  ...editFields,
-                  [AccNum.Channel]:
-                    editFields[AccNum.Channel]?.value !== undefined
-                      ? editFields[AccNum.Channel]?.value ?? null
-                      : null,
-                  [AccNum.Account]: value,
+                $emit('edit', {
+                  field: AccNum.Account,
+                  value,
+                  id: accInfo.H_id,
                 });
               }
             }
@@ -109,21 +92,14 @@
           touch-position
           persistent
           buttons
+          :disable="loading"
           @save="
             (value, initValue) => {
               if (value !== initValue) {
-                isWait = true;
-                del({
-                  // 修改欄位時自動新增並且預設，同時刪除原本的帳號
-                  H_id: props.accInfo.H_id,
-                });
-                set({
-                  ...editFields,
-                  [AccNum.Channel]:
-                    editFields[AccNum.Channel]?.value !== undefined
-                      ? editFields[AccNum.Channel]?.value ?? null
-                      : null,
-                  [AccNum.BankID]: value,
+                $emit('edit', {
+                  field: AccNum.BankID,
+                  value,
+                  id: accInfo.H_id,
                 });
               }
             }
@@ -157,21 +133,14 @@
           touch-position
           persistent
           buttons
+          :disable="loading"
           @save="
             (value, initValue) => {
               if (value !== initValue) {
-                isWait = true;
-                del({
-                  // 修改欄位時自動新增並且預設，同時刪除原本的帳號
-                  H_id: props.accInfo.H_id,
-                });
-                set({
-                  ...editFields,
-                  [AccNum.Channel]:
-                    editFields[AccNum.Channel]?.value !== undefined
-                      ? editFields[AccNum.Channel]?.value ?? null
-                      : null,
-                  [AccNum.Branch]: value,
+                $emit('edit', {
+                  field: AccNum.Branch,
+                  value,
+                  id: accInfo.H_id,
                 });
               }
             }
@@ -193,7 +162,7 @@
     </div>
 
     <!-- 使用通路 -->
-    <div>
+    <!-- <div>
       <div class="text-grey-6 text-caption">
         {{ $t('account.頻道') }}
       </div>
@@ -250,7 +219,7 @@
         <q-icon flat round name="edit" color="blue-13" class="q-ml-xs" />
       </div>
       <div style="border: 0.25px dashed #eeeeee"></div>
-    </div>
+    </div> -->
 
     <q-card-actions
       align="right"
@@ -261,7 +230,7 @@
       <!-- if帳戶數量=0，新增第一個帳戶後，自動設為預設 -->
       <!-- 變成預設帳戶後，點亮這顆星  -->
       <!-- 變成預設帳戶後，disable不可點擊 -->
-      <q-checkbox
+      <!-- <q-checkbox
         :model-value="isCurrentAcc"
         checked-icon="star"
         unchecked-icon="star_border"
@@ -275,21 +244,20 @@
           }
         "
       >
-        <!-- hint -->
         <q-tooltip>
           {{ $t('label.preset_hint2') }}
         </q-tooltip>
-      </q-checkbox>
+      </q-checkbox> -->
 
       <!-- 刪除帳戶 btn-->
       <!-- 變成預設帳戶後，disable不可點擊 -->
       <q-btn
-        :disable="isCurrentAcc"
         @click="() => $emit('update:delID', accInfo.H_id)"
         flat
         round
         color="blue-13"
         icon="delete"
+        :loading="loading"
       >
       </q-btn>
     </q-card-actions>
@@ -297,20 +265,18 @@
 </template>
 
 <script setup lang="ts">
-import { computed, watch, reactive, ref } from 'vue';
-import { useDelAcc, useSetAcc } from './api';
-import { AccRes } from './api/useAccHistory';
-import { AccNum } from './api/useAccHistory';
-import { useI18n } from 'vue-i18n';
+import { watch, reactive } from 'vue';
+import { AccRes } from '../api/useAccHistory';
+import { AccNum } from '../api/useAccHistory';
+// import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
   accInfo: AccRes;
   currentAcc: Omit<AccRes, 'H_id'> | undefined;
-  onFreshInfo?: () => void;
-  delID: number | undefined;
+  loading?: boolean;
 }>();
-defineEmits(['update:delID']);
-const { t } = useI18n();
+defineEmits(['update:delID', 'edit']);
+// const { t } = useI18n();
 
 const editFields = reactive<
   Omit<AccRes, 'H_id' | AccNum.Channel> & {
@@ -324,50 +290,34 @@ const editFields = reactive<
   [AccNum.Channel]: null,
 });
 
-const channelLabel = computed(() => {
-  if (props.accInfo[AccNum.Channel] === null) return t('account.未設定頻道');
-  if (props.accInfo[AccNum.Channel] === -1) return 'B-All';
-  if (props.accInfo[AccNum.Channel] === 0) return 'BVAC';
-  if (props.accInfo[AccNum.Channel] === 1) return 'Demo K100U';
-  if (props.accInfo[AccNum.Channel] === 2) return '88U';
-  if (props.accInfo[AccNum.Channel] === 3) return 'U88';
-  if (props.accInfo[AccNum.Channel] === 4) return 'JP88';
-  if (props.accInfo[AccNum.Channel] === 5) return 'K100U com';
-  if (props.accInfo[AccNum.Channel] === 6) return 'U28 Exchange';
-  if (props.accInfo[AccNum.Channel] === 7) return 'V100U com';
-  if (props.accInfo[AccNum.Channel] === 9) return 'Fxcoin';
-  if (props.accInfo[AccNum.Channel] === 10) return 'K200U';
-  if (props.accInfo[AccNum.Channel] === 11) return 'K100 net';
-  return props.accInfo[AccNum.Channel];
-});
-const isCurrentAcc = computed(() => {
-  if (!props.currentAcc) return false;
-  return (
-    props.accInfo[AccNum.Name] === props.currentAcc[AccNum.Name] &&
-    props.accInfo[AccNum.Account] === props.currentAcc[AccNum.Account] &&
-    props.accInfo[AccNum.BankID] === props.currentAcc[AccNum.BankID] &&
-    props.accInfo[AccNum.Branch] === props.currentAcc[AccNum.Branch]
-  );
-});
-
-// run
-const isWait = ref(false);
-const { run: set } = useSetAcc({
-  onSuccess: () => {
-    if (isWait.value) isWait.value = false;
-    else if (props.onFreshInfo) props.onFreshInfo();
-  },
-});
-const { run: del } = useDelAcc({
-  onSuccess: () => {
-    if (isWait.value) isWait.value = false;
-    else if (props.onFreshInfo) props.onFreshInfo();
-  },
-  noFeedback: true,
-});
+// const channelLabel = computed(() => {
+//   if (props.accInfo[AccNum.Channel] === null) return t('account.未設定頻道');
+//   if (props.accInfo[AccNum.Channel] === -1) return 'B-All';
+//   if (props.accInfo[AccNum.Channel] === 0) return 'BVAC';
+//   if (props.accInfo[AccNum.Channel] === 1) return 'Demo K100U';
+//   if (props.accInfo[AccNum.Channel] === 2) return '88U';
+//   if (props.accInfo[AccNum.Channel] === 3) return 'U88';
+//   if (props.accInfo[AccNum.Channel] === 4) return 'JP88';
+//   if (props.accInfo[AccNum.Channel] === 5) return 'K100U com';
+//   if (props.accInfo[AccNum.Channel] === 6) return 'U28 Exchange';
+//   if (props.accInfo[AccNum.Channel] === 7) return 'V100U com';
+//   if (props.accInfo[AccNum.Channel] === 9) return 'Fxcoin';
+//   if (props.accInfo[AccNum.Channel] === 10) return 'K200U';
+//   if (props.accInfo[AccNum.Channel] === 11) return 'K100 net';
+//   return props.accInfo[AccNum.Channel];
+// });
+// const isCurrentAcc = computed(() => {
+//   if (!props.currentAcc) return false;
+//   return (
+//     props.accInfo[AccNum.Name] === props.currentAcc[AccNum.Name] &&
+//     props.accInfo[AccNum.Account] === props.currentAcc[AccNum.Account] &&
+//     props.accInfo[AccNum.BankID] === props.currentAcc[AccNum.BankID] &&
+//     props.accInfo[AccNum.Branch] === props.currentAcc[AccNum.Branch]
+//   );
+// });
 
 watch(
-  () => props.accInfo.H_id,
+  () => props.accInfo?.H_id,
   (newValue, oldValue) => {
     if (newValue !== oldValue) {
       editFields[AccNum.Name] = props.accInfo[AccNum.Name];
