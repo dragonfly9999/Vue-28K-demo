@@ -57,7 +57,9 @@ const router = useRouter();
 const { pendingInstant } = usePendingStore();
 // DOM
 const isVisibleDetail = ref(false);
-// Live
+
+
+// Live cycle
 onMounted(() => {
   pendingInstant.refresh();
 

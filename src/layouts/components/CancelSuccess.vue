@@ -52,10 +52,20 @@
 import dayjs from 'dayjs';
 import PunctuationMaster from 'src/components/PunctuationMaster.vue';
 import { thousandTool } from 'src/utils/NumberTool';
+import { onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 defineProps<{ order: OrderStatus | undefined }>();
 const router = useRouter();
 const route = useRoute();
+
+// Live cycle
+onMounted(() => {
+  // scroll
+  setTimeout(() => {
+    const domElement = document.documentElement;
+    domElement.scrollTo({ top: 0, behavior: 'smooth' });
+  }, 100);
+});
 </script>
 
 <style scoped>

@@ -223,11 +223,12 @@ import {
   useThirdStore,
 } from 'src/stores';
 import { numberTool, thousandInput, thousandTool } from 'src/utils/NumberTool';
-import { reactive, ref } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
 import repeat2 from 'src/assets/icon _repeat2_.png';
 import CreateWarn from './CreateWarn.vue';
 import { useBuy1 } from '../api/useBuy1';
 import { useRouter } from 'vue-router';
+import dayjs from 'dayjs';
 
 const router = useRouter();
 const pairWarn = ref(false);
@@ -235,7 +236,7 @@ const { pendingInstant } = usePendingStore();
 const { setOrderWs } = useOrderStore();
 const { setWebSockets } = useThirdStore();
 
-const { getRates, getRatesLoad, currency } = useStateStore();
+const { getRates, getRatesLoad, currency, onRatesSuccess } = useStateStore();
 const flag = new URL(`../../../../assets/${currency}.png`, import.meta.url)
   .href;
 // DOM state
@@ -268,6 +269,36 @@ const handleConfirm = () => {
     UsdtAmt,
   });
 };
+
+// life cycle
+onMounted(() => {
+  if (import.meta.env.DEV) {
+    // call back
+    onRatesSuccess.buyTest = (rate) => {
+      if (price.value === '0' && form.UsdtAmt !== '0' && rate) {
+        price.value = thousandInput(
+          numberTool(form.UsdtAmt) * numberTool(rate.RMB_BUY)
+        );
+      }
+    };
+    // set
+    form.ClientName = 'test Buy' + dayjs().format('MM.DD HH:ss');
+    form.UsdtAmt = '100';
+    isPassTwenty.value = true;
+    const rates = getRates();
+    if (rates) {
+      price.value = thousandInput(
+        numberTool(form.UsdtAmt) * numberTool(rates.RMB_BUY)
+      );
+    }
+    // scroll
+    setTimeout(() => {
+      const domElement = document.documentElement;
+      const scrollPath = domElement.scrollHeight - domElement.clientHeight;
+      domElement.scrollTo({ top: scrollPath, behavior: 'smooth' });
+    }, 100);
+  }
+});
 </script>
 
 <style scoped></style>

@@ -116,8 +116,8 @@
                   // { label: 'U28 Exchange', value: 6 },
                   // { label: 'V100U com', value: 7 },
                   // { label: 'Fxcoin', value: 9 },
-                  // { label: 'K200U', value: 10 },
-                  // { label: 'K100 net', value: 11 },
+                  { label: 'K200U', value: 10 },
+                  { label: 'K100 net', value: 11 },
                 ]"
               >
               </q-select>

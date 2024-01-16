@@ -46,7 +46,7 @@
 
 <script setup lang="ts">
 import WaitCard from 'src/pages/transaction/components/WaitCard.vue';
-import { onMounted, watch } from 'vue';
+import { onMounted, reactive, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { OrderStatusNum } from 'src/stores/live';
 import ChatBox from './components/ChatBox.vue';
@@ -60,10 +60,15 @@ import { useI18n } from 'vue-i18n';
 const { t } = useI18n();
 const q = useQuasar();
 const route = useRoute();
-const { setWebSockets, removeChat, getChatList } = useThirdStore();
+const { setWebSockets, removeChat, getWebSocket } = useThirdStore();
 const { setOrderWs, getStatus, removeOrder } = useOrderStore();
 const token = computed(() => route.query?.token as string);
 const orderStatus = computed(() => getStatus(token.value));
+const chatWS = computed(() => getWebSocket(token.value));
+const isWait = reactive({
+  orderStatus: false,
+  third: false,
+});
 //
 onMounted(() => {
   // 清除多餘
@@ -76,28 +81,43 @@ watch(
   token,
   (newValue) => {
     if (newValue) {
-      // 等待連接
-      let isWaitChat = !getChatList(newValue);
-      let isWaitOrderStatus = !orderStatus.value;
-      if (isWaitChat || isWaitOrderStatus) {
+      if (!chatWS.value || !orderStatus.value) {
         q.loading.show({
           message: t('連線中'),
         });
+        if (!chatWS.value) {
+          setWebSockets(newValue);
+          isWait.third = true;
+        }
+        if (!orderStatus.value) {
+          setOrderWs(newValue);
+          isWait.orderStatus = true;
+        }
       }
+    }
+  },
+  { immediate: true }
+);
 
-      // 設定連接
-      setWebSockets(newValue, () => {
-        isWaitChat = false;
-        if (!isWaitChat && !isWaitOrderStatus) {
-          q.loading.hide();
-        }
-      });
-      setOrderWs(newValue, () => {
-        isWaitOrderStatus = false;
-        if (!isWaitChat && !isWaitOrderStatus) {
-          q.loading.hide();
-        }
-      });
+watch(
+  chatWS,
+  (newValue) => {
+    if (!newValue) return;
+    isWait.third = false;
+    if (!isWait.orderStatus && !isWait.third) {
+      q.loading.hide();
+    }
+  },
+  { immediate: true }
+);
+
+watch(
+  orderStatus,
+  (newValue) => {
+    if (!newValue) return;
+    isWait.orderStatus = false;
+    if (!isWait.orderStatus && !isWait.third) {
+      q.loading.hide();
     }
   },
   { immediate: true }

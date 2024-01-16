@@ -70,7 +70,9 @@ export const useThirdStore = defineStore('third', () => {
     };
     chatWS.onOpen = () => {
       console.info('ChatWs open !, token:', token);
-      if (onOpen) onOpen();
+      setTimeout(() => {
+        if (onOpen) onOpen();
+      }, 600);
     };
     webSockets.value[token] = chatWS;
   };
@@ -85,8 +87,7 @@ export const useThirdStore = defineStore('third', () => {
     delete unReadCount.value[token];
   };
   const getWebSocket = (token: string) => {
-    const result = webSockets?.value[token];
-    return result;
+    return webSockets?.value[token];
   };
   const getChatList = (token: string) => {
     return chatListObj?.value[token] ?? [];
