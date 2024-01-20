@@ -32,67 +32,64 @@
       <!-- CNY 帳戶 -->
       <div class="col-12 col-md-9 q-pa-sm">
         <q-card class="q-pa-md myshadow">
-          <q-card class="q-pa-sm">
-            <q-inner-loading :showing="loading">
-              <q-spinner-tail color="blue-13" size="2em" :thickness="10" />
-            </q-inner-loading>
-            <q-list>
-              <div class="flex">
-                <q-item-section avatar class="q-pa-sm">
-                  <q-avatar size="sm">
-                    <img :src="Flag" />
-                  </q-avatar>
-                </q-item-section>
-                <!-- 帳戶 -->
-                <q-item-section>
-                  <div class="text-subtitle1">CNY{{ $t('account.帳戶') }}</div>
-                </q-item-section>
-                <!-- 帳戶數量 -->
-                <div class="q-pa-md flex justify-end">
-                  <div class="text-subtitle2 text-grey-6">
-                    {{
-                      $t('account.帳戶數量') + thousandInput(showAccs?.length)
-                    }}
-                  </div>
+          <q-inner-loading :showing="loading">
+            <q-spinner-tail color="blue-13" size="2em" :thickness="10" />
+          </q-inner-loading>
+
+          <q-list>
+            <div class="flex">
+              <q-item-section avatar class="q-pa-sm">
+                <q-avatar size="sm">
+                  <img :src="Flag" />
+                </q-avatar>
+              </q-item-section>
+              <!-- 帳戶 -->
+              <q-item-section>
+                <div class="text-subtitle1">CNY{{ $t('account.帳戶') }}</div>
+              </q-item-section>
+              <!-- 帳戶數量 -->
+              <div class="q-pa-md flex justify-end">
+                <div class="text-subtitle2 text-grey-6">
+                  {{ $t('account.帳戶數量') + thousandInput(showAccs?.length) }}
                 </div>
               </div>
+            </div>
 
-              <q-card-section style="padding: 0">
-                <div class="row">
-                  <!-- 帳戶 -->
-                  <div
-                    class="col-12 col-md-4 col-sm-6"
-                    v-for="(Acc, Ai) in showAccs"
-                    :key="Ai"
-                  >
-                    <components.AccountCard
-                      :current-acc="acc"
-                      v-model:del-i-d="delID"
-                      :acc-info="Acc"
-                      :loading="loading || underDel || setting"
-                      @edit="handleMutiEditField"
-                    />
-                  </div>
-
-                  <!-- 新增帳戶 -->
-                  <div class="col-12 col-md-4 col-sm-6 q-pa-sm">
-                    <q-btn
-                      v-if="!loading"
-                      outline
-                      color="blue-13"
-                      icon="add"
-                      class="q-mx-sm full-width full-height"
-                      stack
-                      @click="() => router.push({ name: 'account_create' })"
-                      no-caps
-                    >
-                      {{ $t('label.add_account') }}
-                    </q-btn>
-                  </div>
+            <q-card-section style="padding: 0">
+              <div class="row">
+                <!-- 帳戶 -->
+                <div
+                  class="col-12 col-md-4 col-sm-6"
+                  v-for="(Acc, Ai) in showAccs"
+                  :key="Ai"
+                >
+                  <components.AccountCard
+                    :current-acc="acc"
+                    v-model:del-i-d="delID"
+                    :acc-info="Acc"
+                    :loading="loading || underDel || setting"
+                    @edit="handleMutiEditField"
+                  />
                 </div>
-              </q-card-section>
-            </q-list>
-          </q-card>
+
+                <!-- 新增帳戶 -->
+                <div class="col-12 col-md-4 col-sm-6 q-pa-sm">
+                  <q-btn
+                    v-if="!loading"
+                    outline
+                    color="blue-13"
+                    icon="add"
+                    class="q-mx-sm full-width full-height"
+                    stack
+                    @click="() => router.push({ name: 'account_create' })"
+                    no-caps
+                  >
+                    {{ $t('label.add_account') }}
+                  </q-btn>
+                </div>
+              </div>
+            </q-card-section>
+          </q-list>
         </q-card>
       </div>
     </div>
@@ -151,20 +148,19 @@ const {
 // default Acc
 const { request } = useAcc();
 const { data: acc, refresh: reAcc } = request;
-const showAccs = computed<Array<AccRes>>(() => {
-  const pureAccsInfo = accs.value?.slice().map((accInfo) => ({
-    value:
-      accInfo[AccNum.Name]?.toString() ??
-      '' + accInfo[AccNum.Account]?.toString() ??
-      '' + accInfo[AccNum.BankID]?.toString() ??
-      '' + accInfo[AccNum.Branch]?.toString() ??
-      '',
+const accsInfoJson = computed(() =>
+  // [{value: string, id: id}]
+  accs.value?.slice().map((accInfo) => ({
+    value: JSON.stringify({ ...accInfo, H_id: -2, [AccNum.Channel]: null }),
     id: accInfo.H_id,
-  }));
-  const setAccValue =
-    Array.from(new Set(pureAccsInfo?.map((mapInfo) => mapInfo.value))) ?? [];
+  }))
+);
+const showAccs = computed<Array<AccRes>>(() => {
+  const setAccValue = // Set([{value: string, id: id}])
+    Array.from(new Set(accsInfoJson.value?.map((mapInfo) => mapInfo.value))) ??
+    [];
   const setAccs = setAccValue.map((mapValue) => {
-    const setInfo = pureAccsInfo?.find(
+    const setInfo = accsInfoJson.value?.find(
       (findInfo) => findInfo.value === mapValue
     );
     const setAcc = accs.value
@@ -208,23 +204,13 @@ const handleMutiDel = (propsID?: number) => {
     (findAcc) => findAcc.H_id === delID.value || findAcc.H_id === propsID
   );
   if (!delAcc) return;
-  const pureAccsInfo = accs.value?.slice().map((accInfo) => ({
-    value:
-      accInfo[AccNum.Name]?.toString() ??
-      '' + accInfo[AccNum.Account]?.toString() ??
-      '' + accInfo[AccNum.BankID]?.toString() ??
-      '' + accInfo[AccNum.Branch]?.toString() ??
-      '',
-    id: accInfo.H_id,
-  }));
-  const delAccInfo =
-    delAcc[AccNum.Name]?.toString() ??
-    '' + delAcc[AccNum.Account]?.toString() ??
-    '' + delAcc[AccNum.BankID]?.toString() ??
-    '' + delAcc[AccNum.Branch]?.toString() ??
-    '';
 
-  const delIDs = pureAccsInfo
+  const delAccInfo = JSON.stringify({
+    ...delAcc,
+    H_id: -2,
+    [AccNum.Channel]: null,
+  });
+  const delIDs = accsInfoJson.value
     ?.filter((filterInfo) => filterInfo.value === delAccInfo)
     .map((mapInfo) => mapInfo.id);
   delIDs?.forEach((forID) =>
@@ -245,24 +231,14 @@ const handleMutiEditField = ({
 }) => {
   const delAcc = accs.value?.find((findAcc) => findAcc.H_id === id);
   if (!delAcc) return;
-  const pureAccsInfo = accs.value?.slice().map((accInfo) => ({
-    value:
-      accInfo[AccNum.Name]?.toString() ??
-      '' + accInfo[AccNum.Account]?.toString() ??
-      '' + accInfo[AccNum.BankID]?.toString() ??
-      '' + accInfo[AccNum.Branch]?.toString() ??
-      '',
-    id: accInfo.H_id,
-  }));
-  const delAccInfo =
-    delAcc[AccNum.Name]?.toString() ??
-    '' + delAcc[AccNum.Account]?.toString() ??
-    '' + delAcc[AccNum.BankID]?.toString() ??
-    '' + delAcc[AccNum.Branch]?.toString() ??
-    '';
+  const delAccInfo = JSON.stringify({
+    ...delAcc,
+    H_id: -2,
+    [AccNum.Channel]: null,
+  });
 
   const delIDs =
-    pureAccsInfo
+    accsInfoJson.value
       ?.filter((filterInfo) => filterInfo.value === delAccInfo)
       .map((mapInfo) => mapInfo.id) ?? [];
 

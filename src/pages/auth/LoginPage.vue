@@ -128,9 +128,9 @@
           </q-btn>
         </div>
         <div class="q-gutter-md">
-          <router-link to="register" class="text-blue">
+          <!-- <router-link to="register_master" class="text-blue">
             <q-btn dense unelevated> {{ $t('auth.註冊') }} </q-btn>
-          </router-link>
+          </router-link> -->
           <router-link to="forget" class="text-blue">
             <q-btn dense unelevated> {{ $t('auth.忘記密碼') }} </q-btn>
           </router-link>
