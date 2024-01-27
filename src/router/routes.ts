@@ -98,7 +98,7 @@ const routes: RouteRecordRaw[] = [
         name: 'login'
       },
       {
-        path: 'register_master',
+        path: 'register_master_secret_path',
         component: () => import('pages/auth/register/RegisterPage.vue'),
         name: 'register'
       },
