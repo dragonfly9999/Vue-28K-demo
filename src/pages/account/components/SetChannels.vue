@@ -11,77 +11,28 @@
         />
         {{ $t('account.設定通道') }}
       </q-card-section>
-
-      <div class="q-pa-sm">
+      <div
+        class="q-pa-sm"
+        v-for="(
+          allowAccountOption, storeIndex
+        ) in accountStore.allowChannelsOption"
+        :key="storeIndex"
+      >
         <q-select
           :loading="loading"
           stack-label
           filled
           color="blue-13"
           standout="bg-blue-13 text-white"
-          :label="$t('account.全部通道')"
-          v-model="channels[AccountChannelNum.All]"
-          :options="handleAccOption(channels[AccountChannelNum.All]?.value)"
+          :label="allowAccountOption.label"
+          v-model="channels[allowAccountOption.value]"
+          :options="handleAccOption(channels[allowAccountOption.value]?.acc_ID)"
           @update:model-value="
-            (newOption) => handleIsReplace(AccountChannelNum.All, newOption)
+            (newOption) =>
+              handleUpdateChannel(allowAccountOption.value, newOption)
           "
         />
       </div>
-      <div class="q-pa-sm">
-        <q-select
-          :loading="loading"
-          stack-label
-          filled
-          color="blue-13"
-          standout="bg-blue-13 text-white"
-          label="K100U.com"
-          v-model="channels[AccountChannelNum.K100com]"
-          :options="handleAccOption(channels[AccountChannelNum.K100com]?.value)"
-          @update:model-value="
-            (newOption) => handleIsReplace(AccountChannelNum.K100com, newOption)
-          "
-        />
-      </div>
-      <div class="q-pa-sm">
-        <q-select
-          :loading="loading"
-          stack-label
-          filled
-          color="blue-13"
-          standout="bg-blue-13 text-white"
-          label="K200U.uk"
-          v-model="channels[AccountChannelNum.K200U]"
-          :options="handleAccOption(channels[AccountChannelNum.K200U]?.value)"
-          @update:model-value="
-            (newOption) => handleIsReplace(AccountChannelNum.K200U, newOption)
-          "
-        />
-      </div>
-      <div class="q-pa-sm">
-        <q-select
-          :loading="loading"
-          stack-label
-          filled
-          color="blue-13"
-          standout="bg-blue-13 text-white"
-          label="K100U.net"
-          v-model="channels[AccountChannelNum.K100Net]"
-          :options="handleAccOption(channels[AccountChannelNum.K100Net]?.value)"
-          @update:model-value="
-            (newOption) => handleIsReplace(AccountChannelNum.K100Net, newOption)
-          "
-        />
-      </div>
-      <!-- <q-card-actions align="right">
-        <q-btn
-          unelevated
-          disable
-          color="blue-13"
-          :label="$t('account.儲存')"
-          padding="5px 20px"
-          type="submit"
-        />
-      </q-card-actions> -->
     </q-form>
 
     <!-- 帳號使用中，是否取代 -->
@@ -98,15 +49,17 @@ import ReplaceWarn from './ReplaceWarn.vue';
 import { reactive, watch } from 'vue';
 import { AccRes, AccountChannelNum } from '../api/useAccHistory';
 import { AccNum, useSetAcc } from '../api';
+import { useAccountStore } from 'src/stores';
 
 const props = defineProps<{
   accs: Array<AccRes> | undefined;
   showAccs: Array<AccRes> | undefined;
 }>();
 const emits = defineEmits(['refresh']);
+const accountStore = useAccountStore();
 // state
 const channels = reactive<{
-  [key in AccountChannelNum]: { value: number; label: string } | null;
+  [key in AccountChannelNum]: { acc_ID: number; label: string } | null;
 }>({
   // { [頻道]: { value: 帳戶ID, label: '' } }
   [AccountChannelNum.All]: null,
@@ -138,8 +91,9 @@ const { run: set, loading } = useSetAcc({
 });
 
 // handler
-const handleAccOption = (currentH_id: number | undefined | null) => {
-  // [{ value: 帳戶ID, label: '' }]
+const handleAccOption = (
+  currentH_id: number | undefined | null
+): Array<{ value: number; label: string }> | undefined => {
   const pureH_ids = props.showAccs
     ?.map((mapAcc) => mapAcc.H_id)
     .filter((filterID) => filterID !== currentH_id);
@@ -154,7 +108,7 @@ const handleAccOption = (currentH_id: number | undefined | null) => {
   return accountOptions;
 };
 
-const handleIsReplace = (
+const handleUpdateChannel = (
   currentChannel: AccountChannelNum,
   newOption: { value: number; label: string }
 ) => {
@@ -169,15 +123,6 @@ const handleIsReplace = (
     [AccNum.Branch]: setAcc[AccNum.Branch],
     [AccNum.Channel]: currentChannel,
   });
-  // const originChannel = Object.entries(channels)
-  //   .filter(([key]) => Number(key) !== currentChannel)
-  //   .find(([_, option]) => option?.value === newOption.value);
-  // if (!originChannel) return;
-  // const originKey = Number(originChannel[0]) as AccountChannelNum;
-  // if (!(originKey in channels)) return;
-  // replaceChannel.accountID = newOption.value;
-  // replaceChannel.newChannel = currentChannel;
-  // replaceChannel.originChannel = originKey;
 };
 
 const handleUpdateReplaceChannel = (newChannel: AccountChannelNum | null) => {
@@ -225,7 +170,7 @@ watch(
     newValue.forEach((forAcc) => {
       if (forAcc[AccNum.Channel] == null) return;
       channels[Number(forAcc[AccNum.Channel]) as AccountChannelNum] = {
-        value: forAcc.H_id,
+        acc_ID: forAcc.H_id,
         label: ` ${forAcc?.[AccNum.Name]} | ${forAcc?.[AccNum.Account]}
       | ${forAcc?.[AccNum.BankID]} | ${forAcc?.[AccNum.Branch]} `,
       };

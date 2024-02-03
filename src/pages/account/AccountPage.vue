@@ -146,8 +146,7 @@ const {
   },
 });
 // default Acc
-const { request } = useAcc();
-const { data: acc, refresh: reAcc } = request;
+const { data: acc, refresh: reAcc } = useAcc();
 const accsInfoJson = computed(() =>
   // [{value: string, id: id}]
   accs.value?.slice().map((accInfo) => ({

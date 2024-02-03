@@ -37,3 +37,4 @@ export { useOrderStore } from './order';
 export { useKeyStore } from './key';
 export { useStateStore } from './state';
 export { usePendingStore } from './pending';
+export { useAccountStore, channelOptions } from './account';

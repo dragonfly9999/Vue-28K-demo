@@ -105,20 +105,7 @@
                 v-model="formData.P5"
                 :label="$t('account.請設定通道')"
                 outlined
-                :options="[
-                  { label: 'B-All', value: -1 },
-                  // { label: 'BVAC', value: 0 },
-                  // { label: 'Demo K100U', value: 1 },
-                  // { label: '88U', value: 2 },
-                  // { label: 'U88', value: 3 },
-                  // { label: 'JP88', value: 4 },
-                  { label: 'K100U com', value: 5 },
-                  // { label: 'U28 Exchange', value: 6 },
-                  // { label: 'V100U com', value: 7 },
-                  // { label: 'Fxcoin', value: 9 },
-                  { label: 'K200U', value: 10 },
-                  { label: 'K100 net', value: 11 },
-                ]"
+                :options="accountStore.allowChannelsOption"
               >
               </q-select>
             </div>
@@ -166,23 +153,12 @@ import { useRouter } from 'vue-router';
 import { useSetAcc } from './api';
 import CancelVerification from 'src/components/CancelVerification.vue';
 import dayjs from 'dayjs';
+import { useAccountStore } from 'src/stores';
 const timeIntervale = ref<NodeJS.Timeout>();
 const { t } = useI18n();
 const router = useRouter();
-const { run: set } = useSetAcc({
-  onSuccess: () => {
-    timeIntervale.value = setInterval(
-      () => {
-        if (time.value > 0) {
-          time.value -= 1;
-        } else {
-          router.push({ name: 'account' });
-        }
-      },
-      import.meta.env.DEV ? 10 : 1000
-    );
-  },
-});
+const accountStore = useAccountStore();
+
 // DOM
 const time = ref(5);
 const formData = reactive<
@@ -199,6 +175,22 @@ const formData = reactive<
 const visible = reactive({
   warn: false,
   redirect: false,
+});
+
+// reuqest
+const { run: set } = useSetAcc({
+  onSuccess: () => {
+    timeIntervale.value = setInterval(
+      () => {
+        if (time.value > 0) {
+          time.value -= 1;
+        } else {
+          router.push({ name: 'account' });
+        }
+      },
+      import.meta.env.DEV ? 10 : 1000
+    );
+  },
 });
 
 // live cycle
