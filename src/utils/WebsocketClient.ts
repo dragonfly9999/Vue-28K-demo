@@ -1,3 +1,12 @@
+import { useStorage } from 'vue3-storage';
+
+export type WebsocketOptions = {
+  reconnectEnabled?: boolean;
+  reconnectInterval?: number;
+  order_token?: string;
+  isChat: boolean;
+};
+
 export default class WebSocketClient {
   instance?: WebSocket;
   url: string;
@@ -8,20 +17,17 @@ export default class WebSocketClient {
   onMessage: ((msg: MessageEvent) => void) | null = null;
   onClose: ((evt: CloseEvent) => void) | null = null;
   onError: ((evt: Event) => void) | null = null;
-  // constructor
+
   constructor(url: string, options: WebsocketOptions) {
+    const login_session = useStorage().getStorageSync('login_session');
     const OrderURL = import.meta.env.DEV
       ? 'wss://demo.k100u.com/j'
       : `wss://${window.location.hostname}/j`;
     const ChatURL = 'wss://chat.u28exchange.com';
     const baseURL = options.isChat ? ChatURL : OrderURL;
-    this.url =
-      baseURL +
-      url +
-      '?login_session=' +
-      options.login_session +
-      '&order_token=' +
-      options.order_token;
+    this.url = options.order_token
+      ? `${baseURL}${url}?login_session=${login_session}&order_token=${options.order_token}`
+      : `${baseURL}${url}?login_session=${login_session}`;
 
     this.options = options;
 

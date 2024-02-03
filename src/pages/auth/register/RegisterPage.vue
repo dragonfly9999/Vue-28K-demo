@@ -131,13 +131,11 @@ import { useI18n } from 'vue-i18n';
 import { AxiosError } from 'axios';
 import VerifyPhone from './VerifyPhone.vue';
 import useRegister from '../api/useRegister';
-import { useStorage } from 'vue3-storage';
 import hooks from 'src/hooks';
 import { useRouter } from 'vue-router';
 
 const { t } = useI18n();
 defineEmits(['toLogin']);
-const vueStorage = useStorage();
 const router = useRouter();
 // DOM
 const countryCode = ref<number>();
@@ -151,7 +149,6 @@ const isVerifyPhoneSuccess = ref(false);
 const { run: register, loading: underRegister } = useRegister({
   onSuccess: () => {
     hooks.useSuccessNotify(t('auth.註冊成功'));
-    vueStorage.clearStorageSync();
     router.push({ name: 'login' });
   },
   onError: (error) => {
@@ -159,7 +156,6 @@ const { run: register, loading: underRegister } = useRegister({
     hooks.useSuccessNotify(t(`error.${virgilError.response?.data.code}`));
 
     if (Number(virgilError.response?.data?.code) === 11) {
-      vueStorage.clearStorageSync();
       router.push({ name: 'login' });
     }
   },

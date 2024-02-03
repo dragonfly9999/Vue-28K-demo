@@ -2,11 +2,10 @@ import { Notify } from 'quasar';
 
 export default (message: string) => {
   Notify.create({
-    type: 'negative',
+    type: 'info',
     message,
     caption: 'K100u com',
-    color: 'red-6',
-    timeout: 2000,
-    position: 'top-right'
+    timeout: 6000,
+    position: 'right'
   });
 };

@@ -146,7 +146,6 @@ import { ref } from 'vue';
 import { useLogin } from './api';
 import { useRouter } from 'vue-router';
 import { useStorage } from 'vue3-storage';
-import { useLiveStore } from 'src/stores';
 
 const { t } = useI18n();
 const router = useRouter();
@@ -161,11 +160,7 @@ const isVisibleSetting = ref(false);
 
 // mutation
 const { run: login, loading } = useLogin({
-  onSuccess: (res) => {
-    const { login_session } = res?.data || {};
-    if (login_session) {
-      useLiveStore().setOrders(login_session);
-    }
+  onSuccess: () => {
     storage.setStorageSync('phone', phone_number.value);
     storage.setStorageSync('password', password.value);
     router.push({ name: 'dashboard' });

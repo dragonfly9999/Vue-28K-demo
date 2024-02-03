@@ -124,13 +124,6 @@ interface VirgilRes<DATA> {
   data: DATA;
 }
 
-type WebsocketOptions = {
-  reconnectEnabled: boolean;
-  reconnectInterval: number;
-  isChat: boolean;
-  order_token?: string;
-  login_session: string;
-};
 
 type UseProps<DATA = unknown, Params = unknown, Error = unknown> = {
   onSuccess?: (res?: VirgilRes<DATA>) => void;

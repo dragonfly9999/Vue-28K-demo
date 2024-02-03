@@ -1,31 +1,29 @@
 import { defineStore } from 'pinia';
+import hooks from 'src/hooks';
 import WebSocketClient from 'src/utils/WebsocketClient';
 import { ref } from 'vue';
 import { OrderStatusNum } from './live';
-import { useStorage } from 'vue3-storage';
 
 export const useOrderStore = defineStore('order', () => {
-  const login_session = useStorage().getStorageSync('login_session');
-  //
   const orderStatusObj = ref<{ [key: string]: OrderStatus | undefined }>({});
   const webSockets = ref<{ [key: string]: WebSocketClient }>({});
   const onMessages = ref<{ [key: string]: () => void }>({});
+  // 
   const setOnMessage = (token: string, fn: () => void) => {
     onMessages.value[token] = fn;
   };
   const setOrderWs = (token: string, onOpen?: () => void) => {
-    const isAlreadyConnected =
-      Object.keys(webSockets?.value).findIndex(
-        (socketKey) => socketKey === token
-      ) !== -1;
-    if (isAlreadyConnected) return;
+    if (
+      token in webSockets.value &&
+      [0, 1].includes(webSockets.value[token].instance?.readyState ?? -1)
+    )
+      return;
     const orderStatusUrl = '/ws_orderstatus.ashx';
     const orderWs = new WebSocketClient(orderStatusUrl, {
       reconnectEnabled: true,
       reconnectInterval: 2000,
       isChat: false,
-      order_token: token,
-      login_session
+      order_token: token
     });
     orderWs.connect();
     orderWs.onMessage = (msg) => {
@@ -36,7 +34,8 @@ export const useOrderStore = defineStore('order', () => {
       if (onMessages?.value?.[token]) onMessages?.value?.[token]();
     };
     orderWs.onOpen = () => {
-      console.info('OrderStatus WS open !, token:', token);
+      if (import.meta.env.DEV)
+        console.info('OrderStatus WS open !, token:', token);
       if (onOpen) onOpen();
     };
     webSockets.value[token] = orderWs;
@@ -56,9 +55,14 @@ export const useOrderStore = defineStore('order', () => {
       })
       .map(([token]) => token);
     tokens.forEach((token) => {
-      delete orderStatusObj.value[token];
-      delete webSockets.value[token];
-      delete onMessages.value[token];
+      try {
+        webSockets.value[token].instance?.close();
+        delete orderStatusObj.value[token];
+        delete webSockets.value[token];
+        delete onMessages.value[token];
+      } catch (error) {
+        hooks.useInfoNotify('Close order status error, error:' + error);
+      }
     });
     return tokens;
   };
@@ -70,11 +74,25 @@ export const useOrderStore = defineStore('order', () => {
     return orderStatusObj?.value[token];
   };
 
+  const resetOrderStore = () => {
+    orderStatusObj.value = {};
+    Object.values(webSockets.value).forEach((webSocket) => {
+      try {
+        webSocket.instance?.close();
+      } catch (error) {
+        hooks.useInfoNotify('Reset Order store error:' + error);
+      }
+    });
+    webSockets.value = {};
+    onMessages.value = {};
+  };
+
   return {
     setOrderWs,
     gerOrderWs,
     getStatus,
     setOnMessage,
-    removeOrder
+    removeOrder,
+    resetOrderStore
   };
 });

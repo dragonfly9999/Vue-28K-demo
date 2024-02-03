@@ -242,7 +242,7 @@
 <script setup lang="ts">
 import langs from 'src/i18n';
 import I18nBtn from 'src/components/I18nBtn.vue';
-import { useLiveStore, useStateStore } from 'src/stores';
+import { useStateStore } from 'src/stores';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
@@ -256,7 +256,6 @@ const router = useRouter();
 const { t } = useI18n();
 const storage = useStorage();
 const i18n = useI18n();
-const { cleanLive } = useLiveStore();
 // DOM
 const drawerRight = ref(false);
 const isAgent = computed(() => storage.getStorageSync('isAgent'));
@@ -266,8 +265,6 @@ const logout = () => {
     updateAuto(0);
   }
   setTimeout(() => {
-    cleanLive();
-    storage.clearStorageSync();
     router.push({ name: 'login' });
   }, 100);
 };

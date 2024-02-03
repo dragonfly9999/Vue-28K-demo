@@ -169,7 +169,6 @@ const drawerRight = ref(true);
             <q-btn
               @click="
                 () => {
-                  storage.clearStorageSync();
                   router.push({ name: 'login' });
                 }
               "

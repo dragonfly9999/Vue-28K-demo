@@ -83,13 +83,13 @@ import appealSound from 'src/assets/sound/owl.mp3';
 import { MtTypeNum, OrderStatusNum } from 'src/stores/live';
 import { useStorage } from 'vue3-storage';
 import { useKeyStore } from 'src/stores/key';
-import { Notify } from 'quasar';
+import hooks from 'src/hooks';
 
 //
 const { getBalance, getBalanceLoad, refreshBalance } = useStateStore();
 const { handleRemove, handelSet } = useKeyStore();
 const { hint } = toRefs(useThirdStore());
-const { setOnMessage, setOrders } = useLiveStore();
+const { setOnMessage, setLiveOrderWs, setPendingOrderWs } = useLiveStore();
 const router = useRouter();
 const vueStorage = useStorage();
 // DOM
@@ -119,8 +119,8 @@ const handleResetSound = () => {
 
 //
 onMounted(() => {
-  const login_session = useStorage().getStorageSync('login_session');
-  setOrders(login_session);
+  setLiveOrderWs();
+  setPendingOrderWs();
   refreshBalance();
 
   // hint
@@ -132,6 +132,7 @@ onMounted(() => {
   // sound
   setOnMessage({
     type: 'instant',
+    messageName: 'Hint sound',
     fn: (OrderFromServer) => {
       handleResetSound();
       setTimeout(() => {
@@ -148,6 +149,7 @@ onMounted(() => {
   });
   setOnMessage({
     type: 'progress',
+    messageName: 'Hint sound',
     fn: (OrderFromServer) => {
       handleResetSound();
       setTimeout(() => {
@@ -194,12 +196,7 @@ onBeforeUnmount(() => {
 });
 
 onErrorCaptured((error) => {
-  Notify.create({
-    type: 'info',
-    message: 'An Error occurred: ' + error.message,
-    position: 'bottom-left',
-    timeout: 2000,
-  });
+  hooks.useInfoNotify(error.message);
 });
 watch(hint, (newValue) => {
   if (!newValue) handleResetSound();

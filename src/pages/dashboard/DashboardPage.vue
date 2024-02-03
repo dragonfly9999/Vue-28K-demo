@@ -78,19 +78,25 @@
         <q-tab name="instant" :label="$t('dashboard.即時訂單')">
           <q-badge
             color="red"
-            :label="getOrders('instant')?.length"
-            v-if="getOrders('instant')?.length > 0"
+            :label="instantOrders?.length"
+            v-if="instantOrders?.length > 0"
             floating
           />
+          <q-inner-loading :showing="liveStore.liveWsConnecting.instant">
+            <q-spinner-ball />
+          </q-inner-loading>
         </q-tab>
         <!-- 進行中 -->
         <q-tab name="progress" :label="$t('label.inProgress')">
           <q-badge
             color="red"
-            :label="getOrders('progress')?.length"
-            v-if="getOrders('progress')?.length > 0"
+            :label="progressOrders?.length"
+            v-if="progressOrders?.length > 0"
             floating
           />
+          <q-inner-loading :showing="liveStore.liveWsConnecting.progress">
+            <q-spinner-ball />
+          </q-inner-loading>
         </q-tab>
       </q-tabs>
 
@@ -127,12 +133,14 @@ import PendingOrders from './components/PendingOrders.vue';
 
 const { hint } = toRefs(useThirdStore());
 const { refreshBalance } = useStateStore();
-const { getOrders } = useLiveStore();
+const liveStore = useLiveStore();
 const { getAuto, getAutoLoad, updateAuto } = useStateStore();
-const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
 // DOM
 const tab = ref('instant');
-//
+const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
+const instantOrders = computed(() => liveStore.getOrders('instant'));
+const progressOrders = computed(() => liveStore.getOrders('progress'));
+// Life cycle
 onMounted(() => {
   refreshBalance();
   if (!isAgent.value) {

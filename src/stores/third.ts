@@ -3,6 +3,8 @@ import WebSocketClient from 'src/utils/WebsocketClient';
 import { ref } from 'vue';
 import messageSound from 'src/assets/sound/message2.mp3';
 import { useStorage } from 'vue3-storage';
+import { useOrderStore } from './order';
+import hooks from 'src/hooks';
 
 export const useThirdStore = defineStore('third', () => {
   const hint = ref(false);
@@ -10,13 +12,13 @@ export const useThirdStore = defineStore('third', () => {
   const chatListObj = ref<{ [key: string]: Array<ChatRes> }>({});
   const webSockets = ref<{ [key: string]: WebSocketClient }>({});
   const onMessages = ref<{ [key: string]: (args: ChatRes) => void }>({});
-  const login_session = useStorage().getStorageSync('login_session');
-  const isAgent = useStorage().getStorageSync('isAgent');
 
   const setOnMessage = (token: string, fn: (args?: ChatRes) => void) => {
     onMessages.value[token] = fn;
   };
   const resetOnMessage = (token: string) => {
+    const isAgent = useStorage().getStorageSync('isAgent');
+
     setOnMessage(token, (msg?: ChatRes) => {
       if (hint.value) {
         if (
@@ -30,6 +32,8 @@ export const useThirdStore = defineStore('third', () => {
     });
   };
   const setWebSockets = (token: string, onOpen?: () => void) => {
+    const isAgent = useStorage().getStorageSync('isAgent');
+
     const isAlreadyConnected =
       Object.keys(webSockets?.value).findIndex(
         (socketKey) => socketKey === token
@@ -46,8 +50,7 @@ export const useThirdStore = defineStore('third', () => {
       reconnectEnabled: true,
       reconnectInterval: 2000,
       isChat: true,
-      order_token: token,
-      login_session
+      order_token: token
     });
     chatWS.connect();
     chatWS.onMessage = (msg) => {
@@ -69,10 +72,9 @@ export const useThirdStore = defineStore('third', () => {
       }
     };
     chatWS.onOpen = () => {
-      console.info('ChatWs open !, token:', token);
-      setTimeout(() => {
-        if (onOpen) onOpen();
-      }, 600);
+      if (import.meta.env.DEV) console.info('ChatWs open !, token:', token);
+      useOrderStore().setOrderWs(token);
+      if (onOpen) onOpen();
     };
     webSockets.value[token] = chatWS;
   };
@@ -93,6 +95,21 @@ export const useThirdStore = defineStore('third', () => {
     return chatListObj?.value[token] ?? [];
   };
 
+  const resetThirdStore = () => {
+    hint.value = false;
+    unReadCount.value = {};
+    chatListObj.value = {};
+    Object.values(webSockets.value).forEach((webSocket) => {
+      try {
+        webSocket.instance?.close();
+      } catch (error) {
+        hooks.useInfoNotify('Reset third error:' + error);
+      }
+    });
+    webSockets.value = {};
+    onMessages.value = {};
+  };
+
   return {
     hint,
     resetOnMessage,
@@ -102,6 +119,7 @@ export const useThirdStore = defineStore('third', () => {
     setOnMessage,
     removeChat,
     handleResetCount,
-    getCount
+    getCount,
+    resetThirdStore
   };
 });
