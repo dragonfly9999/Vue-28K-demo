@@ -38,7 +38,7 @@ const processImage = async (file: File) => {
     ctx.drawImage(img, 0, 0, width, height);
 
     // 浮水印
-    const text = '實名驗證';
+    const text = 'K100U com';
     ctx.font = '20px Arial';
     ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
     ctx.textBaseline = 'middle';
