@@ -28,7 +28,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import { FormatKycOptions } from '../api/useKycHistory';
+import { type FormatKycOptions } from '../api/useKycHistory';
 import BankCard from './BankCard.vue';
 
 const props = defineProps<{ tempKycs: Array<FormatKycOptions> }>();

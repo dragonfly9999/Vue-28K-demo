@@ -1,7 +1,3 @@
-<script setup lang="ts">
-defineProps<{ loading: boolean }>();
-const emits = defineEmits(['confirm']);
-</script>
 <template>
   <q-card class="q-pa-md q-gutter-y-sm" style="width: 360px">
     <!-- title-請注意 -->
@@ -28,5 +24,10 @@ const emits = defineEmits(['confirm']);
     </q-card-actions>
   </q-card>
 </template>
+
+<script setup lang="ts">
+defineProps<{ loading: boolean }>();
+const emits = defineEmits(['confirm']);
+</script>
 
 <style scoped></style>

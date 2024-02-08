@@ -1,16 +1,3 @@
-<script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import { onMounted, toRefs } from 'vue';
-import { usePendingStore } from 'src/stores/pending';
-import PendingItem from 'src/components/PendingItem.vue';
-
-const { t } = useI18n();
-const { pendingInstant } = toRefs(usePendingStore());
-
-onMounted(() => {
-  pendingInstant.value.refresh();
-});
-</script>
 <template>
   <q-list>
     <pending-item
@@ -29,4 +16,16 @@ onMounted(() => {
   </q-list>
 </template>
 
-<style scoped></style>
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+import { onMounted, toRefs } from 'vue';
+import { usePendingStore } from 'src/stores/pending';
+import PendingItem from 'src/components/PendingItem.vue';
+
+const { t } = useI18n();
+const { pendingInstant } = toRefs(usePendingStore());
+
+onMounted(() => {
+  if (pendingInstant.value.data) pendingInstant.value.refresh();
+});
+</script>

@@ -1,29 +1,3 @@
-<script lang="ts" setup>
-import { ref } from 'vue';
-import QrScanner from 'qr-scanner';
-import 'qr-scanner/qr-scanner-worker.min.js';
-defineProps<{ modelValue: boolean }>();
-const emit = defineEmits(['onScan', 'update:modelValue']);
-
-const video = ref();
-const scanner = ref<QrScanner>();
-
-const handleShow = () => {
-  console.log('handle show');
-  QrScanner.WORKER_PATH = 'path-to-worker/qr-scanner-worker.min.js';
-  scanner.value = new QrScanner(video.value, (result: string) => {
-    if (result) {
-      emit('onScan', result);
-      scanner.value?.stop();
-    }
-  });
-
-  scanner.value?.start().catch((error: Error) => {
-    console.error('QR code scanner initialization failed:', error);
-  });
-};
-</script>
-
 <template>
   <q-dialog
     :model-value="modelValue"
@@ -43,6 +17,32 @@ const handleShow = () => {
     </q-card>
   </q-dialog>
 </template>
+
+<script lang="ts" setup>
+import { ref } from 'vue';
+import QrScanner from 'qr-scanner';
+import 'qr-scanner/qr-scanner-worker.min.js';
+defineProps<{ modelValue: boolean }>();
+const emit = defineEmits(['onScan', 'update:modelValue']);
+
+const video = ref();
+const scanner = ref<QrScanner>();
+
+const handleShow = () => {
+  QrScanner.WORKER_PATH = 'path-to-worker/qr-scanner-worker.min.js';
+  scanner.value = new QrScanner(video.value, (result: string) => {
+    if (result) {
+      emit('onScan', result);
+      scanner.value?.stop();
+    }
+  });
+
+  scanner.value?.start().catch((error: Error) => {
+    console.error('QR code scanner initialization failed:', error);
+  });
+};
+</script>
+
 <style scoped>
 .qr-reader {
   position: relative;

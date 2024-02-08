@@ -13,19 +13,21 @@ export const useBuy1 = ({
   isTest,
   ...useProps
 }: UseProps<BuyRes> & { isTest: boolean }) => {
-  const vueRequest = requestProvider<BuyRes, BuyProps>({
-    reqFn: (props: BuyProps) => {
-      const UsdtAmt = import.meta.env.DEV && isTest ? 30 : props.UsdtAmt;
-      const request = axiosProvider
-        .post('/Req_Buy1.aspx', {
-          ...props,
-          UsdtAmt
-        })
-        .then(({ data }) => data);
-      return request;
-    },
-    isManual: true,
-    ...useProps
+
+  const vueRequest = requestProvider<BuyRes, BuyProps>((props: BuyProps) => {
+    const UsdtAmt = import.meta.env.DEV && isTest ? 30 : props.UsdtAmt;
+    const request = axiosProvider
+      .post('/Req_Buy1.aspx', {
+        ...props,
+        UsdtAmt
+      })
+      .then(({ data }) => data);
+
+    return request;
+  },{
+    ...useProps,
+    manual: true,
   });
+
   return vueRequest;
 };

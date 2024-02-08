@@ -36,25 +36,14 @@
 <script setup lang="ts">
 import logo from 'src/assets/logo_easy.png';
 import I18nBtn from 'src/components/I18nBtn.vue';
-import { useLiveStore, useOrderStore, useThirdStore } from 'src/stores';
+import hooks from 'src/hooks';
 import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { useStorage } from 'vue3-storage';
 
 const router = useRouter();
 
 onMounted(() => {
-  useLiveStore().cleanLiveOrders();
-  useThirdStore().resetThirdStore();
-  useOrderStore().resetOrderStore();
-  // 再登入介面重整時清除 cookie
-  const cookies = document.cookie.split('; ');
-
-  for (const cookie of cookies) {
-    const [name, _] = cookie.split('=');
-    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;`;
-  }
-  useStorage().clearStorageSync();
+  hooks.useKickOut.clean(); // 重複清理確保狀態乾淨
 });
 </script>
 

@@ -34,11 +34,7 @@ export const useThirdStore = defineStore('third', () => {
   const setWebSockets = (token: string, onOpen?: () => void) => {
     const isAgent = useStorage().getStorageSync('isAgent');
 
-    const isAlreadyConnected =
-      Object.keys(webSockets?.value).findIndex(
-        (socketKey) => socketKey === token
-      ) !== -1;
-    if (isAlreadyConnected) return;
+    if (token in webSockets.value && [0,1].includes(webSockets.value[token].instance?.readyState ?? -1)) return;
     // set on message
     const tokens = Object.entries(chatListObj?.value).map(([key]) => key);
     if (!tokens.includes(token)) {

@@ -6,8 +6,7 @@ type DetailProps = {
 };
 
 export const useDetail = (props: DetailProps) =>
-  requestProvider<RecordDetail>({
-    reqFn: () =>
-      axiosProvider.post('/GetTxDetail.aspx', props).then(({ data }) => data),
-    isManual: false
+  requestProvider<RecordDetail>(() =>
+    axiosProvider.post('/GetTxDetail.aspx', props).then(({ data }) => data),{
+    manual: false
   });

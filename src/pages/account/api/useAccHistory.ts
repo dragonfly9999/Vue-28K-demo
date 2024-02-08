@@ -26,13 +26,13 @@ export enum AccountChannelNum {
 export type AccRes = Record<AccNum, string | number | null> & { H_id: number };
 
 export const useAccHistory = ({ ...useProps }: UseProps<Array<AccRes>>) =>
-  requestProvider<Array<AccRes>>({
-    reqFn: () => {
-      const request = axiosProvider
-        .get('/GetAgentAccHistory.aspx')
-        .then(({ data }) => data);
-      return request;
-    },
-    isManual: false,
-    ...useProps
+  requestProvider<Array<AccRes>>(() => {
+    const request = axiosProvider
+      .get('/GetAgentAccHistory.aspx')
+      .then(({ data }) => data);
+    
+    return request;
+  },{
+    ...useProps,
+    manual: false,
   });

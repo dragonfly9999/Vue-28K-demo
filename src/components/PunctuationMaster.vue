@@ -1,12 +1,3 @@
-<script setup lang="ts">
-const porps = defineProps<{
-  label: string | undefined;
-  type?: string;
-  color?: string;
-  text_align?: string;
-  justify?: string;
-}>();
-</script>
 <template>
   <div
     :class="` text-${porps.type ?? 'caption'} text-${
@@ -27,5 +18,15 @@ const porps = defineProps<{
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+const porps = defineProps<{
+  label: string | undefined;
+  type?: string;
+  color?: string;
+  text_align?: string;
+  justify?: string;
+}>();
+</script>
 
 <style scoped></style>

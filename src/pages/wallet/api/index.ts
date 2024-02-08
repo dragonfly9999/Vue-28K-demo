@@ -1,1 +1,5 @@
-export { useWallet } from './useWallet';
+import useWallet from './useWallet';
+
+export default {
+  useWallet,
+}

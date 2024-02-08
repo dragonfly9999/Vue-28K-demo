@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia';
-import { usePending } from './api/usePending';
+import  usePending  from './api/usePending';
 
 export const usePendingStore = defineStore('pending', () => {
-  const pendingInstant = usePending();
+  const pendingInstant = usePending({});
   return {
     pendingInstant,
   };

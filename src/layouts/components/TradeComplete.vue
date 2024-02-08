@@ -58,10 +58,9 @@ const { pendingInstant } = usePendingStore();
 // DOM
 const isVisibleDetail = ref(false);
 
-
 // Live cycle
 onMounted(() => {
-  pendingInstant.refresh();
+  setTimeout(() => pendingInstant.refresh(), 1000);
 
   // scroll
   setTimeout(() => {

@@ -47,7 +47,7 @@
 <script setup lang="ts">
 import ReplaceWarn from './ReplaceWarn.vue';
 import { reactive, watch } from 'vue';
-import { AccRes, AccountChannelNum } from '../api/useAccHistory';
+import { type AccRes, AccountChannelNum } from '../api/useAccHistory';
 import { AccNum, useSetAcc } from '../api';
 import { useAccountStore } from 'src/stores';
 

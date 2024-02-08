@@ -47,7 +47,11 @@
             />
             <!-- 進行中tab -->
             <q-tab
-              @click="() => reProgress()"
+              @click="
+                () => {
+                  if (!isAgent) reProgress();
+                }
+              "
               name="someProgress"
               :label="t('transaction_history.label.inProgress')"
               :disable="loadingProgress"
@@ -95,13 +99,23 @@
             :key="index"
             class="q-pa-xs"
           >
-            <HistoryList
-              @update:type="() => (current = 1)"
-              v-model:type="type"
-              :orders="useOrders"
-              :loading="loadingHistory || loadingProgress || loadingExpired"
-              :is-expired="status === 'fail'"
-            />
+            <div v-if="status === 'someProgress' && isAgent">
+              <order-item
+                v-for="(order, index) in agentOrders"
+                :key="index"
+                :order="order"
+                :is-instant="false"
+              />
+            </div>
+            <div v-else>
+              <HistoryList
+                @update:type="() => (current = 1)"
+                v-model:type="type"
+                :orders="useOrders"
+                :loading="loadingHistory || loadingProgress || loadingExpired"
+                :is-expired="status === 'fail'"
+              />
+            </div>
           </q-tab-panel>
         </q-tab-panels>
 
@@ -127,9 +141,39 @@ import dayjs from 'dayjs';
 import HistoryList from './components/HistoryList.vue';
 import { MasterTypeNum } from 'src/utils/NumberTool';
 import { useStorage } from 'vue3-storage';
+import { useLiveStore } from 'src/stores/live';
+import OrderItem from 'src/components/OrderItem.vue';
 
 const { t } = useI18n();
 const router = useRouter();
+
+// DOM
+const dateRange = reactive({
+  from: dayjs().startOf('week'),
+  to: dayjs().startOf('week').add(1, 'week'),
+});
+const current = ref(1);
+const type = ref(5);
+const tab = ref('finish');
+const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
+const agentOrders = computed(() => {
+  const pureOrders = useLiveStore().getOrders('progress').slice();
+  const makeupOrders = pureOrders
+    .filter((filterOrder) => {
+      return (
+        dayjs(filterOrder.CreateDate).isSame(dateRange.from) ||
+        dayjs(filterOrder.CreateDate).isSame(dateRange.to) ||
+        (dayjs(filterOrder.CreateDate).isAfter(dateRange.from) &&
+          dayjs(filterOrder.CreateDate).isBefore(dateRange.to))
+      );
+    })
+    .sort((a, b) =>
+      dayjs(b.CreateDate).isAfter(dayjs(a.CreateDate)) ? 1 : -1
+    );
+  return makeupOrders;
+});
+
+// request
 const {
   data: history,
   loading: loadingHistory,
@@ -145,13 +189,7 @@ const {
   loading: loadingExpired,
   refresh: reExpired,
 } = useExpired();
-// DOM
-const dateRange = reactive({
-  from: dayjs().startOf('week'),
-  to: dayjs().startOf('week').add(1, 'week'),
-});
-const current = ref(1);
-const type = ref(5);
+
 const filterOrders = computed(() => {
   const useOrders = () => {
     switch (tab.value) {
@@ -209,7 +247,6 @@ const useOrders = computed(
 const maxPaination = computed(() =>
   Math.floor((filterOrders.value.length + 4) / 5)
 );
-const tab = ref('finish');
 
 onMounted(() => {
   if (tab.value === 'finish') reStory();

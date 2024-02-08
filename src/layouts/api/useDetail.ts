@@ -5,9 +5,15 @@ type DetailProps = {
   Token: string;
 };
 
-export const useDetail = (props: DetailProps) =>
-  requestProvider<RecordDetail>({
-    reqFn: () =>
-      axiosProvider.post('/GetTxDetail.aspx', props).then(({ data }) => data),
-    isManual: false
+export default (props: DetailProps) =>{
+  const vueRequest = requestProvider<RecordDetail>(() => {
+    const request  =    axiosProvider.post('/GetTxDetail.aspx', props).then(({ data }) => data)
+    return request;
+  },{
+    manual: false
+  }, {
+    noTempData: true,
   });
+
+  return vueRequest
+}

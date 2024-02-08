@@ -57,11 +57,13 @@ import { computed } from 'vue';
 import TimeOut from './components/TimeOut.vue';
 import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
-const { t } = useI18n();
+
 const q = useQuasar();
+const { t } = useI18n();
 const route = useRoute();
 const { setWebSockets, removeChat, getWebSocket } = useThirdStore();
 const { setOrderWs, getStatus, removeOrder } = useOrderStore();
+// DOM
 const token = computed(() => route.query?.token as string);
 const orderStatus = computed(() => getStatus(token.value));
 const chatWS = computed(() => getWebSocket(token.value));

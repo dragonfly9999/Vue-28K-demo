@@ -48,14 +48,14 @@
           color="blue-13"
           left-label
           icon="hdr_auto"
-          :model-value="getAuto()?.AutoMode === 1"
+          :model-value="autoModeRequest.data?.AutoMode === 1"
           @click="
             () => {
-              if (getAuto()?.AutoMode === 0) updateAuto(1);
-              else updateAuto(0);
+              if (autoModeRequest.data?.AutoMode === 0) autoModeRequest.run(1);
+              else autoModeRequest.run(0);
             }
           "
-          v-if="!getAutoLoad()"
+          v-if="!autoModeRequest.loading"
         >
           <!-- hint -->
           <q-tooltip>
@@ -132,9 +132,8 @@ import { useStorage } from 'vue3-storage';
 import PendingOrders from './components/PendingOrders.vue';
 
 const { hint } = toRefs(useThirdStore());
-const { refreshBalance } = useStateStore();
+const { balanceRequest, autoModeRequest } = useStateStore();
 const liveStore = useLiveStore();
-const { getAuto, getAutoLoad, updateAuto } = useStateStore();
 // DOM
 const tab = ref('instant');
 const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
@@ -142,7 +141,7 @@ const instantOrders = computed(() => liveStore.getOrders('instant'));
 const progressOrders = computed(() => liveStore.getOrders('progress'));
 // Life cycle
 onMounted(() => {
-  refreshBalance();
+  if (balanceRequest.data) balanceRequest.refresh();
   if (!isAgent.value) {
     hint.value = false;
     tab.value = 'memberProgress';

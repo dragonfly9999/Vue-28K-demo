@@ -10,16 +10,16 @@ type VerifyProps = {
 };
 
 export default ({ ...useProps }: UseProps) => {
-  const vueRequest = requestProvider<VerifyRes, VerifyProps>({
-    reqFn: (props) => {
-      const request = axiosProvider
-        .post('ChkoneTimePwd.aspx', props)
-        .then(({ data }) => data);
-      return request;
-    },
-    isManual: true,
-    noFeedback: true,
+  const vueRequest = requestProvider<VerifyRes, VerifyProps>((props) => {
+    const request = axiosProvider
+      .post('ChkoneTimePwd.aspx', props)
+      .then(({ data }) => data);
+    return request;
+  },{
+    manual: true,
     ...useProps
+  }, {
+    noFeedback: true,
   });
 
   return vueRequest;

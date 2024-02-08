@@ -192,7 +192,6 @@ import { useStorage } from 'vue3-storage';
 import CopyButton from 'src/components/CopyButton.vue';
 
 defineProps<{ order?: OrderStatus }>();
-//
 const route = useRoute();
 const { t } = useI18n();
 const { run: pay } = usePay();

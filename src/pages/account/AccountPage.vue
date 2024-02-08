@@ -6,7 +6,7 @@
         <q-btn
           flat
           color="blue-13"
-          :label="t('label.back')"
+          :label="$t('label.back')"
           @click="() => router.back()"
         />
       </div>
@@ -98,7 +98,7 @@
       @confirm="handleMutiDel"
       @close="() => (delID = undefined)"
       :visible="delID !== undefined"
-      :message="t('label.del_hint')"
+      :message="$t('label.del_hint')"
     />
     <!-- 沒有預設帳號 -->
     <components.NoDefaultWarn v-model:visible="isNoDefaultWarn" />
@@ -107,7 +107,6 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { AccNum, useAccHistory, useDelAcc, useSetAcc } from './api';
 import { useAcc } from './api';
@@ -115,9 +114,8 @@ import { thousandInput } from 'src/utils/NumberTool';
 import CheckCard from 'src/components/CheckCard.vue';
 import Flag from 'src/assets/CNY.png';
 import components from './components';
-import { AccRes } from './api/useAccHistory';
+import type { AccRes } from './api/useAccHistory';
 
-const { t } = useI18n();
 const router = useRouter();
 // DOM
 const isAlreadyWarn = ref(false);
@@ -125,7 +123,6 @@ const isNoDefaultWarn = ref(false);
 const delID = ref<number>();
 
 // ##### query
-// history
 const {
   data: accs,
   loading,
@@ -145,14 +142,23 @@ const {
     }
   },
 });
-// default Acc
-const { data: acc, refresh: reAcc } = useAcc();
+const { data: acc, refresh: reAcc } = useAcc(); // default Acc
 const accsInfoJson = computed(() =>
   // [{value: string, id: id}]
-  accs.value?.slice().map((accInfo) => ({
-    value: JSON.stringify({ ...accInfo, H_id: -2, [AccNum.Channel]: null }),
-    id: accInfo.H_id,
-  }))
+  accs.value
+    ?.filter(
+      (accFilter) =>
+        !(
+          accFilter.P1 === null &&
+          accFilter.P2 === null &&
+          accFilter.P3 === null &&
+          accFilter.P4 === null
+        )
+    )
+    .map((accInfo) => ({
+      value: JSON.stringify({ ...accInfo, H_id: -2, [AccNum.Channel]: null }),
+      id: accInfo.H_id,
+    }))
 );
 const showAccs = computed<Array<AccRes>>(() => {
   const setAccValue = // Set([{value: string, id: id}])

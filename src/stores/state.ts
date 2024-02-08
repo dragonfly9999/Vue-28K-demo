@@ -1,60 +1,55 @@
 import { defineStore } from 'pinia';
-import { computed } from 'vue';
-import { useStorage } from 'vue3-storage';
+import { thousandTool } from 'src/utils/NumberTool';
+import { reactive } from 'vue';
 import { useAuto, useBalance, useRates } from './api';
+import { RateRes } from './api/useRates';
 
 export const useStateStore = defineStore('state', () => {
   //
   const currency = 'CNY';
-  const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
+  const formatRates = reactive({
+    buy: '',
+    sell: '',
+  });
+  const formatBalances = reactive({
+    available: '',
+    actual: '',
+    maximum: ''
+  });
   // ##### request
-  // auto
-  const { data: auto, run: updateAuto, loading: loadMode } = useAuto(isAgent);
-
+  const autoModeRequest = useAuto({});
   // rates
   const onRatesSuccess: {
     [key: string]: (rates: RateRes | undefined) => void;
   } = {};
-  const {
-    data: balance,
-    run: updateBalance,
-    loading: balanceLoading,
-    refresh: refreshBalance
-  } = useBalance();
-  const {
-    data: rates,
-    run: updateRates,
-    loading: loadRates
-  } = useRates({
+  const ratesRequest = useRates({
     onSuccess: (res) => {
+      const rateInfo = res?.data;
       Object.values(onRatesSuccess).forEach((onSuccess) => {
-        onSuccess(res?.data);
+        onSuccess(rateInfo);
       });
+
+      formatRates.buy = thousandTool(rateInfo?.RMB_BUY, currency)
+      formatRates.sell = thousandTool(rateInfo?.RMB_SELL, currency)
     }
   });
 
-  // handler
-  const updateState = () => {
-    updateBalance({});
-    updateRates({});
-  };
-  const getAuto = () => auto.value;
-  const getBalance = () => balance.value;
-  const getRates = () => rates.value;
-  const getAutoLoad = () => loadMode.value;
-  const getBalanceLoad = () => balanceLoading.value;
-  const getRatesLoad = () => loadRates.value;
+  //
+  const balanceRequest = useBalance({
+    onSuccess: (res) => {
+      const balanceInfo = res?.data;
+      formatBalances.available = thousandTool( balanceInfo?.Avb_Balance, 'USDT')
+      formatBalances.actual = thousandTool( balanceInfo?.Real_Balance, 'USDT')
+      formatBalances.maximum = thousandTool( balanceInfo?.AgtBalance, 'USDT')
+  }});
+
   return {
-    updateAuto,
-    updateState,
-    getAuto,
-    getBalance,
-    getRates,
-    getAutoLoad,
-    getBalanceLoad,
-    getRatesLoad,
-    refreshBalance,
+    autoModeRequest,
+    ratesRequest,
+    balanceRequest,
     currency,
-    onRatesSuccess
+    onRatesSuccess,
+    formatBalances,
+    formatRates,
   };
 });

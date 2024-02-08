@@ -1,35 +1,3 @@
-<script setup lang="ts">
-import { OrderStatusNum } from 'src/stores/live';
-import { MasterTypeNum } from 'src/utils/NumberTool';
-import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useStorage } from 'vue3-storage';
-const props = defineProps<{ order?: OrderStatus }>();
-const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
-
-const { t } = useI18n();
-const stepFormat = computed(() => {
-  switch (props.order?.Order_StatusID) {
-    case undefined:
-      return 1;
-    case OrderStatusNum.Assigned:
-      return 2;
-    case OrderStatusNum.Committed:
-      return 3;
-    case OrderStatusNum.Complete:
-      return 4;
-    case OrderStatusNum.Appeal: {
-      if (isAgent.value) {
-        return props.order.MasterType === MasterTypeNum.Buy ? 3 : 2;
-      } else {
-        return props.order.MasterType === MasterTypeNum.Buy ? 2 : 3;
-      }
-    }
-    default:
-      return 0;
-  }
-});
-</script>
 <template>
   <q-stepper
     v-if="
@@ -95,41 +63,70 @@ const stepFormat = computed(() => {
     <q-step :name="1" prefix="1" title="步驟一" :done="stepFormat > 1">
       <!-- 步驟title 提交訂單 -->
       <div class="text-h6 text-weight-bold">
-        {{ t('buy.step_hint_buy_title_1') }}
+        {{ $t('buy.step_hint_buy_title_1') }}
       </div>
       <!-- 請填寫訂單資料 -->
       <div class="text-grey-6">
-        {{ t('buy.step_hint_buy_text_1') }}
+        {{ $t('buy.step_hint_buy_text_1') }}
       </div>
     </q-step>
 
     <q-step :name="2" prefix="2" title="步驟二" :done="stepFormat > 2">
       <div class="text-h6 text-weight-bold">
-        {{ t('buy.step_hint_buy_title_2') }}
+        {{ $t('buy.step_hint_buy_title_2') }}
       </div>
       <div class="text-grey-6">
-        {{ t('buy.step_hint_buy_text_2') }}
+        {{ $t('buy.step_hint_buy_text_2') }}
       </div>
     </q-step>
 
     <q-step :name="3" prefix="3" title="步驟三" :done="stepFormat > 3">
       <div class="text-h6 text-weight-bold">
-        {{ t('buy.step_hint_buy_title_3') }}
+        {{ $t('buy.step_hint_buy_title_3') }}
       </div>
       <div class="text-grey-6">
-        {{ t('buy.step_hint_buy_text_3') }}
+        {{ $t('buy.step_hint_buy_text_3') }}
       </div>
     </q-step>
 
     <q-step :name="4" prefix="4" title="步驟四" :done="stepFormat > 4">
       <div class="text-h6 text-weight-bold">
-        {{ t('buy.step_hint_buy_title_4') }}
+        {{ $t('buy.step_hint_buy_title_4') }}
       </div>
       <div class="text-grey-6">
-        {{ t('buy.step_hint_buy_text_4') }}
+        {{ $t('buy.step_hint_buy_text_4') }}
       </div>
     </q-step>
   </q-stepper>
 </template>
 
-<style scoped></style>
+<script setup lang="ts">
+import { OrderStatusNum } from 'src/stores/live';
+import { MasterTypeNum } from 'src/utils/NumberTool';
+import { computed } from 'vue';
+import { useStorage } from 'vue3-storage';
+const props = defineProps<{ order?: OrderStatus }>();
+//
+const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
+const stepFormat = computed(() => {
+  switch (props.order?.Order_StatusID) {
+    case undefined:
+      return 1;
+    case OrderStatusNum.Assigned:
+      return 2;
+    case OrderStatusNum.Committed:
+      return 3;
+    case OrderStatusNum.Complete:
+      return 4;
+    case OrderStatusNum.Appeal: {
+      if (isAgent.value) {
+        return props.order.MasterType === MasterTypeNum.Buy ? 3 : 2;
+      } else {
+        return props.order.MasterType === MasterTypeNum.Buy ? 2 : 3;
+      }
+    }
+    default:
+      return 0;
+  }
+});
+</script>

@@ -1,11 +1,3 @@
-<script setup lang="ts">
-import RecordItem from 'src/components/RecordItem.vue';
-import { useHisotry } from '../api/useHistory';
-import { computed } from 'vue';
-
-const { data: history, loading } = useHisotry();
-const showHistory = computed(() => history.value?.slice(0, 3));
-</script>
 <template>
   <q-card class="q-pa-md bg-grey-3" bordered>
     <!-- Header -->
@@ -38,4 +30,11 @@ const showHistory = computed(() => history.value?.slice(0, 3));
   </q-card>
 </template>
 
-<style scoped></style>
+<script setup lang="ts">
+import RecordItem from 'src/components/RecordItem.vue';
+import api from '../api';
+import { computed } from 'vue';
+
+const { data: history, loading } = api.useHistory({});
+const showHistory = computed(() => history.value?.slice(0, 3));
+</script>

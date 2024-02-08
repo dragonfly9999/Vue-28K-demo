@@ -61,12 +61,12 @@ import BalanceComponent from './components/BalanceComponent.vue';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import { useWallet } from './api';
+import api from './api';
 import QR from './components/QR.vue';
 
 const { t } = useI18n();
 const router = useRouter();
-const { data: wallet, loading } = useWallet();
+const { data: wallet, loading } = api.useWallet({});
 // DOM
 const tab = ref('TRC20');
 </script>

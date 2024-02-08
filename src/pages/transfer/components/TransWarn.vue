@@ -1,61 +1,3 @@
-<script setup lang="ts">
-import { numberTool } from 'src/utils/NumberTool';
-import { addressOptions } from '../data';
-import { useI18n } from 'vue-i18n';
-import { ref } from 'vue';
-import { useStorage } from 'vue3-storage';
-import { useTransTrc } from '../api/useTransTrc';
-import { useTransErc } from '../api/useTransErc';
-import { useStateStore } from 'src/stores';
-const emits = defineEmits(['success']);
-const props = defineProps<{
-  agreement?: string;
-  address?: string;
-  remark?: string;
-  transAmt?: string;
-  premium?: string;
-}>();
-//
-const { t } = useI18n();
-const { updateState } = useStateStore();
-const onSuccess = () => {
-  updateState();
-  emits('success');
-};
-const { run: transTrc, loading: loadingTransTrc } = useTransTrc({ onSuccess });
-const { run: transErc, loading: loadingTransErc } = useTransErc({ onSuccess });
-// DOM
-const password = ref();
-const isPassword = ref(true);
-const isPasswordError = ref(false);
-const handleVerifyPassword = () => {
-  if (
-    !password.value ||
-    password.value !== useStorage().getStorageSync('password')
-  ) {
-    isPasswordError.value = true;
-    return;
-  }
-  switch (props.agreement) {
-    case 'trc': {
-      transTrc({
-        ToAddress: props.address as string,
-        UsdtAmt: numberTool(props.transAmt),
-      });
-      break;
-    }
-    case 'erc': {
-      transErc({
-        ToAddress: props.address as string,
-        UsdtAmt: numberTool(props.transAmt),
-      });
-      break;
-    }
-    default:
-      return undefined;
-  }
-};
-</script>
 <template>
   <q-card class="q-pa-md" style="width: 380px">
     <!-- title-請確認訂單資訊 -->
@@ -182,6 +124,7 @@ const handleVerifyPassword = () => {
       <q-card-actions align="right" class="text-blue-13">
         <!-- 取消btn -->
         <q-btn
+          :loading="loadingTransErc || loadingTransTrc"
           outline
           color="blue-13"
           :label="t('btn.cancel')"
@@ -202,5 +145,66 @@ const handleVerifyPassword = () => {
     </div>
   </q-card>
 </template>
+
+<script setup lang="ts">
+import { numberTool } from 'src/utils/NumberTool';
+import { addressOptions } from '../data';
+import { useI18n } from 'vue-i18n';
+import { ref } from 'vue';
+import { useStorage } from 'vue3-storage';
+import api from '../api';
+import { useStateStore } from 'src/stores';
+const emits = defineEmits(['success']);
+const props = defineProps<{
+  agreement?: string;
+  address?: string;
+  remark?: string;
+  transAmt?: string;
+  premium?: string;
+}>();
+//
+const { t } = useI18n();
+const onSuccess = () => {
+  useStateStore().balanceRequest.refresh();
+  emits('success');
+};
+const { run: transTrc, loading: loadingTransTrc } = api.useTransTrc({
+  onSuccess,
+});
+const { run: transErc, loading: loadingTransErc } = api.useTransErc({
+  onSuccess,
+});
+// DOM
+const password = ref();
+const isPassword = ref(true);
+const isPasswordError = ref(false);
+const handleVerifyPassword = () => {
+  if (
+    !password.value ||
+    password.value !== useStorage().getStorageSync('password')
+  ) {
+    isPasswordError.value = true;
+    return;
+  }
+  switch (props.agreement) {
+    case 'trc': {
+      transTrc({
+        ToAddress: props.address as string,
+        UsdtAmt: numberTool(props.transAmt),
+      });
+      break;
+    }
+    case 'erc': {
+      transErc({
+        ToAddress: props.address as string,
+        UsdtAmt: numberTool(props.transAmt),
+      });
+      break;
+    }
+    default:
+      return undefined;
+  }
+};
+</script>
 
 <style scoped></style>

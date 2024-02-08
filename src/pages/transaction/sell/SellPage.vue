@@ -27,9 +27,12 @@ import CommittedPage from './components/CommittedPage.vue';
 import { useOrderStore } from 'src/stores';
 import { computed } from 'vue';
 import CreatePage from './components/CreatePage.vue';
+
 const route = useRoute();
-const { getStatus } = useOrderStore();
-const orderStatus = computed(() => getStatus(route.query.token as string));
+// DOM
+const orderStatus = computed(() =>
+  useOrderStore().getStatus(route.query.token as string)
+);
 </script>
 
 <style scoped></style>

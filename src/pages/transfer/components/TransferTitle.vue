@@ -1,10 +1,3 @@
-<script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
-
-const { t } = useI18n();
-const router = useRouter();
-</script>
 <template>
   <!-- Title -->
   <div class="row q-px-sm q-mt-md items-center">
@@ -60,5 +53,13 @@ const router = useRouter();
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+
+const { t } = useI18n();
+const router = useRouter();
+</script>
 
 <style scoped></style>

@@ -12,22 +12,21 @@ type ResetProps = {
 };
 
 export default ({ ...useProps }: UseProps) => {
-  const vueRequest = requestProvider<ResetRes, ResetProps>({
-    reqFn: (props) => {
-      const vueStorage = useStorage();
-      const forgetInfoStorage = vueStorage.getStorageSync<{
-        phone: string;
-        countryCode: number;
-      }>('forget_Info');
-      const request = axiosProvider
-        .post('Req_ForgotPwd.aspx', {
-          ...props,
-          reg_tel: forgetInfoStorage?.phone
-        })
-        .then(({ data }) => data);
-      return request;
-    },
-    isManual: true,
+  const vueRequest = requestProvider<ResetRes, ResetProps>((props) => {
+    const vueStorage = useStorage();
+    const forgetInfoStorage = vueStorage.getStorageSync<{
+      phone: string;
+      countryCode: number;
+    }>('forget_Info');
+    const request = axiosProvider
+      .post('Req_ForgotPwd.aspx', {
+        ...props,
+        reg_tel: forgetInfoStorage?.phone
+      })
+      .then(({ data }) => data);
+    return request;
+  },{
+    manual: true,
     ...useProps
   });
 

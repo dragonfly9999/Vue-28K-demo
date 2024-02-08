@@ -16,18 +16,17 @@ type FormatKycOptions = BankSetRes;
 
 export default ({ ...useProps }: UseProps<Array<BankSetRes>>) => {
   const tempKycs = ref<Array<FormatKycOptions>>([]);
-  const vueRequest = requestProvider<Array<BankSetRes>>({
-    reqFn: () => {
-      const request = axiosProvider
-        .get('/Get_UserBankSet.aspx')
-        .then(({ data }) => {
-          tempKycs.value = data;
-          return data;
-        });
-      return request;
-    },
-    isManual: false,
-    ...useProps
+  const vueRequest = requestProvider<Array<BankSetRes>>(() => {
+    const request = axiosProvider
+      .get('/Get_UserBankSet.aspx')
+      .then(({ data }) => {
+        tempKycs.value = data;
+        return data;
+      });
+    return request;
+  },{
+    ...useProps,
+    manual: false,
   });
   return { vueRequest, tempKycs };
 };

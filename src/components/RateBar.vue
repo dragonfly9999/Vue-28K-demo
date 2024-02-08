@@ -1,7 +1,3 @@
-<script setup lang="ts">
-defineProps<{ rate: RateRes | undefined }>();
-</script>
-
 <template>
   <div
     class="flex items-center justify-between text-blue-grey-3 text-caption q-mr-xl"
@@ -12,7 +8,7 @@ defineProps<{ rate: RateRes | undefined }>();
         {{ $t('rate.buy') }}
       </div>
       <div class="text-right text-weight-bold text-blue-13">
-        {{ rate?.RMB_BUY }}
+        {{ formatRates.buy }}
       </div>
     </div>
 
@@ -21,10 +17,16 @@ defineProps<{ rate: RateRes | undefined }>();
         {{ $t('rate.sell') }}
       </div>
       <div class="text-right text-weight-bold text-red">
-        {{ rate?.RMB_SELL }} 
+        {{ formatRates.sell }}
       </div>
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import { useStateStore } from 'src/stores';
+
+const { formatRates } = useStateStore();
+</script>
 
 <style scoped></style>

@@ -11,24 +11,23 @@ type CheckProps = {
 };
 
 export default ({ ...useProps }: UseProps) => {
-  const vueRequest = requestProvider<CheckRes, CheckProps>({
-    reqFn: (props) => {
-      const vueStorage = useStorage();
-      const registerStorage = vueStorage.getStorageSync<{
-        countryCode: number;
-        phone: string;
-      }>('register');
-      const reg_countrycode =
-        registerStorage?.countryCode ?? props.reg_countrycode;
-      const usePhone = registerStorage?.phone ?? props.reg_tel;
-      const reg_tel = usePhone?.replace(/^0/, '');
+  const vueRequest = requestProvider<CheckRes, CheckProps>((props) => {
+    const vueStorage = useStorage();
+    const registerStorage = vueStorage.getStorageSync<{
+      countryCode: number;
+      phone: string;
+    }>('register');
+    const reg_countrycode =
+      registerStorage?.countryCode ?? props.reg_countrycode;
+    const usePhone = registerStorage?.phone ?? props.reg_tel;
+    const reg_tel = usePhone?.replace(/^0/, '');
 
-      const request = axiosProvider
-        .post('/ChkoneTimePwd.aspx', { ...props, reg_countrycode, reg_tel })
-        .then(({ data }) => data);
-      return request;
-    },
-    isManual: true,
+    const request = axiosProvider
+      .post('/ChkoneTimePwd.aspx', { ...props, reg_countrycode, reg_tel })
+      .then(({ data }) => data);
+    return request;
+  },{
+    manual: true,
     ...useProps,
     onSuccess: (res) => {
       const vueStorage = useStorage();
@@ -42,7 +41,8 @@ export default ({ ...useProps }: UseProps) => {
       });
       if (useProps.onSuccess) useProps.onSuccess(res);
     },
-    noFeedback: true
+  }, {
+    noFeedback: true,
   });
 
   return vueRequest;

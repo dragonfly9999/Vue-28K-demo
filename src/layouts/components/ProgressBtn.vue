@@ -1,6 +1,6 @@
 <template>
   <q-btn
-    :loading="pendingStore.pendingInstant.loading"
+    :loading="pendingInstant.loading"
     no-caps
     rounded
     unelevated
@@ -39,7 +39,7 @@
             :is-instant="false"
           />
         </div>
-        <div v-else-if="pendingStore.pendingInstant.loading">
+        <div v-else-if="pendingInstant.loading">
           <q-item
             clickable
             v-ripple
@@ -73,10 +73,10 @@ import PendingItem from 'src/components/PendingItem.vue';
 import dayjs from 'dayjs';
 
 const { getOrders } = useLiveStore();
-const pendingStore = usePendingStore();
+const { pendingInstant } = usePendingStore();
 const { t } = useI18n();
 // DOM
-const pendingOrders = computed(() => pendingStore.pendingInstant.data);
+const pendingOrders = computed(() => pendingInstant.data);
 const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
 const isDisable = computed(() => {
   if (isAgent.value) {
@@ -86,9 +86,10 @@ const isDisable = computed(() => {
 });
 const orders = computed(() => {
   const pureOrders = getOrders('progress').slice();
-  return pureOrders.sort((a, b) =>
+  const makeupOrders = pureOrders.sort((a, b) =>
     dayjs(b.CreateDate).isAfter(dayjs(a.CreateDate)) ? 1 : -1
   );
+  return makeupOrders;
 });
 </script>
 

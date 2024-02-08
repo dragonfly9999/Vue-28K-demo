@@ -64,7 +64,7 @@ onMounted(() => {
   setTimeout(() => {
     const domElement = document.documentElement;
     domElement.scrollTo({ top: 0, behavior: 'smooth' });
-  }, 100);
+  }, 200);
 });
 </script>
 

@@ -1,74 +1,41 @@
-import { useRequest } from 'vue-request';
-import { computed } from 'vue';
+import { Options, Service, useRequest } from 'vue-request';
+import { computed, ref } from 'vue';
 import { AxiosError } from 'axios';
-import { Notify } from 'quasar';
 import { useI18n } from 'vue-i18n';
-import { useStorage } from 'vue3-storage';
-import { axiosProvider } from './axiosProvider';
+import hooks from 'src/hooks';
 
-type ProviderProps<DATA, Params = unknown> = {
-  reqFn: (args: Params) => Promise<VirgilRes<DATA>>;
-  isManual: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  config?: any;
-  onSuccess?: (args?: VirgilRes<DATA>) => void;
-  onAfter?: (args?: Params[]) => void;
-  onError?: (error?: unknown) => void;
+
+type CustomProps = {
   noFeedback?: boolean;
-};
+  noTempData?: boolean;
+  noErrorNotify?: boolean;
+}
 
-export const requestProvider = <DATA, Params = unknown>({
-  reqFn,
-  isManual,
-  config,
-  onSuccess,
-  onError,
-  onAfter,
-  noFeedback
-}: ProviderProps<DATA, Params>) => {
+export const requestProvider = <DATA, Params = unknown>(
+  service: Service<VirgilRes<DATA>, [Params]>,
+  options: Options<VirgilRes<DATA>, [Params]>,
+  customProps?: CustomProps,
+) => {
   const { t } = useI18n();
-  const requestInstance = useRequest(reqFn, {
-    ...config,
-    onError: (error: AxiosError<VirgilRes<DATA>>) => {
-      const useCode = error.response?.data.code;
-      if (useCode && !noFeedback) {
-        Notify.create({
-          type: 'negative',
-          message: t(`error.api.${error.response?.data.code}`),
-          position: 'top-right',
-          timeout: 2000
-        });
-
-        switch (useCode.toString()) {
-          case '91': {
-            axiosProvider.post('/Req_AutoPick.aspx', {
-              mode: 0
-            });
-            setTimeout(() => {
-              useStorage().clearStorageSync();
-              window.location.pathname = '/';
-            }, 100);
-          }
-        }
+  const tempData = ref<DATA>();
+  const requestInstance = useRequest<VirgilRes<DATA>, [Params]>(service, {
+    ...options,
+    onSuccess: (virgilRes, params) => {
+      if (!customProps?.noTempData) tempData.value = virgilRes.data;
+      if(options.manual && !customProps?.noFeedback) hooks.useSuccessNotify( t('success'))
+      if (options.onSuccess) options.onSuccess(virgilRes, params);
+    },
+    onError: (error, params) => {
+      const virgilError = error as Error | AxiosError<VirgilRes<null>>;
+      const useCode = 'response' in virgilError ? virgilError.response?.data.code : undefined;
+      if (useCode !== undefined && !customProps?.noErrorNotify && options.manual) {
+        hooks.useErrorNotify(t(`error.api.${useCode}`))
       }
-      if (onError) onError(error);
+      if(useCode?.toString() === '91') Object.values(hooks.useKickOut).forEach((kickStep) => kickStep())
+      if (options.onError) options.onError(virgilError, params);
     },
-    onSuccess: (res) => {
-      if (isManual && !noFeedback) {
-        Notify.create({
-          type: 'positive',
-          message: t('success'),
-          position: 'top-right',
-          timeout: 500
-        });
-      }
-      if (onSuccess) onSuccess(res);
-    },
-    onAfter: (params) => {
-      !!onAfter && onAfter(params);
-    },
-    manual: isManual
   });
   const useData = computed(() => requestInstance.data.value?.data);
-  return { ...requestInstance, data: useData };
+  return { ...requestInstance, data: useData, tempData };
 };
+

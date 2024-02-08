@@ -5,17 +5,18 @@ type MatchProps = {
   Token: string;
 };
 
-export const useBuyMatch = ({ ...useProps }: UseProps) => {
-  return requestProvider<string, MatchProps>({
-    reqFn: (props) => {
-      const request = axiosProvider
-        .post('/Req_BuyMatch1.aspx', props)
-        .then(({ data }) => {
-          return data;
-        });
-      return request;
-    },
-    isManual: true,
-    ...useProps
+export default ({ ...useProps }: UseProps) => {
+  const vueRequest = requestProvider<string, MatchProps>((props) => {
+    const request = axiosProvider
+      .post('/Req_BuyMatch1.aspx', props)
+      .then(({ data }) => {
+        return data;
+      });
+    return request;
+  },{
+    ...useProps,
+    manual: true,
   });
+
+  return vueRequest
 };

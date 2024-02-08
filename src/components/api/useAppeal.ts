@@ -10,8 +10,7 @@ type AppleaProps = {
 };
 
 export const useAppeal = () =>
-  requestProvider<AppleaRes, AppleaProps>({
-    reqFn: (props) =>
-      axiosProvider.post('/Req_Appeal.aspx', props).then(({ data }) => data),
-    isManual: true
+  requestProvider<AppleaRes, AppleaProps>((props) =>
+    axiosProvider.post('/Req_Appeal.aspx', props).then(({ data }) => data),{
+    manual: true
   });

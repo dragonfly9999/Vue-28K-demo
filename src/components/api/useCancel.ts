@@ -1,3 +1,4 @@
+import { useQuasar } from 'quasar';
 import { axiosProvider } from 'src/utils/axiosProvider';
 import { requestProvider } from 'src/utils/requestProvider';
 
@@ -8,16 +9,26 @@ type CancelProps = {
   Token: string;
 };
 
-type UseProps = {
-  onSuccess: () => void;
-};
 
-export const useCancel = (props?: UseProps) =>
-  requestProvider<CancelRes, CancelProps>({
-    reqFn: (props) =>
-      axiosProvider
-        .post('/Req_CancelOrder.aspx', props)
-        .then(({ data }) => data),
-    isManual: true,
-    ...props
+export const useCancel = ({ ...useProps }: UseProps) => {
+  const q = useQuasar();
+  const vueRequest = requestProvider<CancelRes, CancelProps>((props) => {
+    const request = axiosProvider
+      .post('/Req_CancelOrder.aspx', props)
+      .then(({ data }) => data);
+
+    return request
+  },{
+    ...useProps,
+    manual: true,
+    onBefore: () => {
+      q.loading.show();
+    },
+    onAfter: (params) => {
+      q.loading.hide();
+      if (useProps.onAfter) useProps.onAfter(params);
+    }
   });
+
+  return vueRequest
+}

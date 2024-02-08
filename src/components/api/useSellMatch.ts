@@ -5,14 +5,16 @@ type MatchProps = {
   Token: string;
 };
 
-export const useSellMatch = ({ ...useProps }: UseProps) => {
-  return requestProvider<OrderRecord, MatchProps>({
-    reqFn: (props) =>
-      axiosProvider
-        .post('/Req_SellMatch1.aspx', props)
-        .then(({ data }) => data),
-
-    isManual: true,
-    ...useProps
+export default ({ ...useProps }: UseProps<OrderRecord, MatchProps>) => {
+  const vueRequest =  requestProvider<OrderRecord, MatchProps>((props) => {
+    const request = axiosProvider
+      .post('/Req_SellMatch1.aspx', props)
+      .then(({ data }) => data);
+    return request;
+  }, {
+    ...useProps,
+    manual: true,
   });
+
+  return vueRequest
 };

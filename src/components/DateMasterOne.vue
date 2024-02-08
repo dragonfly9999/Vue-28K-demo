@@ -322,7 +322,7 @@ const handleNextDay = () => {
 const handleDayBefore = () => {
   focusButton.value = 'before';
   tempData.fromDate = tempData.fromDate.subtract(1, 'day');
-  tempData.toDate = tempData.fromDate.subtract(1, 'day');
+  tempData.toDate = tempData.fromDate.add(1, 'day');
 };
 
 const tempData = reactive({

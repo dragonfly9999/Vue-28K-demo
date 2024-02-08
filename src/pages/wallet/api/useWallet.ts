@@ -8,8 +8,16 @@ type WalletRes = {
   Qr_img2: string;
 };
 
-export const useWallet = () =>
-  requestProvider<WalletRes>({
-    reqFn: () => axiosProvider.get('/GetWallet.aspx').then(({ data }) => data),
-    isManual: false
+export default ({...useProps}: UseProps<WalletRes>) => {
+  const vueRequest = requestProvider<WalletRes>(() => {
+    const request = axiosProvider.get('/GetWallet.aspx').then(({ data }) => data);
+    return request
+  }, {
+    ...useProps,
+    manual: false,
+  }, {
+    noTempData: true,
   });
+
+  return vueRequest;
+}

@@ -266,9 +266,8 @@
 
 <script setup lang="ts">
 import { watch, reactive } from 'vue';
-import { AccRes } from '../api/useAccHistory';
-import { AccNum } from '../api/useAccHistory';
-// import { useI18n } from 'vue-i18n';
+import { AccNum, type AccRes } from '../api/useAccHistory';
+
 
 const props = defineProps<{
   accInfo: AccRes;
@@ -276,7 +275,6 @@ const props = defineProps<{
   loading?: boolean;
 }>();
 defineEmits(['update:delID', 'edit']);
-// const { t } = useI18n();
 
 const editFields = reactive<
   Omit<AccRes, 'H_id' | AccNum.Channel> & {

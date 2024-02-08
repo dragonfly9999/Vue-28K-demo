@@ -18,10 +18,9 @@ export const useAcc = () => {
   // request
   const vueRequest = requestProvider<
     Omit<AccRes, 'H_id'> & { ChannelSet: string }
-  >({
-    reqFn: () =>
-      axiosProvider.get('/GetAgentAcc.aspx').then(({ data }) => data),
-    isManual: false,
+  >(() =>
+  axiosProvider.get('/GetAgentAcc.aspx').then(({ data }) => data),{
+    manual: false,
     onSuccess: (res) => {
       if (!res) return;
       tempAcc.value = res?.data;

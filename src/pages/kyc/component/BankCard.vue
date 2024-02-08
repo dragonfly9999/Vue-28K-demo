@@ -49,10 +49,12 @@
 </template>
 
 <script setup lang="ts">
-import { FormatKycOptions } from '../api/useKycHistory';
+import { type FormatKycOptions } from '../api/useKycHistory';
 
 defineProps<{ kycInfo: FormatKycOptions }>();
 </script>
+
+
 <style scoped lang="scss">
 div.field {
   border-bottom: 0.25px dashed #eeeeee;

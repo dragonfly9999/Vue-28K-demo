@@ -45,6 +45,7 @@
             <div class="col">
               <q-input
                 outlined
+                autocomplete="tel-national"
                 v-model="phone_number"
                 :label="t('auth.手機')"
                 :rules="[(val) => !!val]"
@@ -62,6 +63,7 @@
               :rules="[(val) => !!val]"
               lazy-rules
               :error-message="t('error.password')"
+              autocomplete="current-password"
             >
               <template v-slot:append>
                 <q-icon

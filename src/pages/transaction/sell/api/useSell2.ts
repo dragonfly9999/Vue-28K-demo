@@ -10,8 +10,7 @@ type SellProps = {
 };
 
 export const useSell2 = () =>
-  requestProvider<SellRes, SellProps>({
-    reqFn: (props) =>
-      axiosProvider.post('/Req_Sell2.aspx', props).then(({ data }) => data),
-    isManual: true
+  requestProvider<SellRes, SellProps>((props) =>
+    axiosProvider.post('/Req_Sell2.aspx', props).then(({ data }) => data),{
+    manual: true
   });

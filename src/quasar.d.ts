@@ -104,19 +104,7 @@ interface LiveOrder {
   extraInfo: null | string; // 備註
   token: string; //
 }
-interface RateRes {
-  RMB_BUY: string;
-  RMB_SELL: string;
-  TransferHandle: string;
-  TransferHandle2: string;
-}
 
-interface BalanceRes {
-  Real_Balance: number;
-  Avb_Balance: number;
-  AgtBalance: number;
-  Lvl: number;
-}
 
 interface VirgilRes<DATA> {
   code: number;
@@ -125,8 +113,8 @@ interface VirgilRes<DATA> {
 }
 
 
-type UseProps<DATA = unknown, Params = unknown, Error = unknown> = {
-  onSuccess?: (res?: VirgilRes<DATA>) => void;
+type UseProps<DATA = unknown, Params = unknown> = {
+  onSuccess?: (res?: VirgilRes<DATA>, params?: [Params]) => void;
   onError?: (error?: Error) => void;
-  onAfter?: (args?: Params) => void;
+  onAfter?: (args?: [Params]) => void;
 };

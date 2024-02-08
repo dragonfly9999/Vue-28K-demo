@@ -1,5 +1,10 @@
 <template>
-  <q-item :clickable="!isInstant" v-ripple @click="handleClickItem">
+  <q-item
+    :class="{ inPage: isInPage }"
+    :clickable="!isInstant"
+    v-ripple
+    @click="handleClickItem"
+  >
     <q-item-section class="q-pa-xs">
       <!-- title -->
       <div class="flex no-wrap q-gutter-x-sm items-center">
@@ -42,7 +47,7 @@
               {{ $t('transaction.rate') }}
             </div>
             <!-- rate -->
-            <div class="text-caption">{{ order.D1 }}</div>
+            <div class="text-caption">{{ thousandTool(order.D1, 'CNY') }}</div>
           </div>
           <div class="flex">
             <div class="text-caption text-grey-6 q-mr-xs">
@@ -92,7 +97,7 @@ import { useRouter } from 'vue-router';
 import { useStorage } from 'vue3-storage';
 import dayjs from 'dayjs';
 import { MtTypeNum } from 'src/stores/live';
-import { useBuyMatch, useSellMatch } from './api';
+import api from './api';
 import {
   useKeyStore,
   useOrderStore,
@@ -101,6 +106,7 @@ import {
 } from 'src/stores';
 import { copyToClipboard, useQuasar } from 'quasar';
 import StatusMaster from 'src/pages/transaction/components/StatusMaster.vue';
+import { useRoute } from 'vue-router';
 const quasar = useQuasar();
 const props = defineProps<{
   order: LiveOrder;
@@ -112,26 +118,14 @@ const props = defineProps<{
 const { currency } = useStateStore();
 const { pressing } = useKeyStore();
 const { t } = useI18n();
+const route = useRoute();
 const router = useRouter();
 const storage = useStorage();
+const { setOrderWs } = useOrderStore();
+const { setWebSockets, getCount, handleResetCount } = useThirdStore();
 
 // dom
 const isAgent = computed(() => storage.getStorageSync('isAgent'));
-const { setOrderWs } = useOrderStore();
-const { setWebSockets, getCount, handleResetCount } = useThirdStore();
-const { run: matchBuy, loading: loadingBuy } = useBuyMatch({
-  onSuccess: () => {
-    setWebSockets(props.order.token);
-    setOrderWs(props.order.token);
-  },
-});
-const { run: matchSell, loading: loadingSell } = useSellMatch({
-  onSuccess: () => {
-    setWebSockets(props.order.token);
-    setOrderWs(props.order.token);
-  },
-});
-// DOM
 const channelLabel = computed(() => {
   if (!props.order.Channel) return '';
   if (props.order.Channel === -1) return 'All';
@@ -161,7 +155,25 @@ const orderInfo = computed(() => {
     }
   }
 });
+const isInPage = computed(() => {
+  if (!route.name || !['buy', 'sell'].includes(route.name as string))
+    return false;
+  return route.query.token === props.order.token;
+});
 
+// vue request
+const { run: matchBuy, loading: loadingBuy } = api.useBuyMatch({
+  onSuccess: () => {
+    setWebSockets(props.order.token);
+    setOrderWs(props.order.token);
+  },
+});
+const { run: matchSell, loading: loadingSell } = api.useSellMatch({
+  onSuccess: () => {
+    setWebSockets(props.order.token);
+    setOrderWs(props.order.token);
+  },
+});
 // handler
 const handleMatch = () => {
   if (props.order.MType === MtTypeNum.Sell) {
@@ -220,4 +232,8 @@ const handleClickItem = () => {
 };
 </script>
 
-<style scoped></style>
+<style scoped lang="scss">
+.inPage {
+  background-color: rgba(255, 230, 188, 0.507);
+}
+</style>

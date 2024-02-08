@@ -32,8 +32,8 @@ import PunctuationMaster from 'src/components/PunctuationMaster.vue';
 import StepperMaster from 'src/components/StepperMaster.vue';
 import { onMounted } from 'vue';
 defineProps<{ order: OrderStatus | undefined }>();
-// Dom
 
+// life cycle
 onMounted(() => {
   // scroll
   setTimeout(() => {

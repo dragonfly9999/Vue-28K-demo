@@ -1,51 +1,6 @@
-<script setup lang="ts">
-import { useRouter } from 'vue-router';
-import { MasterTypeNum } from 'src/utils/NumberTool';
-import { useI18n } from 'vue-i18n';
-import { thousandTool } from 'src/utils/NumberTool';
-import dayjs from 'dayjs';
-import { useThirdStore } from 'src/stores';
-import { computed } from 'vue';
-import StatusMaster from 'src/pages/transaction/components/StatusMaster.vue';
-import { MtTypeNum } from 'src/stores/live';
-
-const props = defineProps<{ order: PendingOrder }>();
-const router = useRouter();
-const { t } = useI18n();
-const { getCount } = useThirdStore();
-// DOM
-const orderInfo = (order: PendingOrder) => {
-  switch (order.MasterType) {
-    case MasterTypeNum.Buy:
-      return { label: t('label.buy'), color: 'blue-13' };
-    case MasterTypeNum.Sell:
-      return { label: t('label.sell'), color: 'red' };
-    default: {
-      return { label: t('label.undefined'), color: 'purple' };
-    }
-  }
-};
-const fakeLiveOrder = computed(() => {
-  const order: LiveOrder = {
-    Order_StatusID: props.order.Order_StatusID,
-    MType:
-      props.order.MasterType === MasterTypeNum.Buy
-        ? MtTypeNum.Buy
-        : MtTypeNum.Sell,
-    DeltaTime: 0,
-    UsdtAmt: 0,
-    D1: 0,
-    D2: 0,
-    CreateDate: '',
-    P5: '',
-    extraInfo: null,
-    token: '',
-  };
-  return order;
-});
-</script>
 <template>
   <q-item
+    :class="{ inPage: isInPage }"
     v-ripple
     @click="
       () =>
@@ -101,7 +56,7 @@ const fakeLiveOrder = computed(() => {
               {{ $t('transaction.rate') }}
             </div>
             <!-- rate -->
-            <div class="text-caption">{{ order.D1 }}</div>
+            <div class="text-caption">{{ thousandTool(order.D1, 'CNY') }}</div>
           </div>
           <div class="flex">
             <div class="text-caption text-grey-6 q-mr-xs">
@@ -126,4 +81,63 @@ const fakeLiveOrder = computed(() => {
   </q-item>
 </template>
 
-<style scoped></style>
+<script setup lang="ts">
+import { useRouter } from 'vue-router';
+import { MasterTypeNum } from 'src/utils/NumberTool';
+import { useI18n } from 'vue-i18n';
+import { thousandTool } from 'src/utils/NumberTool';
+import dayjs from 'dayjs';
+import { useThirdStore } from 'src/stores';
+import { computed } from 'vue';
+import StatusMaster from 'src/pages/transaction/components/StatusMaster.vue';
+import { MtTypeNum } from 'src/stores/live';
+import { useRoute } from 'vue-router';
+
+const props = defineProps<{ order: PendingOrder }>();
+const router = useRouter();
+const route = useRoute();
+const { t } = useI18n();
+const { getCount } = useThirdStore();
+// DOM
+const orderInfo = (order: PendingOrder) => {
+  switch (order.MasterType) {
+    case MasterTypeNum.Buy:
+      return { label: t('label.buy'), color: 'blue-13' };
+    case MasterTypeNum.Sell:
+      return { label: t('label.sell'), color: 'red' };
+    default: {
+      return { label: t('label.undefined'), color: 'purple' };
+    }
+  }
+};
+const fakeLiveOrder = computed(() => {
+  const order: LiveOrder = {
+    Order_StatusID: props.order.Order_StatusID,
+    MType:
+      props.order.MasterType === MasterTypeNum.Buy
+        ? MtTypeNum.Buy
+        : MtTypeNum.Sell,
+    DeltaTime: 0,
+    UsdtAmt: 0,
+    D1: 0,
+    D2: 0,
+    CreateDate: '',
+    P5: '',
+    extraInfo: null,
+    token: '',
+  };
+  return order;
+});
+
+const isInPage = computed(() => {
+  if (!route.name || !['buy', 'sell'].includes(route.name as string))
+    return false;
+  return route.query.token === props.order.token;
+});
+</script>
+
+<style scoped lang="scss">
+.inPage {
+  background-color: rgba(255, 230, 188, 0.507);
+}
+</style>

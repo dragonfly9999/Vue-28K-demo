@@ -1,17 +1,3 @@
-<script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import { useCancel } from './api';
-import { usePendingStore } from 'src/stores';
-const { t } = useI18n();
-const { refresh } = usePendingStore().pendingInstant;
-const { run: cancel } = useCancel({
-  onSuccess: () => {
-    refresh();
-  },
-});
-defineProps<{ token: string }>();
-//
-</script>
 <template>
   <q-card class="q-pa-md q-gutter-y-sm" style="width: 360px">
     <!-- title 是否要取消訂單-->
@@ -23,13 +9,13 @@ defineProps<{ token: string }>();
         v-close-popup
         outline
         color="blue-13"
-        :label="t('transaction.cancel')"
+        :label="$t('transaction.cancel')"
       />
       <!-- 確認btn -->
       <q-btn
         unelevated
         color="blue-13"
-        :label="t('transaction.確認取消')"
+        :label="$t('transaction.確認取消')"
         @click="
           () =>
             cancel({
@@ -40,5 +26,19 @@ defineProps<{ token: string }>();
     </q-card-actions>
   </q-card>
 </template>
+
+<script setup lang="ts">
+import { useCancel } from './api';
+import { usePendingStore } from 'src/stores';
+defineProps<{ token: string }>();
+
+// request
+const { run: cancel } = useCancel({
+  onSuccess: () => {
+    usePendingStore().pendingInstant.refresh();
+  },
+});
+//
+</script>
 
 <style scoped></style>

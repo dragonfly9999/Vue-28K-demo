@@ -77,7 +77,7 @@ import { thousandTool } from 'src/utils/NumberTool';
 import { useCancel } from 'src/components/api';
 defineProps<{ orderStatus: OrderStatus | undefined }>();
 
-const { run: cancel, loading } = useCancel();
+const { run: cancel, loading } = useCancel({});
 const { currency } = useStateStore();
 const route = useRoute();
 //

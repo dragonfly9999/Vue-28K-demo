@@ -1,42 +1,3 @@
-<script setup lang="ts">
-import { useSellConfirm } from 'src/components/api/useSellConfirm';
-import { thousandTool } from 'src/utils/NumberTool';
-import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useRoute } from 'vue-router';
-import { useSell2 } from '../api';
-import { useStorage } from 'vue3-storage';
-const props = defineProps<{ order: OrderStatus | undefined }>();
-const { t } = useI18n();
-const { run: confirm } = useSellConfirm();
-const { run: sell } = useSell2();
-const route = useRoute();
-// DOM
-const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
-// const remark = ref<string>();
-const informations = computed(() => [
-  {
-    title: t('transaction.payee'),
-    content: props?.order?.P5?.split('|')[0],
-  },
-  {
-    title: t('transaction.amount'),
-    content: thousandTool(props.order?.D2, 'CNY'),
-  },
-]);
-// handler
-const handleConfirm = () => {
-  if (isAgent.value) {
-    confirm({
-      Token: route.query.token as string,
-    });
-  } else {
-    sell({
-      Token: route.query.token as string,
-    });
-  }
-};
-</script>
 <template>
   <q-card class="q-pa-md q-gutter-y-sm" style="width: 380px">
     <!-- title-請確認以下資訊 -->
@@ -91,5 +52,47 @@ const handleConfirm = () => {
     </q-card-actions>
   </q-card>
 </template>
+
+<script setup lang="ts">
+import { useSellConfirm } from 'src/components/api/useSellConfirm';
+import { thousandTool } from 'src/utils/NumberTool';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRoute } from 'vue-router';
+import { useSell2 } from '../api';
+import { useStorage } from 'vue3-storage';
+const props = defineProps<{ order: OrderStatus | undefined }>();
+const { t } = useI18n();
+const route = useRoute();
+// DOM
+const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
+// const remark = ref<string>();
+const informations = computed(() => [
+  {
+    title: t('transaction.payee'),
+    content: props?.order?.P5?.split('|')[0],
+  },
+  {
+    title: t('transaction.amount'),
+    content: thousandTool(props.order?.D2, 'CNY'),
+  },
+]);
+
+// request
+const { run: confirm } = useSellConfirm();
+const { run: sell } = useSell2();
+// handler
+const handleConfirm = () => {
+  if (isAgent.value) {
+    confirm({
+      Token: route.query.token as string,
+    });
+  } else {
+    sell({
+      Token: route.query.token as string,
+    });
+  }
+};
+</script>
 
 <style scoped></style>

@@ -9,7 +9,7 @@
             address.verify = false;
             agreement = undefined;
             address.value = '';
-            transAmt = undefined;
+            transAmt = '';
             isPassTwenty = false;
           }
         "
@@ -88,9 +88,19 @@
             <q-input
               hide-bottom-space
               outlined
-              :label="t('transfer.label.address')"
+              :label="$t('transfer.label.address')"
               v-model="address.value"
-              :rules="[() => !!agreement || $t('transfer.label.agreement')]"
+              :rules="[
+                (val) => !!val || $t('transfer.label.agreement'),
+                () => !address.error || $t('error.api.30'),
+              ]"
+              :error="address.error"
+              :error-message="
+                address.error
+                  ? $t('error.api.30')
+                  : $t('transfer.label.agreement')
+              "
+              @update:model-value="() => (address.error = false)"
             >
               <template v-slot:append>
                 <q-btn
@@ -117,7 +127,7 @@
             <!-- 備註內容(非必填) -->
             <q-input
               outlined
-              :label="t('transfer.label.remark_text')"
+              :label="$t('transfer.label.remark_text')"
               v-model="remark"
             />
           </div>
@@ -134,7 +144,7 @@
                   {{ $t('transfer.label.balance') }}
                 </div>
                 <div class="text-green-9 q-ml-xs text-subtitle2">
-                  {{ thousandTool(getBalance()?.Avb_Balance, 'USDT') }}
+                  {{ formatBalances.available }}
                 </div>
               </div>
             </div>
@@ -149,43 +159,34 @@
                 v-for="(percent, index) in [25, 50, 75, 100]"
                 :key="index"
                 @click="
-                  () => (
-                    (transAmt = thousandTool(
-                      ((getBalance()?.Avb_Balance ?? 0) * percent) / 100
-                    )),
-                    'USDT'
-                  )
+                  () => {
+                    if (!balanceRequest.data) return;
+                    transAmt = thousandTool(
+                      (balanceRequest.data?.Avb_Balance * percent) / 100,
+                      'USDT'
+                    );
+                  }
                 "
               />
             </q-btn-group>
             <!-- 我要轉出 -->
             <q-input
               outlined
-              :label="t('transfer.label.i_want_to_transfer')"
+              :label="$t('transfer.label.i_want_to_transfer')"
               v-model="transAmt"
-              @focus="() => transAmt === 0 && (transAmt = undefined)"
+              @focus="() => transAmt === '0' && (transAmt = '')"
               lazy-rules
               :rules="[
                 (val) => !!val || $t('error.input.empty'),
                 (val) =>
-                  numberTool(val) < (getBalance()?.Avb_Balance ?? 0) ||
-                  $t('error.api.32'),
+                  numberTool(val) <= availableBalance || $t('error.api.32'),
               ]"
               @update:model-value="
                 (value) => {
-                  if (numberTool(value) < (getBalance()?.Avb_Balance ?? 0)) {
+                  if (numberTool(value) < availableBalance) {
                     transAmt = thousandInput(value);
                   } else {
-                    transAmt = thousandInput(getBalance()?.Avb_Balance);
-                  }
-                }
-              "
-              @blur="
-                () => {
-                  const avB = getBalance()?.Avb_Balance;
-                  if (avB === undefined) return;
-                  if (numberTool(transAmt) === avB) {
-                    transAmt = thousandInput(Math.floor(avB));
+                    transAmt = thousandInput(availableBalance);
                   }
                 }
               "
@@ -196,7 +197,7 @@
             </q-input>
 
             <!-- 剩餘 -->
-            <div v-if="transAmt > 1">
+            <div v-if="transAmt">
               <div class="flex justify-end">
                 <div class="text-grey-6 text-subtitle2">
                   {{ $t('transfer.label.remaining') }}
@@ -218,7 +219,7 @@
               <q-btn
                 flat
                 color="blue-13"
-                :label="t('isTwenty.disclaimer')"
+                :label="$t('isTwenty.disclaimer')"
                 size="sm"
                 dense
               />
@@ -226,7 +227,7 @@
               <q-btn
                 flat
                 color="blue-13"
-                :label="t('isTwenty.terms')"
+                :label="$t('isTwenty.terms')"
                 size="sm"
                 dense
               />
@@ -234,7 +235,7 @@
               <q-btn
                 flat
                 color="blue-13"
-                :label="t('isTwenty.privacy')"
+                :label="$t('isTwenty.privacy')"
                 size="sm"
                 dense
               />
@@ -247,8 +248,9 @@
             unelevated
             class="full-width"
             color="blue-13"
-            :label="t('btn.next_step')"
+            :label="$t('btn.next_step')"
             type="submit"
+            :loading="checkingErc || checkingTrc"
           />
         </div>
       </q-form>
@@ -291,64 +293,72 @@ import { addressOptions } from './data';
 import { useStateStore } from 'src/stores';
 import { numberTool, thousandInput, thousandTool } from 'src/utils/NumberTool';
 import { computed, reactive, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useStorage } from 'vue3-storage';
 import TransferTitle from './components/TransferTitle.vue';
 import QrReader from 'src/components/QrReader.vue';
-import { useCheckErc, useCheckTrc } from './api';
+import api from './api';
 import TransWarn from './components/TransWarn.vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
-const { t } = useI18n();
-const { getRates, getBalance } = useStateStore();
-const { run: checkErc } = useCheckErc({
-  onSuccess: () => {
-    address.verify = true;
-  },
-  onError: () => {
-    address.verify = false;
-  },
-});
-const { run: checkTrc } = useCheckTrc({
-  onSuccess: () => {
-    address.verify = true;
-  },
-  onError: () => {
-    address.verify = false;
-  },
-});
+const { ratesRequest, balanceRequest, formatBalances } = useStateStore();
 // DOM
 const form = ref();
 const agreement = ref();
-const address = reactive<{ value: string; verify: boolean }>({
+const address = reactive({
   value: '',
   verify: false,
+  error: false,
 });
-const remark = ref();
-const transAmt = ref();
+const remark = ref('');
+const transAmt = ref('');
 const isPassTwenty = ref(false);
 const timeInterval = ref<NodeJS.Timeout>();
 const duration = ref(0);
 const visible = reactive({
   scanner: false,
 });
-//
+const availableBalance = computed(() => {
+  if (balanceRequest.data === undefined) return 0;
+  return numberTool(balanceRequest.data.Avb_Balance);
+});
 const remain = computed(() => {
-  const result = (getBalance()?.Avb_Balance ?? 0) - transAmt.value;
-  return thousandTool(result, 'USDT');
+  const remainValue = availableBalance.value - numberTool(transAmt.value);
+  return thousandTool(remainValue, 'USDT');
 });
 const premium = computed(() => {
+  const rates = ratesRequest.data;
   switch (agreement.value) {
     case 'trc':
-      return thousandTool(getRates()?.TransferHandle2, 'USDT');
+      return thousandTool(rates?.TransferHandle2, 'USDT');
     case 'erc':
-      return thousandTool(getRates()?.TransferHandle, 'USDT');
+      return thousandTool(rates?.TransferHandle, 'USDT');
     default:
       return undefined;
   }
 });
 
+// request
+const { run: checkErc, loading: checkingErc } = api.useCheckErc({
+  onSuccess: () => {
+    address.verify = true;
+  },
+  onError: () => {
+    address.verify = false;
+    address.error = true;
+  },
+});
+const { run: checkTrc, loading: checkingTrc } = api.useCheckTrc({
+  onSuccess: () => {
+    address.verify = true;
+  },
+  onError: () => {
+    address.verify = false;
+    address.error = true;
+  },
+});
+
+// handlers
 const handleSetAddress = (newAddress?: string) => {
   visible.scanner = false;
   if (newAddress) {
@@ -356,7 +366,6 @@ const handleSetAddress = (newAddress?: string) => {
   }
 };
 const handleSubmit = () => {
-  console.log('on submit');
   switch (agreement.value) {
     case 'trc': {
       checkTrc({

@@ -1,84 +1,3 @@
-<script setup lang="ts">
-import { OrderStatusNum } from 'src/stores/live';
-import { MasterTypeNum, thousandTool } from 'src/utils/NumberTool';
-import { computed } from 'vue';
-import dayjs from 'dayjs';
-import { useI18n } from 'vue-i18n';
-import { AccNum } from 'src/pages/account/api';
-import { useDetail } from '../api';
-import { useRoute } from 'vue-router';
-import { useStorage } from 'vue3-storage';
-import CopyButton from 'src/components/CopyButton.vue';
-//
-const { t } = useI18n();
-const { data: detail, loading } = useDetail({
-  Token: useRoute()?.query?.token as string,
-});
-// DOM
-enum ClientNum {
-  Buy = MasterTypeNum.Sell,
-  Sell = MasterTypeNum.Buy,
-}
-const useNum = computed(() =>
-  useStorage().getStorageSync('isAgent') ? ClientNum : MasterTypeNum
-);
-
-const usdtFormat = computed(() => {
-  if (!detail.value) return '0';
-  if (detail.value.MasterType === useNum.value.Buy) {
-    return thousandTool(Math.abs(detail.value.UsdtAmt), 'USDT');
-  }
-  return '-' + thousandTool(Math.abs(detail.value.UsdtAmt ?? 0), 'USDT');
-});
-const orderInfo = computed(() => {
-  switch (detail.value?.MasterType) {
-    case useNum.value.Buy:
-      return { label: t('label.buy'), color: 'blue-13' };
-    case useNum.value.Sell:
-      return { label: t('label.sell'), color: 'red' };
-    default: {
-      return { label: t('label.undefined'), color: 'purple' };
-    }
-  }
-});
-
-const statusInfo = computed(() => {
-  switch (Number(detail.value?.MasterType)) {
-    case useNum.value.Buy:
-      switch (detail.value?.Order_StatusID) {
-        case OrderStatusNum.Matching:
-          return t('transaction.pairing');
-        case OrderStatusNum.Assigned:
-          return t('transaction.payment_required');
-        case OrderStatusNum.Committed:
-          return t('transaction.inProgress');
-        case OrderStatusNum.Appeal:
-          return t('transaction.appeal');
-        case OrderStatusNum.Complete:
-          return t('transaction.complete');
-        default:
-          return t('label.undefined');
-      }
-    case useNum.value.Sell:
-      switch (detail.value?.Order_StatusID) {
-        case OrderStatusNum.Matching:
-          return t('transaction.pairing');
-        case OrderStatusNum.Assigned:
-          return t('transaction.opponent_preparing');
-        case OrderStatusNum.Committed:
-          return t('transaction.need_confirm_payment');
-        case OrderStatusNum.Appeal:
-          return t('transaction.appeal');
-        case OrderStatusNum.Complete:
-          return t('transaction.complete');
-        default:
-          return t('label.undefined');
-      }
-    default:
-      return t('label.undefined');
-  }
-});
-</script>
 <template>
   <q-card class="q-pa-md" style="width: 380px">
     <q-inner-loading :showing="loading">
@@ -261,5 +180,92 @@ const statusInfo = computed(() => {
     </div>
   </q-card>
 </template>
+
+<script setup lang="ts">
+import { OrderStatusNum } from 'src/stores/live';
+import { MasterTypeNum, thousandTool } from 'src/utils/NumberTool';
+import { computed } from 'vue';
+import dayjs from 'dayjs';
+import { useI18n } from 'vue-i18n';
+import { AccNum } from 'src/pages/account/api';
+import api from '../api';
+import { useRoute } from 'vue-router';
+import { useStorage } from 'vue3-storage';
+import CopyButton from 'src/components/CopyButton.vue';
+//
+const { t } = useI18n();
+
+// DOM
+enum ClientNum {
+  Buy = MasterTypeNum.Sell,
+  Sell = MasterTypeNum.Buy,
+}
+
+// query
+const { data: detail, loading } = api.useDetail({
+  Token: useRoute()?.query?.token as string,
+});
+
+// compute
+const useNum = computed(() =>
+  useStorage().getStorageSync('isAgent') ? ClientNum : MasterTypeNum
+);
+
+const usdtFormat = computed(() => {
+  if (!detail.value) return '0';
+  if (detail.value.MasterType === useNum.value.Buy) {
+    return thousandTool(Math.abs(detail.value.UsdtAmt), 'USDT');
+  }
+  return '-' + thousandTool(Math.abs(detail.value.UsdtAmt ?? 0), 'USDT');
+});
+const orderInfo = computed(() => {
+  switch (detail.value?.MasterType) {
+    case useNum.value.Buy:
+      return { label: t('label.buy'), color: 'blue-13' };
+    case useNum.value.Sell:
+      return { label: t('label.sell'), color: 'red' };
+    default: {
+      return { label: t('label.undefined'), color: 'purple' };
+    }
+  }
+});
+
+const statusInfo = computed(() => {
+  switch (Number(detail.value?.MasterType)) {
+    case useNum.value.Buy:
+      switch (detail.value?.Order_StatusID) {
+        case OrderStatusNum.Matching:
+          return t('transaction.pairing');
+        case OrderStatusNum.Assigned:
+          return t('transaction.payment_required');
+        case OrderStatusNum.Committed:
+          return t('transaction.inProgress');
+        case OrderStatusNum.Appeal:
+          return t('transaction.appeal');
+        case OrderStatusNum.Complete:
+          return t('transaction.complete');
+        default:
+          return t('label.undefined');
+      }
+    case useNum.value.Sell:
+      switch (detail.value?.Order_StatusID) {
+        case OrderStatusNum.Matching:
+          return t('transaction.pairing');
+        case OrderStatusNum.Assigned:
+          return t('transaction.opponent_preparing');
+        case OrderStatusNum.Committed:
+          return t('transaction.need_confirm_payment');
+        case OrderStatusNum.Appeal:
+          return t('transaction.appeal');
+        case OrderStatusNum.Complete:
+          return t('transaction.complete');
+        default:
+          return t('label.undefined');
+      }
+    default:
+      return t('label.undefined');
+  }
+});
+</script>
 
 <style scoped></style>

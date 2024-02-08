@@ -15,21 +15,18 @@ type LoginRes = {
 
 const storage = useStorage();
 
-type UseProps = {
-  onSuccess: (res: VirgilRes<LoginRes> | undefined) => void;
-};
-export const useLogin = ({ onSuccess }: UseProps) =>
-  requestProvider<LoginRes, LoginProps>({
-    reqFn: (props) => {
-      const request = axiosProvider
-        .post('/login.aspx', props)
-        .then(({ data }) => data);
-      return request;
-    },
-    isManual: true,
+export const useLogin = ({ ...useProps }: UseProps) =>
+  requestProvider<LoginRes, LoginProps>((props) => {
+    const request = axiosProvider
+      .post('/login.aspx', props)
+      .then(({ data }) => data);
+    return request;
+  }, {
+    manual: true,
+    ...useProps,
     onSuccess: (res) => {
       storage.setStorageSync('isAgent', res?.data.isAgent);
       storage.setStorageSync('login_session', res?.data.login_session);
-      onSuccess(res);
+      if (useProps.onSuccess) useProps.onSuccess(res);
     }
   });

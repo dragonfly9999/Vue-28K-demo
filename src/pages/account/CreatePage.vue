@@ -148,7 +148,7 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { AccNum, AccRes } from './api/useAccHistory';
+import { AccNum, type AccRes } from './api/useAccHistory';
 import { useRouter } from 'vue-router';
 import { useSetAcc } from './api';
 import CancelVerification from 'src/components/CancelVerification.vue';

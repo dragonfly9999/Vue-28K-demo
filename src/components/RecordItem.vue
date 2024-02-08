@@ -1,97 +1,3 @@
-<script setup lang="ts">
-import { MasterTypeNum, thousandTool } from 'src/utils/NumberTool';
-import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import dayjs from 'dayjs';
-import RecordDetail from './RecordDetail.vue';
-import { useStateStore } from 'src/stores';
-import { useStorage } from 'vue3-storage';
-const props = defineProps<{
-  order: OrderRecord | ExpiredOrder;
-  isExpired?: boolean;
-}>();
-
-//
-const { t } = useI18n();
-const { currency } = useStateStore();
-const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
-// DOM
-const detailVisible = ref(false);
-const recordInfo = computed(() => {
-  if (isAgent.value && props.isExpired) {
-    switch (props.order.MasterType) {
-      case MasterTypeNum.Sell:
-        return {
-          label: t(
-            `transaction_history.label.transaction_type.${MasterTypeNum.Buy}`
-          ),
-          color: 'blue-13',
-        };
-      case MasterTypeNum.Buy:
-        return {
-          label: t(
-            `transaction_history.label.transaction_type.${MasterTypeNum.Sell}`
-          ),
-          color: 'red',
-        };
-      case MasterTypeNum.TransOut:
-        return {
-          label: t(
-            `transaction_history.label.transaction_type.${MasterTypeNum.TransIn}`
-          ),
-          color: 'purple',
-        };
-      case MasterTypeNum.TransIn:
-        return {
-          label: t(
-            `transaction_history.label.transaction_type.${MasterTypeNum.TransOut}`
-          ),
-          color: 'purple',
-        };
-      default: {
-        return { label: t('label.undefined'), color: 'purple' };
-      }
-    }
-  }
-  switch (props.order.MasterType) {
-    case MasterTypeNum.Buy:
-      return {
-        label: t(
-          `transaction_history.label.transaction_type.${MasterTypeNum.Buy}`
-        ),
-        color: 'blue-13',
-      };
-    case MasterTypeNum.Sell:
-      return {
-        label: t(
-          `transaction_history.label.transaction_type.${MasterTypeNum.Sell}`
-        ),
-        color: 'red',
-      };
-    case MasterTypeNum.TransIn:
-      return {
-        label: t(
-          `transaction_history.label.transaction_type.${MasterTypeNum.TransIn}`
-        ),
-        color: 'purple',
-      };
-    case MasterTypeNum.TransOut:
-      return {
-        label: t(
-          `transaction_history.label.transaction_type.${MasterTypeNum.TransOut}`
-        ),
-        color: 'purple',
-      };
-    default: {
-      return { label: t('label.undefined'), color: 'purple' };
-    }
-  }
-});
-
-const date = computed(() =>
-  dayjs(props.order.Date).format('YYYY-MM-DD HH:mm:ss')
-);
-</script>
 <template>
   <q-item clickable v-ripple @click="() => (detailVisible = true)">
     <q-item-section class="q-pa-xs">
@@ -194,5 +100,100 @@ const date = computed(() =>
     </q-dialog>
   </q-item>
 </template>
+
+<script setup lang="ts">
+import { MasterTypeNum, thousandTool } from 'src/utils/NumberTool';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import dayjs from 'dayjs';
+import RecordDetail from './RecordDetail.vue';
+import { useStateStore } from 'src/stores';
+import { useStorage } from 'vue3-storage';
+const props = defineProps<{
+  order: OrderRecord | ExpiredOrder;
+  isExpired?: boolean;
+}>();
+
+//
+const { t } = useI18n();
+const { currency } = useStateStore();
+const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
+// DOM
+const detailVisible = ref(false);
+const recordInfo = computed(() => {
+  if (isAgent.value && props.isExpired) {
+    switch (props.order.MasterType) {
+      case MasterTypeNum.Sell:
+        return {
+          label: t(
+            `transaction_history.label.transaction_type.${MasterTypeNum.Buy}`
+          ),
+          color: 'blue-13',
+        };
+      case MasterTypeNum.Buy:
+        return {
+          label: t(
+            `transaction_history.label.transaction_type.${MasterTypeNum.Sell}`
+          ),
+          color: 'red',
+        };
+      case MasterTypeNum.TransOut:
+        return {
+          label: t(
+            `transaction_history.label.transaction_type.${MasterTypeNum.TransIn}`
+          ),
+          color: 'purple',
+        };
+      case MasterTypeNum.TransIn:
+        return {
+          label: t(
+            `transaction_history.label.transaction_type.${MasterTypeNum.TransOut}`
+          ),
+          color: 'purple',
+        };
+      default: {
+        return { label: t('label.undefined'), color: 'purple' };
+      }
+    }
+  }
+  switch (props.order.MasterType) {
+    case MasterTypeNum.Buy:
+      return {
+        label: t(
+          `transaction_history.label.transaction_type.${MasterTypeNum.Buy}`
+        ),
+        color: 'blue-13',
+      };
+    case MasterTypeNum.Sell:
+      return {
+        label: t(
+          `transaction_history.label.transaction_type.${MasterTypeNum.Sell}`
+        ),
+        color: 'red',
+      };
+    case MasterTypeNum.TransIn:
+      return {
+        label: t(
+          `transaction_history.label.transaction_type.${MasterTypeNum.TransIn}`
+        ),
+        color: 'purple',
+      };
+    case MasterTypeNum.TransOut:
+      return {
+        label: t(
+          `transaction_history.label.transaction_type.${MasterTypeNum.TransOut}`
+        ),
+        color: 'purple',
+      };
+    default: {
+      return { label: t('label.undefined'), color: 'purple' };
+    }
+  }
+});
+
+const date = computed(() =>
+  dayjs(props.order.Date).format('YYYY-MM-DD HH:mm:ss')
+);
+</script>
 
 <style scoped></style>

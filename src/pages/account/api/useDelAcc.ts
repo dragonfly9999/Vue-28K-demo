@@ -5,17 +5,12 @@ type DelProps = {
   H_id: number;
 };
 
-type UseProps = {
-  onSuccess?: () => void;
-  noFeedback?: boolean;
-};
 
-export const useDelAcc = (props: UseProps) =>
-  requestProvider<null, DelProps>({
-    reqFn: (props) =>
-      axiosProvider
-        .post('/Req_AgentAccHistory.aspx', props)
-        .then(({ data }) => data),
-    isManual: true,
-    ...props
+export const useDelAcc = ({...useProps}: UseProps ) =>
+  requestProvider<null, DelProps>((props) =>
+  axiosProvider
+    .post('/Req_AgentAccHistory.aspx', props)
+    .then(({ data }) => data),{
+    ...useProps,
+    manual: true,
   });

@@ -14,14 +14,13 @@ type SellProps = {
 };
 
 export const useSell1 = ({ ...useProps }: UseProps<SellRes>) => {
-  const vueRequest = requestProvider<SellRes, SellProps>({
-    reqFn: (props) => {
-      const request = axiosProvider
-        .post('/req_sell1.aspx', props)
-        .then(({ data }) => data);
-      return request;
-    },
-    isManual: true,
+  const vueRequest = requestProvider<SellRes, SellProps>((props) => {
+    const request = axiosProvider
+      .post('/req_sell1.aspx', props)
+      .then(({ data }) => data);
+    return request;
+  },{
+    manual: true,
     ...useProps
   });
 

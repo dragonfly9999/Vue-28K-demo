@@ -26,8 +26,8 @@
         </div>
         <!-- 我要購買input -->
         <q-input
-          :loading="getRatesLoad()"
-          :disable="getRatesLoad()"
+          :loading="ratesRequest.loading"
+          :disable="ratesRequest.loading"
           :label="$t('transaction.我要購買')"
           outlined
           :model-value="form.UsdtAmt"
@@ -40,7 +40,7 @@
             (val) => {
               form.UsdtAmt = thousandInput(val);
               price = thousandTool(
-                numberTool(val) * numberTool(getRates()?.RMB_BUY),
+                numberTool(val) * numberTool(ratesRequest.data?.RMB_BUY),
                 'CNY'
               );
             }
@@ -60,7 +60,7 @@
         <div class="text-right text-caption q-pr-sm text-grey-7">
           1 USDT
           <span class="text-primary"
-            >≈ {{ getRates()?.RMB_BUY }} {{ currency }}
+            >≈ {{ formatRates.buy }} {{ currency }}
           </span>
         </div>
       </div>
@@ -73,15 +73,15 @@
       <div class="q-mt-md">
         <q-input
           :label="$t('transaction.我將支付')"
-          :loading="getRatesLoad()"
-          :disable="getRatesLoad()"
+          :loading="ratesRequest.loading"
+          :disable="ratesRequest.loading"
           outlined
           :model-value="price"
           @update:model-value="
             (val) => {
               price = thousandInput(val);
               form.UsdtAmt = thousandTool(
-                numberTool(val) / numberTool(getRates()?.RMB_BUY),
+                numberTool(val) / numberTool(ratesRequest.data?.RMB_BUY),
                 'USDT'
               );
             }
@@ -236,7 +236,7 @@ const { pendingInstant } = usePendingStore();
 const { setOrderWs } = useOrderStore();
 const { setWebSockets } = useThirdStore();
 
-const { getRates, getRatesLoad, currency, onRatesSuccess } = useStateStore();
+const { ratesRequest, formatRates, currency, onRatesSuccess } = useStateStore();
 const flag = new URL(`../../../../assets/${currency}.png`, import.meta.url)
   .href;
 // DOM state
@@ -253,7 +253,7 @@ const { run: create, loading } = useBuy1({
     pairWarn.value = false;
     const token = res?.data.order_token;
     pendingInstant.refresh();
-    useStateStore().refreshBalance();
+    ratesRequest.refresh();
     if (token) {
       setOrderWs(token);
       setWebSockets(token);
@@ -285,7 +285,7 @@ onMounted(() => {
     form.ClientName = 'test Buy' + dayjs().format('MM.DD HH:ss');
     form.UsdtAmt = '100';
     isPassTwenty.value = true;
-    const rates = getRates();
+    const rates = ratesRequest.tempData;
     if (rates) {
       price.value = thousandInput(
         numberTool(form.UsdtAmt) * numberTool(rates.RMB_BUY)

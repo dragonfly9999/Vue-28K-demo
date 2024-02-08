@@ -11,7 +11,7 @@
             <q-img :src="logo" width="122px" height="30px" />
           </div>
 
-          <RateBar :rate="getRates()" />
+          <RateBar />
         </div>
         <NavBar />
       </div>
@@ -94,7 +94,7 @@
                 {{ t('rate.buy') }}
               </div>
               <div class="text-right text-weight-bold text-blue-13">
-                {{ getRates()?.RMB_BUY }}
+                {{ formatRates.buy }}
               </div>
             </div>
 
@@ -103,7 +103,7 @@
                 {{ t('rate.sell') }}
               </div>
               <div class="text-right text-weight-bold text-red">
-                {{ getRates()?.RMB_SELL }}
+                {{ formatRates.sell }}
               </div>
             </div>
           </div>
@@ -250,24 +250,19 @@ import { useStorage } from 'vue3-storage';
 import RateBar from 'src/components/RateBar.vue';
 import NavBar from 'src/components/NavBar.vue';
 import logo from 'src/assets/logo_easy.png';
+import api from '../api';
 
-const { updateAuto, getRates } = useStateStore();
 const router = useRouter();
 const { t } = useI18n();
 const storage = useStorage();
 const i18n = useI18n();
 // DOM
-const drawerRight = ref(false);
+const { formatRates } = useStateStore();
 const isAgent = computed(() => storage.getStorageSync('isAgent'));
+const drawerRight = ref(false);
 
-const logout = () => {
-  if (useStorage().getStorageSync('isAgent')) {
-    updateAuto(0);
-  }
-  setTimeout(() => {
-    router.push({ name: 'login' });
-  }, 100);
-};
+// request
+const { run: logout } = api.useLogout({});
 </script>
 
 <style scoped></style>

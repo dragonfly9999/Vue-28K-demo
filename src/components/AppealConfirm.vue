@@ -1,10 +1,3 @@
-<script setup lang="ts">
-import { useRoute } from 'vue-router';
-import { useAppeal } from './api';
-
-const route = useRoute();
-const { run: appeal } = useAppeal();
-</script>
 <template>
   <q-card class="q-pa-md q-gutter-y-sm" style="width: 360px">
     <!-- title是否要申訴 -->
@@ -29,5 +22,15 @@ const { run: appeal } = useAppeal();
     </q-card-actions>
   </q-card>
 </template>
+
+<script setup lang="ts">
+import { useRoute } from 'vue-router';
+import { useAppeal } from './api';
+
+const route = useRoute();
+
+// request
+const { run: appeal } = useAppeal();
+</script>
 
 <style scoped></style>

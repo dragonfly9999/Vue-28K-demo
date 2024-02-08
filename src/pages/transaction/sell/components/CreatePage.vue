@@ -33,14 +33,14 @@
               {{ $t('transaction.餘額') }}
             </div>
             <div class="text-green-9 text-subtitle2">
-              {{ thousandTool(getBalance()?.Avb_Balance, 'CNY') }}
+              {{ formatBalances.available }}
             </div>
           </div>
         </div>
 
         <q-btn-group spread class="no-shadow">
           <q-btn
-            :disable="getBalanceLoad()"
+            :loading="balanceRequest.loading"
             outline
             size="sm"
             color="primary"
@@ -51,12 +51,13 @@
             @click="
               () => {
                 const usdt = thousandTool(
-                  numberTool(getBalance()?.Avb_Balance) * (percent / 100),
+                  numberTool(balanceRequest.data?.Avb_Balance) *
+                    (percent / 100),
                   'USDT'
                 );
                 form.UsdtAmt = usdt;
                 price = thousandTool(
-                  numberTool(usdt) * numberTool(getRates()?.RMB_SELL),
+                  numberTool(usdt) * numberTool(ratesRequest.data?.RMB_SELL),
                   'CNY'
                 );
               }
@@ -82,7 +83,7 @@
             (val) => {
               form.UsdtAmt = thousandInput(val);
               price = thousandTool(
-                numberTool(val) * numberTool(getRates()?.RMB_SELL),
+                numberTool(val) * numberTool(ratesRequest.data?.RMB_SELL),
                 'CNY'
               );
             }
@@ -97,7 +98,7 @@
         <div class="text-right text-caption q-pr-sm text-grey-7">
           1 USDT
           <span class="text-primary"
-            >≈ {{ getRates()?.RMB_SELL + ' ' + currency }}</span
+            >≈ {{ ratesRequest.data?.RMB_SELL + ' ' + currency }}</span
           >
         </div>
       </div>
@@ -112,7 +113,7 @@
       <!-- 收到的法幣數量 -->
       <div class="q-mt-md">
         <q-input
-          :disable="getRatesLoad()"
+          :disable="ratesRequest.loading"
           outlined
           :label="$t('transaction.我將收到')"
           :model-value="price"
@@ -120,7 +121,7 @@
             (val) => {
               price = thousandInput(val);
               form.UsdtAmt = thousandTool(
-                numberTool(val) / numberTool(getRates()?.RMB_SELL),
+                numberTool(val) / numberTool(ratesRequest.data?.RMB_SELL),
                 'CNY'
               );
             }
@@ -283,24 +284,25 @@
 import StepperMaster from 'src/components/StepperMaster.vue';
 import { usePendingStore, useStateStore } from 'src/stores';
 import { numberTool, thousandInput, thousandTool } from 'src/utils/NumberTool';
-import { onMounted, reactive, ref } from 'vue';
+import { onMounted, reactive, ref, toRefs } from 'vue';
 import 'vue-i18n';
 import CreateWarn from '../../buy/components/CreateWarn.vue';
 import { useSell1 } from '../api';
 import { useRouter } from 'vue-router';
 
 const {
-  getBalance,
-  getRates,
   currency,
-  getBalanceLoad,
-  getRatesLoad,
   onRatesSuccess,
-} = useStateStore();
+  ratesRequest,
+  balanceRequest,
+  formatBalances,
+} = toRefs(useStateStore());
 const router = useRouter();
 const { pendingInstant } = usePendingStore();
-const flag = new URL(`../../../../assets/${currency}.png`, import.meta.url)
-  .href;
+const flag = new URL(
+  `../../../../assets/${currency.value}.png`,
+  import.meta.url
+).href;
 const isTest = import.meta.env.DEV;
 // DOM
 const form = reactive({
@@ -319,7 +321,7 @@ const { run: create, loading } = useSell1({
     createWarn.value = false;
     const token = res?.data.order_token;
     pendingInstant.refresh();
-    useStateStore().refreshBalance();
+    balanceRequest.value.refresh();
     if (token) {
       router.push({ name: 'sell', query: { token } });
     }
@@ -330,7 +332,7 @@ const { run: create, loading } = useSell1({
 onMounted(() => {
   // 開發時自動填入
   if (isTest) {
-    onRatesSuccess.test = (rates) => {
+    onRatesSuccess.value.test = (rates) => {
       setTimeout(() => {
         price.value = rates?.RMB_SELL
           ? numberTool(form.UsdtAmt) * numberTool(rates.RMB_SELL)
@@ -344,8 +346,7 @@ onMounted(() => {
     form.BankName = '美麗銀行';
     form.UsdtAmt = '100';
     isPassTwenty.value = true;
-    const rates = getRates();
-
+    const rates = ratesRequest.value.tempData;
     if (rates) {
       price.value = numberTool(form.UsdtAmt) * numberTool(rates.RMB_SELL);
     }

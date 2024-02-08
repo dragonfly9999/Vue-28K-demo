@@ -1,24 +1,28 @@
 import { axiosProvider } from 'src/utils/axiosProvider';
 import { requestProvider } from 'src/utils/requestProvider';
 
-type CheckRes = {
-  nothing: string;
-};
+type CheckRes = unknown;
+
 type CheckProps = {
   ToAddress: string;
 };
 
-type UseProps = {
-  onSuccess: () => void;
-  onError: () => void;
-};
 
-export const useCheckTrc = (props?: UseProps) =>
-  requestProvider<CheckRes, CheckProps>({
-    reqFn: (props) =>
-      axiosProvider
-        .post('/ChkToAddressValid2.aspx', props)
-        .then(({ data }) => data),
-    isManual: true,
-    ...props
+export default ({ ...useProps }: UseProps<CheckRes, CheckProps>) => {
+  const vueRequest =   requestProvider<CheckRes, CheckProps>((props) => {
+    const request = axiosProvider
+      .post('/ChkToAddressValid2.aspx', props)
+      .then(({ data }) => data)
+
+    return request;
+  },{
+    ...useProps,
+    manual: true,
+  }, {
+    noFeedback: true,
+    noTempData: true,
   });
+
+  return vueRequest
+}
+

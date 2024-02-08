@@ -8,7 +8,7 @@ import { useStorage } from 'vue3-storage';
 const router = useRouter();
 const i18n = useI18n();
 const { t } = useI18n();
-const { getRates } = useStateStore();
+const { formatRates } = useStateStore();
 const storage = useStorage();
 // DOM
 const drawerRight = ref(true);
@@ -41,7 +41,7 @@ const drawerRight = ref(true);
                 {{ t('rate.buy') }}
               </div>
               <div class="text-right text-weight-bold text-blue-13">
-                {{ getRates()?.RMB_BUY }}
+                {{ formatRates.buy }}
               </div>
             </div>
 
@@ -50,7 +50,7 @@ const drawerRight = ref(true);
                 {{ t('rate.sell') }}
               </div>
               <div class="text-right text-weight-bold text-red">
-                {{ getRates()?.RMB_SELL }}
+                {{ formatRates.sell }}
               </div>
             </div>
           </div>

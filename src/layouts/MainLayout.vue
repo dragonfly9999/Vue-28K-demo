@@ -20,10 +20,11 @@
                 <q-spinner-ios
                   color="blue-13"
                   size="1em"
-                  v-if="getBalanceLoad()"
+                  v-if="balanceRequest.loading"
                 />
                 <div class="text-green-9">
-                  {{ thousandTool(getBalance()?.Real_Balance, 'USDT') }} USDT
+                  {{ formatBalances?.actual }}
+                  USDT
                 </div>
               </div>
             </div>
@@ -35,10 +36,11 @@
                 <q-spinner-ios
                   color="blue-13"
                   size="1em"
-                  v-if="getBalanceLoad()"
+                  v-if="balanceRequest.loading"
                 />
                 <div class="text-green-9">
-                  {{ thousandTool(getBalance()?.Avb_Balance, 'USDT') }} USDT
+                  {{ formatBalances?.available }}
+                  USDT
                 </div>
               </div>
             </div>
@@ -63,7 +65,6 @@
 
 <script setup lang="ts">
 import NoHintWarn from './components/NoHintWarn.vue';
-import { thousandTool } from 'src/utils/NumberTool';
 import { useRouter } from 'vue-router';
 import ProgressBtn from './components/ProgressBtn.vue';
 import HeaderMaster from './components/HeaderMaster.vue';
@@ -86,17 +87,18 @@ import { useKeyStore } from 'src/stores/key';
 import hooks from 'src/hooks';
 
 //
-const { getBalance, getBalanceLoad, refreshBalance } = useStateStore();
+const { balanceRequest, formatBalances } = useStateStore();
+
 const { handleRemove, handelSet } = useKeyStore();
 const { hint } = toRefs(useThirdStore());
 const { setOnMessage, setLiveOrderWs, setPendingOrderWs } = useLiveStore();
 const router = useRouter();
 const vueStorage = useStorage();
 // DOM
-const instantAudio = ref();
-const matchAudio = ref();
-const paymentAudio = ref();
-const appealAudio = ref();
+const instantAudio = ref<HTMLAudioElement>();
+const matchAudio = ref<HTMLAudioElement>();
+const paymentAudio = ref<HTMLAudioElement>();
+const appealAudio = ref<HTMLAudioElement>();
 const noHintWarn = ref(false);
 const handleResetSound = () => {
   if (instantAudio?.value) {
@@ -121,7 +123,6 @@ const handleResetSound = () => {
 onMounted(() => {
   setLiveOrderWs();
   setPendingOrderWs();
-  refreshBalance();
 
   // hint
   const isAgent = vueStorage.getStorageSync('isAgent');

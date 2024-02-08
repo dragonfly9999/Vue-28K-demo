@@ -9,16 +9,17 @@ type CheckProps = {
 };
 
 export default ({ ...useProps }: UseProps) => {
-  const vueRequest = requestProvider<CheckRes, CheckProps>({
-    reqFn: (props) => {
-      const request = axiosProvider
-        .post('ChkLoginExists.aspx', props)
-        .then(({ data }) => data);
-      return request;
-    },
-    isManual: true,
-    noFeedback: true,
-    ...useProps
+  const vueRequest = requestProvider<CheckRes, CheckProps>((props) => {
+    const request = axiosProvider
+      .post('ChkLoginExists.aspx', props)
+      .then(({ data }) => data);
+    return request;
+  },{
+    manual: true,
+    ...useProps,
+  }, {
+    noErrorNotify: true,
+    noTempData: true,
   });
 
   return vueRequest;

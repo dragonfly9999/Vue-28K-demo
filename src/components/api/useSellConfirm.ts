@@ -10,8 +10,7 @@ type ConfirmProps = {
 };
 
 export const useSellConfirm = () =>
-  requestProvider<ConfirmRes, ConfirmProps>({
-    reqFn: (props) =>
-      axiosProvider.post('Req_BuyMatch2.aspx', props).then(({ data }) => data),
-    isManual: true
+  requestProvider<ConfirmRes, ConfirmProps>((props) =>
+    axiosProvider.post('Req_BuyMatch2.aspx', props).then(({ data }) => data),{
+    manual: true,
   });

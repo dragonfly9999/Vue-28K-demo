@@ -1,7 +1,3 @@
-<script setup lang="ts">
-import { thousandTool } from 'src/utils/NumberTool';
-defineProps<{ order?: OrderStatus }>();
-</script>
 <template>
   <div class="flex items-center q-gutter-sm q-mb-md">
     <!-- 匯率 -->
@@ -42,5 +38,10 @@ defineProps<{ order?: OrderStatus }>();
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import { thousandTool } from 'src/utils/NumberTool';
+defineProps<{ order?: OrderStatus }>();
+</script>
 
 <style scoped></style>

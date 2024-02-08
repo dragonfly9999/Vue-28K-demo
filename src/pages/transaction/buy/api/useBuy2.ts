@@ -12,9 +12,8 @@ type UseProps = {
   onSuccess: (arg: VirgilRes<BuyRes> | undefined) => void;
 };
 export const useBuy2 = (props?: UseProps) =>
-  requestProvider<BuyRes, BuyProps>({
-    reqFn: (props) =>
-      axiosProvider.post('/Req_Buy2.aspx', props).then(({ data }) => data),
-    isManual: true,
-    ...props
+  requestProvider<BuyRes, BuyProps>((props) =>
+  axiosProvider.post('/Req_Buy2.aspx', props).then(({ data }) => data),{
+    ...props,
+    manual: true,
   });

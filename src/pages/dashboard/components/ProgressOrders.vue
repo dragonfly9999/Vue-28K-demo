@@ -1,20 +1,3 @@
-<script setup lang="ts">
-import OrderItem from 'src/components/OrderItem.vue';
-import { useLiveStore } from 'src/stores';
-import { useI18n } from 'vue-i18n';
-import dayjs from 'dayjs';
-import { computed } from 'vue';
-
-const { t } = useI18n();
-// DOM
-const orders = computed(
-  () =>
-    useLiveStore()
-      .getOrders('progress')
-      ?.sort((a, b) => (dayjs(b.CreateDate).isAfter(a.CreateDate) ? 1 : -1)) ??
-    []
-);
-</script>
 <template>
   <q-list>
     <OrderItem
@@ -34,4 +17,20 @@ const orders = computed(
   </q-list>
 </template>
 
-<style scoped></style>
+<script setup lang="ts">
+import OrderItem from 'src/components/OrderItem.vue';
+import { useLiveStore } from 'src/stores';
+import { useI18n } from 'vue-i18n';
+import dayjs from 'dayjs';
+import { computed } from 'vue';
+
+const { t } = useI18n();
+// DOM
+const orders = computed(
+  () =>
+    useLiveStore()
+      .getOrders('progress')
+      ?.sort((a, b) => (dayjs(b.CreateDate).isAfter(a.CreateDate) ? 1 : -1)) ??
+    []
+);
+</script>

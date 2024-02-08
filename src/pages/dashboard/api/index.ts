@@ -1,1 +1,5 @@
-export { useHisotry } from './useHistory';
+import useHistory from './useHistory';
+
+export default {
+  useHistory
+};

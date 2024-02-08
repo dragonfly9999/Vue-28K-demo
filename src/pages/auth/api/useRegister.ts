@@ -8,25 +8,24 @@ type RegisterProps = {
 };
 
 export default ({ ...useProps }: UseProps) => {
-  const vueRequest = requestProvider<RegisterRes, RegisterProps>({
-    reqFn: (props) => {
-      const vueStorage = useStorage();
-      const registerStorage = vueStorage.getStorageSync<{
-        phone: string;
-        countryCode: number;
-        token: string;
-      }>('register');
-      const request = axiosProvider
-        .post('/req_RegClient.aspx', {
-          ...props,
-          reg_countrycode: registerStorage?.countryCode.toString(),
-          reg_tel: registerStorage?.phone.replace(/^0/, ''),
-          reg_token: registerStorage?.token
-        })
-        .then(({ data }) => data);
-      return request;
-    },
-    isManual: true,
+  const vueRequest = requestProvider<RegisterRes, RegisterProps>((props) => {
+    const vueStorage = useStorage();
+    const registerStorage = vueStorage.getStorageSync<{
+      phone: string;
+      countryCode: number;
+      token: string;
+    }>('register');
+    const request = axiosProvider
+      .post('/req_RegClient.aspx', {
+        ...props,
+        reg_countrycode: registerStorage?.countryCode.toString(),
+        reg_tel: registerStorage?.phone.replace(/^0/, ''),
+        reg_token: registerStorage?.token
+      })
+      .then(({ data }) => data);
+    return request;
+  },{
+    manual: true,
     ...useProps
   });
 
