@@ -94,7 +94,7 @@ import { thousandTool } from 'src/utils/NumberTool';
 import dayjs from 'dayjs';
 import { useThirdStore } from 'src/stores';
 import { computed } from 'vue';
-import StatusMaster from 'src/pages/transaction/components/StatusMaster.vue';
+import StatusMaster from 'src/pages/trade/TradingComponents/StatusMaster.vue';
 import { MtTypeNum } from 'src/stores/live';
 import { useRoute } from 'vue-router';
 

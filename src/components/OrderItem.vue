@@ -105,7 +105,7 @@ import {
   useThirdStore,
 } from 'src/stores';
 import { copyToClipboard, useQuasar } from 'quasar';
-import StatusMaster from 'src/pages/transaction/components/StatusMaster.vue';
+import StatusMaster from 'src/pages/trade/TradingComponents/StatusMaster.vue';
 import { useRoute } from 'vue-router';
 const quasar = useQuasar();
 const props = defineProps<{

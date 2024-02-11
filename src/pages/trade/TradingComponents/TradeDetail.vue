@@ -91,12 +91,12 @@
           <q-separator />
           <!-- 收款方 -->
           <q-item style="min-height: 32px">
-            <q-item-label class="text-grey-6 text-caption">
+            <q-item-section class="text-grey-6">
               {{ $t('buy.bankInformation.amount_name') }}
-            </q-item-label>
-            <q-item-label>
-              <PunctuationMaster :label="detail?.P2?.split('|')?.[0]" />
-            </q-item-label>
+            </q-item-section>
+            <q-item-section avatar>
+              {{ detail?.P2?.split('|')?.[0] }}
+            </q-item-section>
           </q-item>
           <!--帳號 -->
           <q-item style="min-height: 32px">

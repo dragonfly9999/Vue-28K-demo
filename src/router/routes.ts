@@ -17,7 +17,7 @@ const routes: RouteRecordRaw[] = [
     children: [
       {
         path: '/main',
-        redirect: import.meta.env.DEV ? '/main/account' : '/main/kyc'
+        redirect: import.meta.env.DEV ? '/auth/login' : '/auth/login'
       },
       {
         path: 'dashboard',
@@ -29,23 +29,23 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/trade/TradePage.vue'),
         name: 'trade',
       },
-      {
-        path: 'transaction',
-        component: () => import('layouts/TransactionLayout.vue'),
-        name: 'transaction',
-        children: [
-          {
-            path: 'buy',
-            component: () => import('pages/transaction/buy/BuyPage.vue'),
-            name: 'buy'
-          },
-          {
-            path: 'sell',
-            component: () => import('pages/transaction/sell/SellPage.vue'),
-            name: 'sell'
-          }
-        ]
-      },
+      // {
+      //   path: 'transaction',
+      //   component: () => import('layouts/TransactionLayout.vue'),
+      //   name: 'transaction',
+      //   children: [
+      //     {
+      //       path: 'buy',
+      //       component: () => import('pages/transaction/buy/BuyPage.vue'),
+      //       name: 'buy'
+      //     },
+      //     {
+      //       path: 'sell',
+      //       component: () => import('pages/transaction/sell/SellPage.vue'),
+      //       name: 'sell'
+      //     }
+      //   ]
+      // },
       {
         path: 'transfer',
         component: () => import('pages/transfer/TransferPage.vue'),

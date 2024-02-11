@@ -26,8 +26,8 @@ export default route(function (/* { store, ssrContext } */) {
     const vueStorage = useStorage();
 
     if (to.meta.requiresAuth) {
-
       const loginSession = vueStorage?.getStorageSync('login_session');
+
       if (!!loginSession) {
         next();
       } else {

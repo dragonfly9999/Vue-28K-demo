@@ -16,6 +16,9 @@ export default ({ ...useProps }: UseProps) => {
   },{
     ...useProps,
     manual: true,
+  }, {
+    noFeedback: true,
+    noTempData: true,
   });
 
   return vueRequest

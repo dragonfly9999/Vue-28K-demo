@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia';
 import { RecordDetail } from 'src/pages/trade/api';
-import { ref } from 'vue';
 
 type TransactionDetailsObj = {
   [token: string]: RecordDetail;
