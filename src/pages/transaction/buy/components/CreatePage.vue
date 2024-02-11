@@ -1,5 +1,5 @@
 <template>
-  <q-card class="q-pa-md">
+  <q-card class="q-pa-md full-width">
     <!-- Title -->
     <div class="row items-center">
       <div class="col-4">

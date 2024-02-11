@@ -87,11 +87,7 @@ import { useKeyStore } from 'src/stores/key';
 import hooks from 'src/hooks';
 
 //
-const { balanceRequest, formatBalances } = useStateStore();
 
-const { handleRemove, handelSet } = useKeyStore();
-const { hint } = toRefs(useThirdStore());
-const { setOnMessage, setLiveOrderWs, setPendingOrderWs } = useLiveStore();
 const router = useRouter();
 const vueStorage = useStorage();
 // DOM
@@ -119,7 +115,12 @@ const handleResetSound = () => {
   }
 };
 
-//
+// mutation
+const { balanceRequest, formatBalances } = useStateStore();
+const { handleRemove, handelSet } = useKeyStore();
+const { hint } = toRefs(useThirdStore());
+const { setOnMessage, setLiveOrderWs, setPendingOrderWs } = useLiveStore();
+// life cycle
 onMounted(() => {
   setLiveOrderWs();
   setPendingOrderWs();

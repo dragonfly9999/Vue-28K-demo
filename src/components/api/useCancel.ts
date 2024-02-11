@@ -28,6 +28,9 @@ export const useCancel = ({ ...useProps }: UseProps) => {
       q.loading.hide();
       if (useProps.onAfter) useProps.onAfter(params);
     }
+  }, {
+    noFeedback: true,
+    noTempData: true,
   });
 
   return vueRequest

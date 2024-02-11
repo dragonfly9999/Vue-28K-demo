@@ -210,12 +210,14 @@ const visible = reactive({
 
 // handlers
 const handleUpload = async (info: File) => {
+  const orderWS = getWebSocket(route.query.token as string);
+  if (orderWS === undefined) return;
   const base64 = await handleBoforeUpload(info);
   const sendObj = {
     Message: base64,
     Message_Type: 2,
   };
-  getWebSocket(route.query.token as string).send(JSON.stringify(sendObj));
+  orderWS?.send(JSON.stringify(sendObj));
   handleConfirm();
 };
 const handleConfirm = () => {

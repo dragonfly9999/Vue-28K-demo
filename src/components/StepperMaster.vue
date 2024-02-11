@@ -87,6 +87,18 @@
       <div class="text-grey-6">
         {{ $t('buy.step_hint_buy_text_3') }}
       </div>
+      <div v-if="isAgent" class="text-body2">
+        <q-separator />
+        <div class="flex full-width text-subtitle1">
+          <div class="q-pr-md">金額: {{ thousandInput(order?.D2) }}</div>
+          <div>USDT: {{ thousandInput(order?.UsdtAmt) }}</div>
+        </div>
+        <span class="text-h6 text-weight-bold text-blue"> 收款方 </span>
+        <div>姓名: {{ order?.P2 }}</div>
+        <div>銀行帳號: {{ order?.P1 }}</div>
+        <div>銀行名稱: {{ order?.P3 }}</div>
+        <div>所在省市: {{ order?.P4 }}</div>
+      </div>
     </q-step>
 
     <q-step :name="4" prefix="4" title="步驟四" :done="stepFormat > 4">
@@ -102,7 +114,7 @@
 
 <script setup lang="ts">
 import { OrderStatusNum } from 'src/stores/live';
-import { MasterTypeNum } from 'src/utils/NumberTool';
+import { MasterTypeNum, thousandInput } from 'src/utils/NumberTool';
 import { computed } from 'vue';
 import { useStorage } from 'vue3-storage';
 const props = defineProps<{ order?: OrderStatus }>();

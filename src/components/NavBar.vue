@@ -1,27 +1,3 @@
-<script setup lang="ts">
-import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
-import { useStorage } from 'vue3-storage';
-
-const router = useRouter();
-const { t } = useI18n();
-const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
-const features = computed(() => [
-  {
-    name: 'transfer',
-    icon: 'move_up',
-  },
-  {
-    name: 'wallet',
-    icon: 'account_balance_wallet',
-  },
-  {
-    name: 'history',
-    icon: 'receipt_long',
-  },
-]);
-</script>
 <template>
   <q-btn-dropdown
     v-if="!isAgent"
@@ -35,7 +11,13 @@ const features = computed(() => [
       <q-item
         clickable
         v-close-popup
-        @click="() => router.push({ name: 'buy' })"
+        @click="
+          () =>
+            router.push({
+              name: 'trade',
+              query: { type: 'buy', action: 'create' },
+            })
+        "
       >
         <q-item-section>
           <q-item-label class="q-px-md">{{ t('購買') }}</q-item-label>
@@ -45,7 +27,13 @@ const features = computed(() => [
       <q-item
         clickable
         v-close-popup
-        @click="() => router.push({ name: 'sell' })"
+        @click="
+          () =>
+            router.push({
+              name: 'trade',
+              query: { type: 'sell', action: 'create' },
+            })
+        "
       >
         <q-item-section>
           <q-item-label class="q-px-md">{{ t('出售') }}</q-item-label>
@@ -75,5 +63,30 @@ const features = computed(() => [
     {{ t(`label.account`) }}
   </q-btn>
 </template>
+
+<script setup lang="ts">
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+import { useStorage } from 'vue3-storage';
+
+const router = useRouter();
+const { t } = useI18n();
+const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
+const features = computed(() => [
+  {
+    name: 'transfer',
+    icon: 'move_up',
+  },
+  {
+    name: 'wallet',
+    icon: 'account_balance_wallet',
+  },
+  {
+    name: 'history',
+    icon: 'receipt_long',
+  },
+]);
+</script>
 
 <style scoped></style>

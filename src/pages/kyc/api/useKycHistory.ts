@@ -1,6 +1,5 @@
 import { axiosProvider } from 'src/utils/axiosProvider';
 import { requestProvider } from 'src/utils/requestProvider';
-import { ref } from 'vue';
 
 type BankSetRes = {
   P1: string;
@@ -15,12 +14,10 @@ type BankSetRes = {
 type FormatKycOptions = BankSetRes;
 
 export default ({ ...useProps }: UseProps<Array<BankSetRes>>) => {
-  const tempKycs = ref<Array<FormatKycOptions>>([]);
   const vueRequest = requestProvider<Array<BankSetRes>>(() => {
     const request = axiosProvider
       .get('/Get_UserBankSet.aspx')
       .then(({ data }) => {
-        tempKycs.value = data;
         return data;
       });
     return request;
@@ -28,7 +25,7 @@ export default ({ ...useProps }: UseProps<Array<BankSetRes>>) => {
     ...useProps,
     manual: false,
   });
-  return { vueRequest, tempKycs };
+  return vueRequest
 };
 
 export type { FormatKycOptions };

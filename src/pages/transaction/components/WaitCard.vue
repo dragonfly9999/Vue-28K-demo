@@ -37,8 +37,8 @@
     />
   </q-card>
 
-  <q-dialog v-model="cancelConfirm"
-    ><q-card class="q-pa-md q-gutter-y-sm" style="width: 360px">
+  <q-dialog v-model="cancelConfirm">
+    <q-card class="q-pa-md q-gutter-y-sm" style="width: 360px">
       <!-- title 是否要取消訂單-->
       <div>{{ $t('transaction.cancelWarn.title') }}</div>
       <div class="flex items-baseline no-wrap">

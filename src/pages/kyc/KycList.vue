@@ -43,6 +43,6 @@
 <script setup lang="ts">
 import api from './api';
 import useTabs from './useTabs';
-const { tempKycs } = api.useKycHistory({});
+const { tempData: tempKycs } = api.useKycHistory({});
 const { statusTab, statusTabOptions } = useTabs();
 </script>

@@ -1,8 +1,11 @@
 <template>
-  <div class="col-12 column items-center" v-if="!orderStatus">
-    <CreatePage />
+  <div class="col-12 q-px-md test_dotted" v-if="!orderStatus">
+    <div class="column items-center test_dotted">
+      <CreatePage />
+    </div>
   </div>
-  <div class="col-xs-12 col-lg-8 column items-center" v-else>
+
+  <div class="col-xs-8 col-12 q-px-md" v-else>
     <AssignedPage
       v-if="
         [OrderStatusNum.Appeal, OrderStatusNum.Assigned].includes(

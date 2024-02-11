@@ -15,8 +15,8 @@
               )
             "
             :color="recordInfo.color"
-            >USDT/{{ currency }}</q-badge
-          >
+            >USDT/{{ currency }}
+          </q-badge>
         </div>
         <q-space />
 
@@ -95,9 +95,12 @@
         </div>
       </div>
     </q-item-section>
-    <q-dialog v-model="detailVisible">
-      <RecordDetail :record="order" :is-expired="isExpired" />
-    </q-dialog>
+
+    <RecordDetail
+      v-model:visible="detailVisible"
+      :record="order"
+      :is-expired="isExpired"
+    />
   </q-item>
 </template>
 
@@ -117,9 +120,10 @@ const props = defineProps<{
 //
 const { t } = useI18n();
 const { currency } = useStateStore();
-const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
+
 // DOM
 const detailVisible = ref(false);
+const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
 const recordInfo = computed(() => {
   if (isAgent.value && props.isExpired) {
     switch (props.order.MasterType) {

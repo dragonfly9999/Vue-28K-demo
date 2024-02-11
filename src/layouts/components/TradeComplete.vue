@@ -54,9 +54,9 @@ defineProps<{ order: OrderStatus | undefined }>();
 //
 const { t } = useI18n();
 const router = useRouter();
-const { pendingInstant } = usePendingStore();
 // DOM
 const isVisibleDetail = ref(false);
+const { pendingInstant } = usePendingStore();
 
 // Live cycle
 onMounted(() => {

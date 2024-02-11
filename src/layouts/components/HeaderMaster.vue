@@ -1,5 +1,10 @@
 <template>
-  <q-header reveal class="q-pa-md" style="background: #242e47; z-index: 5">
+  <q-header
+    :model-value="keyStore.headerModel"
+    reveal
+    class="q-pa-md"
+    style="background: #242e47; z-index: 5"
+  >
     <!-- Large -->
     <q-toolbar class="gt-sm">
       <div class="flex q-gutter-x-sm">
@@ -18,7 +23,6 @@
 
       <q-space />
 
-      <!-- right -->
       <div class="flex q-gutter-x-sm">
         <div class="flex items-center">
           <q-icon name="account_circle" size="md" class="q-mr-xs" />
@@ -29,7 +33,6 @@
             </div>
           </div>
         </div>
-        <!-- 登出btn -->
         <q-btn
           flat
           class="q-btn:visited"
@@ -38,7 +41,6 @@
           @click="logout"
         />
 
-        <!-- 語言 & 幫助btn -->
         <div class="q-gutter-x-sm self-center">
           <I18nBtn />
         </div>
@@ -58,9 +60,7 @@
 
       <q-space />
 
-      <!-- right -->
       <div class="flex">
-        <!-- 漢堡btn -->
         <q-btn
           rounded
           @click="() => (drawerRight = !drawerRight)"
@@ -118,7 +118,18 @@
           v-if="!isAgent"
         >
           <q-list>
-            <q-item clickable @click="() => router.push({ name: 'buy' })">
+            <q-item
+              clickable
+              @click="
+                () => {
+                  if (!isAgent)
+                    router.push({
+                      name: 'trade',
+                      query: { type: 'buy', action: 'create' },
+                    });
+                }
+              "
+            >
               <q-item-section>
                 <q-item-label class="q-px-md">{{ t('購買') }}</q-item-label>
               </q-item-section>
@@ -127,7 +138,13 @@
             <q-item
               clickable
               v-close-popup
-              @click="() => router.push({ name: 'sell' })"
+              @click="
+                () =>
+                  router.push({
+                    name: 'trade',
+                    query: { type: 'sell', action: 'create' },
+                  })
+              "
             >
               <q-item-section>
                 <q-item-label class="q-px-md">{{ t('出售') }}</q-item-label>
@@ -242,7 +259,7 @@
 <script setup lang="ts">
 import langs from 'src/i18n';
 import I18nBtn from 'src/components/I18nBtn.vue';
-import { useStateStore } from 'src/stores';
+import { useKeyStore, useStateStore } from 'src/stores';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
@@ -262,6 +279,7 @@ const isAgent = computed(() => storage.getStorageSync('isAgent'));
 const drawerRight = ref(false);
 
 // request
+const keyStore = useKeyStore();
 const { run: logout } = api.useLogout({});
 </script>
 

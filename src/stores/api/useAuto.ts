@@ -22,7 +22,7 @@ export const useAuto = ({ ...useProps }: UseProps) => {
     manual: false,
     pollingInterval: -1,
     refreshOnWindowFocus: false,
-    ready:  computed(() => !!useStorage().getStorageSync('isAgent')),
+    ready: computed(() => !!useStorage().getStorageSync('isAgent')),
   }, {
     noFeedback: true,
     noTempData: true,

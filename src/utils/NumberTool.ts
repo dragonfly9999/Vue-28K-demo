@@ -1,3 +1,5 @@
+import numbro from 'numbro';
+
 type NumOptions = string | number | null | undefined;
 
 type DigitTypes = 'USDT' | 'CNY';
@@ -34,10 +36,8 @@ const thousandInput = (num: NumOptions): string => {
   const pureNumber = numberTool(num);
 
   if (isNaN(pureNumber)) return num as string;
-
-  const result = pureNumber.toString().split('.');
-  result[0] = result[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-  return result.join('.');
+  const result = numbro(pureNumber).format({ thousandSeparated: true });
+  return result
 };
 
 export enum MasterTypeNum {

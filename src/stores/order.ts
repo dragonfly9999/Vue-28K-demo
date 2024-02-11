@@ -8,16 +8,15 @@ export const useOrderStore = defineStore('order', () => {
   const orderStatusObj = ref<{ [key: string]: OrderStatus | undefined }>({});
   const webSockets = ref<{ [key: string]: WebSocketClient }>({});
   const onMessages = ref<{ [key: string]: () => void }>({});
-  // 
+  //
   const setOnMessage = (token: string, fn: () => void) => {
     onMessages.value[token] = fn;
   };
   const setOrderWs = (token: string, onOpen?: () => void) => {
-    if (
-      token in webSockets.value &&
-      [0, 1].includes(webSockets.value[token].instance?.readyState ?? -1)
-    )
-      return;
+    if ( token in webSockets.value ) {
+      const { instance } = webSockets.value[token] || {};
+      if (instance && [0, 1].includes(instance.readyState)) return;
+    }
     const orderStatusUrl = '/ws_orderstatus.ashx';
     const orderWs = new WebSocketClient(orderStatusUrl, {
       reconnectEnabled: true,
@@ -41,16 +40,17 @@ export const useOrderStore = defineStore('order', () => {
     webSockets.value[token] = orderWs;
   };
   // 將已完成的交易的狀態WS斷開 並且回傳斷開的交易有哪些
-  const removeOrder = () => {
+  const removeOrder = (besidesToken?: string) => {
     const tokens = Object.entries(orderStatusObj.value)
-      .filter(([_, order]) => {
+      .filter(([token, order]) => {
         return (
           order &&
           [
             OrderStatusNum.Cancel,
             OrderStatusNum.TimeOut,
             OrderStatusNum.Complete
-          ].includes(order.Order_StatusID)
+          ].includes(order.Order_StatusID) &&
+          besidesToken !== token
         );
       })
       .map(([token]) => token);
@@ -70,7 +70,8 @@ export const useOrderStore = defineStore('order', () => {
     const result = webSockets?.value[token];
     return result;
   };
-  const getStatus = (token: string) => {
+  const getStatus = (token: string | undefined) => {
+    if (token === undefined) return undefined;
     return orderStatusObj?.value[token];
   };
 

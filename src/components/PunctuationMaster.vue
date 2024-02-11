@@ -1,32 +1,23 @@
 <template>
-  <div
-    :class="` text-${porps.type ?? 'caption'} text-${
-      color ?? 'grey-5'
-    } ellipsis ellipsis-2-lines  q-mt-md`"
-    style="max-width: 85vw"
-  >
-    <div :class="`row justify-${justify ?? 'center'} items-center`">
-      <div style="">
-        {{ label?.slice(0, Math.ceil((label?.length * 2) / 3)) }}
-      </div>
-      <div :class="`text-${text_align ?? 'right'}`">
-        {{
-          label?.slice(Math.ceil((label?.length * 2) / 3) - label?.length) ??
-          '--'
-        }}
-      </div>
+  <div class="overflow text-caption text-grey-5 text-center" :="$attrs">
+    <div class="q-px-sm">
+      {{ label }}
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-const porps = defineProps<{
+defineProps<{
   label: string | undefined;
-  type?: string;
-  color?: string;
-  text_align?: string;
-  justify?: string;
 }>();
 </script>
 
-<style scoped></style>
+<style scoped lang="scss">
+div.overflow {
+  overflow-x: auto;
+  &::-webkit-scrollbar {
+    visibility: hidden;
+    height: 0;
+  }
+}
+</style>

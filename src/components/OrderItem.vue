@@ -225,8 +225,12 @@ const handleClickItem = () => {
   } else {
     if (props.isCleanCount) handleResetCount(props.order.token);
     router.push({
-      name: props.order?.MType === MtTypeNum.Buy ? 'buy' : 'sell',
-      query: { token: props.order.token },
+      name: 'trade',
+      query: {
+        type: props.order?.MType === MtTypeNum.Buy ? 'buy' : 'sell',
+        token: props.order.token,
+        action: 'trading',
+      },
     });
   }
 };

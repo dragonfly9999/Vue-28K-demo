@@ -1,20 +1,43 @@
 <template>
   <div id="background">
     <div class="row">
-      <RouterView />
-      <q-card
-        class="col-12 col-md-4 no-border no-shadow"
-        v-if="
-          !!orderStatus &&
-          [
-            OrderStatusNum.Assigned,
-            OrderStatusNum.Appeal,
-            OrderStatusNum.Committed,
-          ].includes(orderStatus?.Order_StatusID)
-        "
-      >
-        <ChatBox />
-      </q-card>
+      <div class="col-12 q-px-md test_dotted" v-if="!orderStatus">
+        <div class="column items-center test_dotted">
+          <RouterView />
+
+          <CreatePage />
+        </div>
+      </div>
+
+      <div class="col-xs-8 col-12 q-px-md" v-else>
+        <AssignedPage
+          v-if="
+            [OrderStatusNum.Appeal, OrderStatusNum.Assigned].includes(
+              orderStatus.Order_StatusID
+            )
+          "
+          :order="orderStatus"
+        />
+        <CommittedPage
+          v-else-if="orderStatus.Order_StatusID === OrderStatusNum.Committed"
+          :order="orderStatus"
+        />
+      </div>
+      <div class="col-12 col-sm-4 no-shadow q-px-md test_dotted">
+        <q-card
+          class=""
+          v-if="
+            !!orderStatus &&
+            [
+              OrderStatusNum.Assigned,
+              OrderStatusNum.Appeal,
+              OrderStatusNum.Committed,
+            ].includes(orderStatus?.Order_StatusID)
+          "
+        >
+          <ChatBox />
+        </q-card>
+      </div>
     </div>
     <!-- Transaction Status -->
     <div class="col-12 q-pa-md" v-if="!!orderStatus">
@@ -75,7 +98,7 @@ const isWait = reactive({
 onMounted(() => {
   // 清除多餘
   if (token.value) {
-    const tokens = removeOrder();
+    const tokens = removeOrder(token.value);
     tokens?.forEach((token) => token && removeChat(token));
   }
 });
@@ -130,12 +153,13 @@ watch(
 #background {
   margin: auto;
   max-width: 1200px;
+  padding-bottom: 20px;
 }
 
 @media screen and (max-width: 1439px) {
-  #background {
+  /* #background {
     min-height: 130vh;
-  }
+  } */
 }
 @media screen and (max-width: 1439px) {
   #background2 {

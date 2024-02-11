@@ -31,7 +31,12 @@
               :options="addressOptions"
               hide-bottom-space
               v-model="agreement"
-              :rules="[() => !!agreement || $t('transfer.label.agreement')]"
+              :rules="[
+                () =>
+                  !!agreement ||
+                  visible.readyLeave ||
+                  $t('transfer.label.agreement'),
+              ]"
             >
               <template #selected-item>
                 <q-chip color="primary" class="glossy" style="color: white">
@@ -86,20 +91,19 @@
             </div>
             <!-- 錢包地址 -->
             <q-input
+              hide-hint
               hide-bottom-space
               outlined
               :label="$t('transfer.label.address')"
               v-model="address.value"
               :rules="[
-                (val) => !!val || $t('transfer.label.agreement'),
-                () => !address.error || $t('error.api.30'),
+                (val) =>
+                  !!val ||
+                  visible.readyLeave ||
+                  (address.error
+                    ? $t('error.api.30')
+                    : $t('error.input.empty')),
               ]"
-              :error="address.error"
-              :error-message="
-                address.error
-                  ? $t('error.api.30')
-                  : $t('transfer.label.agreement')
-              "
               @update:model-value="() => (address.error = false)"
             >
               <template v-slot:append>
@@ -126,6 +130,7 @@
             </div>
             <!-- 備註內容(非必填) -->
             <q-input
+              @update:model-value="() => (address.error = true)"
               outlined
               :label="$t('transfer.label.remark_text')"
               v-model="remark"
@@ -173,21 +178,24 @@
             <q-input
               outlined
               :label="$t('transfer.label.i_want_to_transfer')"
-              v-model="transAmt"
+              :model-value="transAmt"
               @focus="() => transAmt === '0' && (transAmt = '')"
               lazy-rules
               :rules="[
-                (val) => !!val || $t('error.input.empty'),
+                (val) => !!val || visible.readyLeave || $t('error.input.empty'),
                 (val) =>
                   numberTool(val) <= availableBalance || $t('error.api.32'),
               ]"
               @update:model-value="
                 (value) => {
-                  if (numberTool(value) < availableBalance) {
-                    transAmt = thousandInput(value);
-                  } else {
+                  transAmt = thousandInput(value);
+                  if (numberTool(value) > availableBalance)
                     transAmt = thousandInput(availableBalance);
-                  }
+                }
+              "
+              @blur="
+                () => {
+                  if (!/^[0-9,.]+$/.test(transAmt)) transAmt = '0';
                 }
               "
             >
@@ -256,6 +264,7 @@
       </q-form>
     </q-card>
   </div>
+
   <q-dialog
     @update:model-value="(val) => (address.verify = val)"
     :model-value="address.verify && duration === 0"
@@ -270,8 +279,9 @@
       :premium="premium"
     />
   </q-dialog>
+
   <!-- 跳轉前提示 -->
-  <q-dialog :model-value="!!timeInterval" persistent>
+  <q-dialog :model-value="visible.readyLeave" persistent>
     <q-card class="q-pa-lg" align="center" style="width: 360px">
       <q-icon name="check_circle" color="green-8" size="lg" />
       <!-- 提交成功 -->
@@ -292,7 +302,7 @@
 import { addressOptions } from './data';
 import { useStateStore } from 'src/stores';
 import { numberTool, thousandInput, thousandTool } from 'src/utils/NumberTool';
-import { computed, reactive, ref } from 'vue';
+import { computed, onMounted, reactive, ref } from 'vue';
 import { useStorage } from 'vue3-storage';
 import TransferTitle from './components/TransferTitle.vue';
 import QrReader from 'src/components/QrReader.vue';
@@ -301,7 +311,6 @@ import TransWarn from './components/TransWarn.vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
-const { ratesRequest, balanceRequest, formatBalances } = useStateStore();
 // DOM
 const form = ref();
 const agreement = ref();
@@ -317,7 +326,11 @@ const timeInterval = ref<NodeJS.Timeout>();
 const duration = ref(0);
 const visible = reactive({
   scanner: false,
+  readyLeave: false,
 });
+
+// query
+const { ratesRequest, balanceRequest, formatBalances } = useStateStore();
 const availableBalance = computed(() => {
   if (balanceRequest.data === undefined) return 0;
   return numberTool(balanceRequest.data.Avb_Balance);
@@ -346,6 +359,7 @@ const { run: checkErc, loading: checkingErc } = api.useCheckErc({
   onError: () => {
     address.verify = false;
     address.error = true;
+    address.value = '';
   },
 });
 const { run: checkTrc, loading: checkingTrc } = api.useCheckTrc({
@@ -355,6 +369,7 @@ const { run: checkTrc, loading: checkingTrc } = api.useCheckTrc({
   onError: () => {
     address.verify = false;
     address.error = true;
+    address.value = '';
   },
 });
 
@@ -391,7 +406,28 @@ const handleSuccess = () => {
       router.push({ name: 'dashboard' });
     }
   }, 1000);
+
+  visible.readyLeave = true;
+  agreement.value = undefined;
+  address.value = '';
+  address.error = false;
+  address.verify = false;
+  transAmt.value = '';
+  isPassTwenty.value = false;
 };
+
+// life cycle
+onMounted(() => {
+  const isTest = true;
+  if (import.meta.env.DEV && isTest) {
+    agreement.value = 'trc';
+    address.value = useStorage().getStorageSync('isAgent')
+      ? 'TEZPF9NrUh9xQXqkNSyo7ngqoyfu8AmjQi'
+      : 'TYQY8Pw3D2U85CntfNp32Sgk91d4RHRb2f';
+    transAmt.value = '100';
+    isPassTwenty.value = true;
+  }
+});
 </script>
 
 <style scoped></style>

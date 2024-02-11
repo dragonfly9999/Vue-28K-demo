@@ -31,10 +31,12 @@ import { computed } from 'vue';
 import { type FormatKycOptions } from '../api/useKycHistory';
 import BankCard from './BankCard.vue';
 
-const props = defineProps<{ tempKycs: Array<FormatKycOptions> }>();
+const props = defineProps<{ tempKycs: Array<FormatKycOptions> | undefined }>();
 
-const approvedKycs = computed(() =>
-  props.tempKycs.filter((kycInfo) => kycInfo.User_BankStatus === 101)
-);
+const approvedKycs = computed<Array<FormatKycOptions>>(() => {
+  if (!props.tempKycs) return [];
+  console.log('before filter', { props: props.tempKycs });
+  return props.tempKycs.filter((kycInfo) => kycInfo.User_BankStatus === 101);
+});
 </script>
 <style scoped></style>

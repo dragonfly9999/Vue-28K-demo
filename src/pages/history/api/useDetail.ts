@@ -1,3 +1,4 @@
+import { RecordDetail } from 'src/pages/trade/api';
 import { axiosProvider } from 'src/utils/axiosProvider';
 import { requestProvider } from 'src/utils/requestProvider';
 

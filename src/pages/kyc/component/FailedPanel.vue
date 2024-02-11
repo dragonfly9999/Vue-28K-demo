@@ -18,10 +18,11 @@ import { computed } from 'vue';
 import { type FormatKycOptions } from '../api/useKycHistory';
 import BankCard from './BankCard.vue';
 
-const props = defineProps<{ tempKycs: Array<FormatKycOptions> }>();
+const props = defineProps<{ tempKycs: Array<FormatKycOptions> | undefined }>();
 
-const failedKycs = computed(() =>
-  props.tempKycs.filter((kycInfo) => kycInfo.User_BankStatus === -1)
-);
+const failedKycs = computed(() => {
+  if (!props.tempKycs) return [];
+  return props.tempKycs.filter((kycInfo) => kycInfo.User_BankStatus === -1);
+});
 </script>
 <style scoped></style>

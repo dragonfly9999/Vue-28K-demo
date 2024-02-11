@@ -37,10 +37,12 @@
 import logo from 'src/assets/logo_easy.png';
 import I18nBtn from 'src/components/I18nBtn.vue';
 import hooks from 'src/hooks';
+import { useDetailsStore } from 'src/stores';
 import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
+const { transaction } = useDetailsStore();
 
 onMounted(() => {
   hooks.useKickOut.clean(); // 重複清理確保狀態乾淨

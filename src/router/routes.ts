@@ -25,6 +25,11 @@ const routes: RouteRecordRaw[] = [
         name: 'dashboard'
       },
       {
+        path: 'trade',
+        component: () => import('pages/trade/TradePage.vue'),
+        name: 'trade',
+      },
+      {
         path: 'transaction',
         component: () => import('layouts/TransactionLayout.vue'),
         name: 'transaction',

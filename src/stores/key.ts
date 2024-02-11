@@ -4,6 +4,7 @@ import { ref } from 'vue';
 export const useKeyStore = defineStore('key', () => {
   const down = ref<string>();
   const up = ref();
+  const headerModel = ref(true);
 
   const handleDown = (e: KeyboardEvent) => {
     down.value = e.key;
@@ -21,5 +22,10 @@ export const useKeyStore = defineStore('key', () => {
     window.removeEventListener('keyup', handleUP);
   };
   const pressing = () => down.value;
-  return { pressing, handelSet, handleRemove };
+
+  const handleUpdateHeaderModel = (open: boolean) => {
+    headerModel.value =open
+  }
+
+  return { pressing, handelSet, handleRemove, headerModel,handleUpdateHeaderModel };
 });

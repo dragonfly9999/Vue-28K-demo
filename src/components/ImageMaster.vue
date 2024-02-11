@@ -1,15 +1,10 @@
-<script setup lang="ts">
-import { ref } from 'vue';
-
-defineProps<{ src: string; width?: string; height?: string }>();
-const isFullScreen = ref(false);
-</script>
 <template>
   <q-img
     @click="() => (isFullScreen = true)"
     :src="src"
     :width="width"
     :height="height"
+    @load="(file) => $emit('load', file)"
   />
   <q-dialog maximized v-model="isFullScreen">
     <div class="background" @click="isFullScreen = false">
@@ -26,6 +21,14 @@ const isFullScreen = ref(false);
     </div>
   </q-dialog>
 </template>
+
+<script setup lang="ts">
+import { ref } from 'vue';
+
+defineProps<{ src: string; width?: string; height?: string }>();
+defineEmits(['load']);
+const isFullScreen = ref(false);
+</script>
 
 <style scoped>
 .background {

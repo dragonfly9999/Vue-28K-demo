@@ -29,4 +29,8 @@ export const useLogin = ({ ...useProps }: UseProps) =>
       storage.setStorageSync('login_session', res?.data.login_session);
       if (useProps.onSuccess) useProps.onSuccess(res);
     }
-  });
+  }, {
+    noFeedback: true,
+    noTempData: true,
+  }
+);

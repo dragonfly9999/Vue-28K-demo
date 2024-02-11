@@ -5,11 +5,16 @@
     @click="
       () =>
         router.push({
-          name: order?.MasterType === MasterTypeNum.Buy ? 'buy' : 'sell',
-          query: { token: order.token },
+          name: 'trade',
+          query: {
+            token: order.token,
+            action: 'trading',
+            type: order?.MasterType === MasterTypeNum.Buy ? 'buy' : 'sell',
+          },
         })
     "
-    clickable
+    :clickable="!loading"
+    :disable="loading"
   >
     <q-item-section class="q-pa-xs">
       <!-- title -->
@@ -93,7 +98,7 @@ import StatusMaster from 'src/pages/transaction/components/StatusMaster.vue';
 import { MtTypeNum } from 'src/stores/live';
 import { useRoute } from 'vue-router';
 
-const props = defineProps<{ order: PendingOrder }>();
+const props = defineProps<{ order: PendingOrder; loading?: boolean }>();
 const router = useRouter();
 const route = useRoute();
 const { t } = useI18n();

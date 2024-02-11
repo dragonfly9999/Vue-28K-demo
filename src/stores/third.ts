@@ -34,7 +34,7 @@ export const useThirdStore = defineStore('third', () => {
   const setWebSockets = (token: string, onOpen?: () => void) => {
     const isAgent = useStorage().getStorageSync('isAgent');
 
-    if (token in webSockets.value && [0,1].includes(webSockets.value[token].instance?.readyState ?? -1)) return;
+    if (token in webSockets.value && [0, 1].includes(webSockets.value[token].instance?.readyState ?? -1)) return;
     // set on message
     const tokens = Object.entries(chatListObj?.value).map(([key]) => key);
     if (!tokens.includes(token)) {
@@ -75,8 +75,13 @@ export const useThirdStore = defineStore('third', () => {
     webSockets.value[token] = chatWS;
   };
   //
-  const handleResetCount = (token: string) => (unReadCount.value[token] = 0);
-  const getCount = (token: string) => unReadCount.value?.[token] ?? 0;
+  const handleResetCount = (token: string | undefined) => {
+    if(token &&  token in unReadCount.value ) unReadCount.value.token = 0
+  };
+  const getCount = (token: string | undefined) => {
+    if (token === undefined || !(token in unReadCount.value)) return 0
+    return unReadCount.value.token
+  };
   //
   const removeChat = (token: string) => {
     delete chatListObj.value[token];
@@ -84,10 +89,12 @@ export const useThirdStore = defineStore('third', () => {
     delete onMessages.value[token];
     delete unReadCount.value[token];
   };
-  const getWebSocket = (token: string) => {
+  const getWebSocket = (token: string | undefined) => {
+    if (token === undefined) return undefined
     return webSockets?.value[token];
   };
-  const getChatList = (token: string) => {
+  const getChatList = (token: string | undefined) => {
+    if (token === undefined) return undefined;
     return chatListObj?.value[token] ?? [];
   };
 
