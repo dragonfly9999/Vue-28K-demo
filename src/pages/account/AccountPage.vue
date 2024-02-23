@@ -181,7 +181,7 @@ const editWait = ref(false);
 const { run: del, loading: underDel } = useDelAcc({
   onSuccess: () => {
     if (!editWait.value) {
-      reStory();
+      setTimeout(() => reStory(), 200);
       reAcc();
       delID.value = undefined;
     } else {
@@ -194,7 +194,7 @@ const { run: del, loading: underDel } = useDelAcc({
 const { run: set, loading: setting } = useSetAcc({
   onSuccess: () => {
     if (!editWait.value) {
-      reStory();
+      setTimeout(() => reStory(), 200);
       reAcc();
       delID.value = undefined;
     } else {

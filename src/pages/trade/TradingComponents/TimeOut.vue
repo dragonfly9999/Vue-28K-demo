@@ -1,5 +1,5 @@
 <template>
-  <q-card class="width600 text-center">
+  <q-card class="width600 text-center q-pa-md">
     <!-- title -->
     <q-icon name="running_with_errors" class="text-red text-h1" />
     <div class="text-h6 text-weight-bold q-mx-sm">

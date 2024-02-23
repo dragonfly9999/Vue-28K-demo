@@ -76,11 +76,15 @@ export const useThirdStore = defineStore('third', () => {
   };
   //
   const handleResetCount = (token: string | undefined) => {
-    if(token &&  token in unReadCount.value ) unReadCount.value.token = 0
+    if(token &&  token in unReadCount.value ) unReadCount.value[token] = 0
   };
   const getCount = (token: string | undefined) => {
+    console.log('on get count1', {
+      token,
+      unRead: unReadCount.value[token as string]
+    });
     if (token === undefined || !(token in unReadCount.value)) return 0
-    return unReadCount.value.token
+    return unReadCount.value[token]
   };
   //
   const removeChat = (token: string) => {

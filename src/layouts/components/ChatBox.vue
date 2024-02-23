@@ -5,7 +5,8 @@
     v-if="windowClientWidth"
     :class="{
       ['fixed-bottom']: windowClientWidth < breakPoint,
-      ['zoom-out']: btnIcon === 'arrow_drop_up',
+      ['zoom-out']:
+        btnIcon === 'arrow_drop_up' && windowClientWidth < breakPoint,
     }"
   >
     <q-card class="q-pa-sm" :="$attrs" ref="rootCardRef" id="root-card">
@@ -53,7 +54,8 @@
         ref="scrollAreaRef"
         id="scroll-area"
         :class="{
-          ['zoom-out']: btnIcon === 'arrow_drop_up',
+          ['zoom-out']:
+            btnIcon === 'arrow_drop_up' && windowClientWidth < breakPoint,
         }"
       >
         <div v-for="(msg, index) in chatList" :key="index">
@@ -92,7 +94,8 @@
       id="footer"
       class="q-px-md row"
       :class="{
-        ['zoom-out']: btnIcon === 'arrow_drop_up',
+        ['zoom-out']:
+          btnIcon === 'arrow_drop_up' && windowClientWidth < breakPoint,
       }"
     >
       <q-input

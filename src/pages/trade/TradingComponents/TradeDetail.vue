@@ -212,7 +212,6 @@ import api from '../api';
 import { useStorage } from 'vue3-storage';
 import CopyButton from 'src/components/CopyButton.vue';
 import { useRoute } from 'vue-router';
-import PunctuationMaster from 'src/components/PunctuationMaster.vue';
 const { t } = useI18n();
 const route = useRoute();
 const props = defineProps<{ visible: boolean }>();
