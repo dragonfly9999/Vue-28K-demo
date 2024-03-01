@@ -48,7 +48,14 @@
         </q-toolbar>
       </q-page-sticky>
       <div style="margin-top: 70px">
-        <router-view></router-view>
+        <suspense>
+          <template #default>
+            <router-view />
+          </template>
+          <template #fallback>
+            <h1>Loading...</h1>
+          </template>
+        </suspense>
       </div>
     </q-page-container>
     <!-- sound -->

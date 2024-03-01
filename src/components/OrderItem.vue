@@ -241,3 +241,5 @@ const handleClickItem = () => {
   background-color: rgba(255, 230, 188, 0.507);
 }
 </style>
+
+<script lang="ts"></script>

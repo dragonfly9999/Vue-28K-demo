@@ -12,7 +12,7 @@
     <q-card class="q-pa-sm" :="$attrs" ref="rootCardRef" id="root-card">
       <q-toolbar class="q-mb-sm" ref="headerRef" id="toolbar">
         <q-badge
-          v-if="getCount(token) > 0"
+          v-if="getCount(token) > 0 && windowClientWidth < breakPoint"
           color="red"
           :label="getCount(token)"
           class="absolute-top-right"

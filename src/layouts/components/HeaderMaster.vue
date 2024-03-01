@@ -94,7 +94,7 @@
                 {{ t('rate.buy') }}
               </div>
               <div class="text-right text-weight-bold text-blue-13">
-                {{ formatRates.buy }}
+                {{ isAgent ? formatRates.sell : formatRates.buy }}
               </div>
             </div>
 
@@ -103,7 +103,7 @@
                 {{ t('rate.sell') }}
               </div>
               <div class="text-right text-weight-bold text-red">
-                {{ formatRates.sell }}
+                {{ isAgent ? formatRates.buy : formatRates.sell }}
               </div>
             </div>
           </div>

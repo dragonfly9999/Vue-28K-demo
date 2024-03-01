@@ -6,6 +6,7 @@ import { useStorage } from 'vue3-storage';
 import { useOrderStore } from './order';
 import hooks from 'src/hooks';
 
+
 export const useThirdStore = defineStore('third', () => {
   const hint = ref(false);
   const unReadCount = ref<{ [key: string]: number }>({});
@@ -79,10 +80,6 @@ export const useThirdStore = defineStore('third', () => {
     if(token &&  token in unReadCount.value ) unReadCount.value[token] = 0
   };
   const getCount = (token: string | undefined) => {
-    console.log('on get count1', {
-      token,
-      unRead: unReadCount.value[token as string]
-    });
     if (token === undefined || !(token in unReadCount.value)) return 0
     return unReadCount.value[token]
   };

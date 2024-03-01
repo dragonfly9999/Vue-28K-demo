@@ -8,7 +8,7 @@
         {{ $t('rate.buy') }}
       </div>
       <div class="text-right text-weight-bold text-blue-13">
-        {{ formatRates.buy }}
+        {{ isAgent ? formatRates.sell : formatRates.buy }}
       </div>
     </div>
 
@@ -17,7 +17,7 @@
         {{ $t('rate.sell') }}
       </div>
       <div class="text-right text-weight-bold text-red">
-        {{ formatRates.sell }}
+        {{ isAgent ? formatRates.buy : formatRates.sell }}
       </div>
     </div>
   </div>
@@ -25,8 +25,13 @@
 
 <script setup lang="ts">
 import { useStateStore } from 'src/stores';
+import { computed } from 'vue';
+import { useStorage } from 'vue3-storage';
 
+const vueStorage = useStorage();
+// states
 const { formatRates } = useStateStore();
+const isAgent = computed(() => vueStorage.getStorageSync('isAgent'));
 </script>
 
 <style scoped></style>

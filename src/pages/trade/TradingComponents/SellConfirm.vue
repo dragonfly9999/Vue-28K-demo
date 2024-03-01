@@ -79,7 +79,7 @@ const informations = computed(() => [
 ]);
 
 // request
-const { run: confirm } = useSellConfirm();
+const { run: confirm } = useSellConfirm({});
 const { run: sell } = api.useSell2({});
 // handler
 const handleConfirm = () => {
