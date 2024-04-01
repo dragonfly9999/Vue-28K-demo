@@ -136,7 +136,6 @@ export const useLiveStore = defineStore('live', () => {
       liveWs.progress.onError = () => (liveWsConnecting.progress = false);
     }
   };
-  const getOrders = (arg: LiveType) => liveOrders[arg];
 
   const setOnMessage = ({ type, messageName, fn }: SetOnMessageProps) => {
     liveMessages[type][messageName] = fn;
@@ -169,7 +168,7 @@ export const useLiveStore = defineStore('live', () => {
     liveWsConnecting,
     setLiveOrderWs,
     setPendingOrderWs,
-    getOrders,
+    liveOrders,
     setOnMessage,
     cleanLiveOrders
   };

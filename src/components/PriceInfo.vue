@@ -5,7 +5,7 @@
       <q-separator vertical spaced />
       <div>
         <div class="text-grey-6 text-caption">
-          {{ $t('label.rate') }}
+          {{ $t('匯率') }}
         </div>
         <div class="text-weight-bold text-right">
           {{ thousandTool(order?.D1, 'CNY') }}

@@ -42,7 +42,7 @@
             <q-tab
               name="finish"
               @click="() => reStory()"
-              :label="t('transaction_history.label.finish')"
+              :label="t('transaction_history.完成')"
               :disable="loadingHistory"
             />
             <!-- 進行中tab -->
@@ -53,7 +53,7 @@
                 }
               "
               name="someProgress"
-              :label="t('transaction_history.label.inProgress')"
+              :label="t('transaction_history.進行中')"
               :disable="loadingProgress"
             >
               <q-badge
@@ -70,7 +70,7 @@
               :disable="loadingExpired"
               @click="() => reExpired()"
               name="fail"
-              :label="t('transaction_history.label.fail')"
+              :label="t('transaction_history.未完成')"
             />
           </q-tabs>
         </div>
@@ -100,7 +100,7 @@
             class="q-pa-xs"
           >
             <div v-if="status === 'someProgress' && isAgent">
-              <order-item
+              <live-order-item
                 v-for="(order, index) in agentOrders"
                 :key="index"
                 :order="order"
@@ -142,7 +142,7 @@ import HistoryList from './components/HistoryList.vue';
 import { MasterTypeNum } from 'src/utils/NumberTool';
 import { useStorage } from 'vue3-storage';
 import { useLiveStore } from 'src/stores/live';
-import OrderItem from 'src/components/OrderItem.vue';
+import LiveOrderItem from 'src/components/LiveOrderItem.vue';
 
 const { t } = useI18n();
 const router = useRouter();
@@ -156,8 +156,9 @@ const current = ref(1);
 const type = ref(5);
 const tab = ref('finish');
 const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
+const { liveOrders } = useLiveStore();
 const agentOrders = computed(() => {
-  const pureOrders = useLiveStore().getOrders('progress').slice();
+  const pureOrders = liveOrders.progress.slice();
   const makeupOrders = pureOrders
     .filter((filterOrder) => {
       return (

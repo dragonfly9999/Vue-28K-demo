@@ -88,9 +88,9 @@
             v-if="'P2' in record && !!record?.P2"
           >
             <q-item-section class="text-grey-6 text-caption">
-              {{ $t('transaction.payer')
-              }}{{
-                $t('transaction_history.label.history_detail.account_name')
+              {{
+                `${$t('transaction.payer')}
+                ${$t('transaction_history.戶名')}`
               }}
             </q-item-section>
             <q-item-section avatar>
@@ -155,7 +155,7 @@
               >{{
                 'Balance' in record
                   ? $t('transaction.complete_time')
-                  : $t('transaction_history.label.time')
+                  : $t('transaction_history.時間')
               }}
             </q-item-section>
             <q-item-section avatar>
@@ -168,9 +168,12 @@
               Tx Hash</q-item-section
             >
             <q-item-section avatar class="text-right">
-              {{ record?.Tx_HASH?.substring(0, 21) }} <br />
               <div class="row">
-                {{ record?.Tx_HASH?.substring(21) }}
+                {{
+                  `${record?.Tx_HASH?.slice(0, 3)}...${record?.Tx_HASH.slice(
+                    -5
+                  )}`
+                }}
                 <CopyButton :value="record?.Tx_HASH" />
               </div>
             </q-item-section>
@@ -265,14 +268,14 @@ const recordInfo = computed(() => {
       case MasterTypeNum.TransIn:
         return {
           label: t(
-            `transaction_history.label.transaction_type.${MasterTypeNum.TransIn}`
+            `transaction_history.transaction_type.${MasterTypeNum.TransIn}`
           ),
           color: 'purple',
         };
       case MasterTypeNum.TransIn:
         return {
           label: t(
-            `transaction_history.label.transaction_type.${MasterTypeNum.TransOut}`
+            `transaction_history.transaction_type.${MasterTypeNum.TransOut}`
           ),
           color: 'purple',
         };
@@ -289,14 +292,14 @@ const recordInfo = computed(() => {
     case MasterTypeNum.TransIn:
       return {
         label: t(
-          `transaction_history.label.transaction_type.${MasterTypeNum.TransIn}`
+          `transaction_history.transaction_type.${MasterTypeNum.TransIn}`
         ),
         color: 'purple',
       };
     case MasterTypeNum.TransOut:
       return {
         label: t(
-          `transaction_history.label.transaction_type.${MasterTypeNum.TransOut}`
+          `transaction_history.transaction_type.${MasterTypeNum.TransOut}`
         ),
         color: 'purple',
       };

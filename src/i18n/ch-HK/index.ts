@@ -12,8 +12,8 @@ import chat from './chat';
 
 export default {
   name: '中文',
-  訊息: '訊息',
   locale: 'ch-HK',
+  訊息: '訊息',
   交易進行中: '交易進行中',
   交易: '交易',
   購買: '購買',
@@ -60,6 +60,8 @@ export default {
   },
   success: '成功',
   新增帳戶: '新增帳戶',
+  匯率: '匯率',
+  沒有訂單: '沒有訂單',
   label: {
     welcome: '歡迎登入',
     logout: '登出',
@@ -68,7 +70,6 @@ export default {
     history: '交易紀錄',
     account: '帳戶管理',
     language: '語言',
-    inProgress: '進行中',
     real_balance: '結餘',
     avb_balance: '可提',
     notify: '通知',
@@ -76,10 +77,8 @@ export default {
     auto: '自動接單',
     sell: '出售',
     buy: '購買',
-    no_order: '沒有訂單',
     close: '關閉',
     order_number: '訂單號',
-    rate: '匯率',
     skip: '略過',
     upload_image: '上傳圖片',
     appeal: '申訴',

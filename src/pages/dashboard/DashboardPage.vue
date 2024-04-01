@@ -78,8 +78,8 @@
         <q-tab name="instant" :label="$t('dashboard.即時訂單')">
           <q-badge
             color="red"
-            :label="instantOrders?.length"
-            v-if="instantOrders?.length > 0"
+            :label="liveOrders.instant?.length"
+            v-if="liveOrders.instant?.length > 0"
             floating
           />
           <q-inner-loading :showing="liveStore.liveWsConnecting.instant">
@@ -87,11 +87,11 @@
           </q-inner-loading>
         </q-tab>
         <!-- 進行中 -->
-        <q-tab name="progress" :label="$t('label.inProgress')">
+        <q-tab name="progress" :label="$t('dashboard.進行中')">
           <q-badge
             color="red"
-            :label="progressOrders?.length"
-            v-if="progressOrders?.length > 0"
+            :label="liveOrders.progress?.length"
+            v-if="liveOrders.progress?.length > 0"
             floating
           />
           <q-inner-loading :showing="liveStore.liveWsConnecting.progress">
@@ -103,16 +103,15 @@
       <q-separator v-if="isAgent" />
 
       <q-tab-panels :model-value="tab" animated>
-        <q-tab-panel name="instant" style="padding: 8px">
-          <InstantOrders />
-        </q-tab-panel>
-
-        <q-tab-panel name="progress" style="padding: 8px">
-          <ProgressOrders />
-        </q-tab-panel>
-        <!-- 會員的進行中訂單 -->
-        <q-tab-panel name="memberProgress" style="padding: 8px">
-          <PendingOrders />
+        <q-tab-panel
+          v-for="(panelOption, index) in panelOptions"
+          :key="index"
+          :name="panelOption.tabName"
+          style="padding: 8px"
+        >
+          <div v-if="panelOption.panel">
+            <component :is="panelOption.panel"> </component>
+          </div>
         </q-tab-panel>
       </q-tab-panels>
     </q-card>
@@ -123,7 +122,7 @@
 
 <script setup lang="ts">
 import { useLiveStore, useStateStore, useThirdStore } from 'src/stores';
-import { computed, onMounted, ref, toRefs } from 'vue';
+import { type Component, computed, onMounted, ref, toRefs } from 'vue';
 import InstantOrders from './components/InstantOrders.vue';
 import ProgressOrders from './components/ProgressOrders.vue';
 import RecentHistory from './components/RecentHistory.vue';
@@ -137,16 +136,42 @@ const liveStore = useLiveStore();
 // DOM
 const tab = ref('instant');
 const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
-const instantOrders = computed(() => liveStore.getOrders('instant'));
-const progressOrders = computed(() => liveStore.getOrders('progress'));
+const { liveOrders } = useLiveStore();
 // Life cycle
 onMounted(() => {
   if (balanceRequest.data) balanceRequest.refresh();
   if (!isAgent.value) {
-    hint.value = false;
-    tab.value = 'memberProgress';
+    setTimeout(() => {
+      hint.value = false;
+      tab.value = 'memberProgress';
+    });
   }
 });
+</script>
+
+<script lang="ts">
+type TabTypes = 'instant' | 'progress' | 'memberProgress';
+type PanelOption = {
+  tabName: TabTypes;
+  panel: Component;
+};
+const panelOptions: Array<PanelOption> = [
+  {
+    // 代理及時訂單
+    tabName: 'instant',
+    panel: InstantOrders,
+  },
+  {
+    // 代理進行中訂單
+    tabName: 'progress',
+    panel: ProgressOrders,
+  },
+  {
+    // 會員的進行中訂單
+    tabName: 'memberProgress',
+    panel: PendingOrders,
+  },
+];
 </script>
 
 <style scoped></style>

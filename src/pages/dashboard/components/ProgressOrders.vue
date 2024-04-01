@@ -1,6 +1,6 @@
 <template>
   <q-list>
-    <OrderItem
+    <live-order-item
       v-for="(order, index) in orders"
       :key="index"
       :order="order"
@@ -11,25 +11,24 @@
       <div
         class="q-pa-md text-capitalize text-weight-medium text-caption text-blue-14"
       >
-        {{ t('label.no_order') }}
+        {{ $t('沒有訂單') }}
       </div>
     </q-item>
   </q-list>
 </template>
 
 <script setup lang="ts">
-import OrderItem from 'src/components/OrderItem.vue';
+import LiveOrderItem from 'src/components/LiveOrderItem.vue';
 import { useLiveStore } from 'src/stores';
-import { useI18n } from 'vue-i18n';
 import dayjs from 'dayjs';
 import { computed } from 'vue';
 
-const { t } = useI18n();
+const { liveOrders } = useLiveStore();
 // DOM
 const orders = computed(
   () =>
-    useLiveStore()
-      .getOrders('progress')
+    liveOrders.progress
+      .slice()
       ?.sort((a, b) => (dayjs(b.CreateDate).isAfter(a.CreateDate) ? 1 : -1)) ??
     []
 );

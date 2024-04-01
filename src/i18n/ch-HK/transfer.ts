@@ -1,5 +1,6 @@
 export default {
   title: '轉出',
+  錢包餘額: '錢包餘額',
   label: {
     verify_password: '請輸入會員密碼',
     verify_now: '驗證',
@@ -11,7 +12,6 @@ export default {
     remark_text: '備註內容(非必填)',
     transferAmt: '數量',
     address: '錢包地址',
-    balance: '錢包餘額',
     popularize: '平台互轉免手續費',
     expect: '預計到帳',
     enter_transferAmt: '請輸入轉出數量',

@@ -129,29 +129,27 @@ const recordInfo = computed(() => {
     switch (props.order.MasterType) {
       case MasterTypeNum.Sell:
         return {
-          label: t(
-            `transaction_history.label.transaction_type.${MasterTypeNum.Buy}`
-          ),
+          label: t(`transaction_history.transaction_type.${MasterTypeNum.Buy}`),
           color: 'blue-13',
         };
       case MasterTypeNum.Buy:
         return {
           label: t(
-            `transaction_history.label.transaction_type.${MasterTypeNum.Sell}`
+            `transaction_history.transaction_type.${MasterTypeNum.Sell}`
           ),
           color: 'red',
         };
       case MasterTypeNum.TransOut:
         return {
           label: t(
-            `transaction_history.label.transaction_type.${MasterTypeNum.TransIn}`
+            `transaction_history.transaction_type.${MasterTypeNum.TransIn}`
           ),
           color: 'purple',
         };
       case MasterTypeNum.TransIn:
         return {
           label: t(
-            `transaction_history.label.transaction_type.${MasterTypeNum.TransOut}`
+            `transaction_history.transaction_type.${MasterTypeNum.TransOut}`
           ),
           color: 'purple',
         };
@@ -163,29 +161,25 @@ const recordInfo = computed(() => {
   switch (props.order.MasterType) {
     case MasterTypeNum.Buy:
       return {
-        label: t(
-          `transaction_history.label.transaction_type.${MasterTypeNum.Buy}`
-        ),
+        label: t(`transaction_history.transaction_type.${MasterTypeNum.Buy}`),
         color: 'blue-13',
       };
     case MasterTypeNum.Sell:
       return {
-        label: t(
-          `transaction_history.label.transaction_type.${MasterTypeNum.Sell}`
-        ),
+        label: t(`transaction_history.transaction_type.${MasterTypeNum.Sell}`),
         color: 'red',
       };
     case MasterTypeNum.TransIn:
       return {
         label: t(
-          `transaction_history.label.transaction_type.${MasterTypeNum.TransIn}`
+          `transaction_history.transaction_type.${MasterTypeNum.TransIn}`
         ),
         color: 'purple',
       };
     case MasterTypeNum.TransOut:
       return {
         label: t(
-          `transaction_history.label.transaction_type.${MasterTypeNum.TransOut}`
+          `transaction_history.transaction_type.${MasterTypeNum.TransOut}`
         ),
         color: 'purple',
       };

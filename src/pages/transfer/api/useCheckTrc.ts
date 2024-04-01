@@ -8,8 +8,13 @@ type CheckProps = {
 };
 
 
-export default ({ ...useProps }: UseProps<CheckRes, CheckProps>) => {
-  const vueRequest =   requestProvider<CheckRes, CheckProps>((props) => {
+export default ({ noCheck, ...useProps }: UseProps<CheckRes, CheckProps> & {noCheck: boolean}) => {
+  const vueRequest = requestProvider<CheckRes, CheckProps>((props) => {
+    if (noCheck) {
+      return new Promise((resolve) => {
+        resolve({ data: {}, msg: '', code: 1 });
+      });
+    }
     const request = axiosProvider
       .post('/ChkToAddressValid2.aspx', props)
       .then(({ data }) => data)

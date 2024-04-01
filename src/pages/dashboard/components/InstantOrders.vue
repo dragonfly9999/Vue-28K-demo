@@ -1,16 +1,14 @@
 <template>
   <q-list>
-    <OrderItem
-      v-for="(order, index) in orders"
+    <live-order-item
+      v-for="(order, index) in pureOrders"
       :key="index"
       :order="order"
       :is-instant="true"
     />
-    <q-item v-if="orders?.length === 0">
-      <div
-        class="q-pa-md text-capitalize text-weight-medium text-caption text-blue-14"
-      >
-        {{ t('label.no_order') }}
+    <q-item v-if="pureOrders.length === 0">
+      <div class="q-pa-md text-capitalize text-weight-medium text-blue-14">
+        {{ $t('沒有訂單') }}
       </div>
     </q-item>
   </q-list>
@@ -18,15 +16,14 @@
 
 <script setup lang="ts">
 import dayjs from 'dayjs';
-import OrderItem from 'src/components/OrderItem.vue';
+import LiveOrderItem from 'src/components/LiveOrderItem.vue';
 import { useLiveStore } from 'src/stores';
 import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 
-const { t } = useI18n();
-const orders = computed(() =>
-  useLiveStore()
-    .getOrders('instant')
+const { liveOrders } = useLiveStore();
+const pureOrders = computed(() =>
+  liveOrders.instant
+    .filter(() => true)
     ?.sort((a, b) => (dayjs(b.CreateDate).isAfter(a.CreateDate) ? 1 : 0))
 );
 </script>

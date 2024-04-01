@@ -70,15 +70,16 @@ type PendingOrder = {
 };
 
 interface LiveOrder {
-  Channel?: number;
+  Channel?: string | number; // 參考channel對照表，目前回傳為string避免錯誤在顯示時多加判斷
+  Channel_ID: 1;
+  CreateDate: string;
   Order_StatusID: number;
-  MType: number;
-  DeltaTime: number;
-  UsdtAmt: number;
   D1: number; //匯率
   D2: number; // 金額
-  CreateDate: string;
+  DeltaTime: number;
+  MType: number;
   P5: string; // 銀行資訊
+  UsdtAmt: number;
   extraInfo: null | string; // 備註
   token: string; //
 }

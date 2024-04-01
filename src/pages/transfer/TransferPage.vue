@@ -146,7 +146,7 @@
               <!-- 餘額 -->
               <div class="flex items-center">
                 <div class="text-grey-6 text-subtitle2">
-                  {{ $t('transfer.label.balance') }}
+                  {{ $t('transfer.錢包餘額') }}
                 </div>
                 <div class="text-green-9 q-ml-xs text-subtitle2">
                   {{ formatBalances.available }}
@@ -165,11 +165,12 @@
                 :key="index"
                 @click="
                   () => {
-                    if (!balanceRequest.data) return;
-                    transAmt = thousandTool(
-                      (balanceRequest.data?.Avb_Balance * percent) / 100,
-                      'USDT'
-                    );
+                    const result = methods.handleGetPercentage({
+                      originValue: balanceRequest.data?.Avb_Balance ?? null,
+                      percentage: percent,
+                      digitType: 'USDT',
+                    });
+                    transAmt = result ?? '0';
                   }
                 "
               />
@@ -180,24 +181,19 @@
               :label="$t('transfer.label.i_want_to_transfer')"
               :model-value="transAmt"
               @focus="() => transAmt === '0' && (transAmt = '')"
-              lazy-rules
               :rules="[
                 (val) => !!val || visible.readyLeave || $t('error.input.empty'),
                 (val) =>
-                  numberTool(val) <= availableBalance || $t('error.api.32'),
+                  numberTool(val) <= availableBalance ||
+                  balanceRequest.loading ||
+                  $t('error.api.32'),
               ]"
               @update:model-value="
                 (value) => {
                   transAmt = thousandInput(value);
-                  if (numberTool(value) > availableBalance)
-                    transAmt = thousandInput(availableBalance);
                 }
               "
-              @blur="
-                () => {
-                  if (!/^[0-9,.]+$/.test(transAmt)) transAmt = '0';
-                }
-              "
+              @blur="handleTransInputBlur"
             >
               <template v-slot:append>
                 <div class="text-grey-5 text-subtitle2">USDT</div>
@@ -309,6 +305,7 @@ import QrReader from 'src/components/QrReader.vue';
 import api from './api';
 import TransWarn from './components/TransWarn.vue';
 import { useRouter } from 'vue-router';
+import methods from 'src/utils/methods';
 
 const router = useRouter();
 // DOM
@@ -363,6 +360,7 @@ const { run: checkErc, loading: checkingErc } = api.useCheckErc({
   },
 });
 const { run: checkTrc, loading: checkingTrc } = api.useCheckTrc({
+  noCheck: true,
   onSuccess: () => {
     address.verify = true;
   },
@@ -414,6 +412,14 @@ const handleSuccess = () => {
   address.verify = false;
   transAmt.value = '';
   isPassTwenty.value = false;
+};
+
+const handleTransInputBlur = () => {
+  if (!/^[0-9,.]+$/.test(transAmt.value)) transAmt.value = '0';
+  if (numberTool(transAmt.value) > availableBalance.value)
+    setTimeout(() => {
+      transAmt.value = thousandInput(availableBalance.value);
+    }, 200);
 };
 
 // life cycle

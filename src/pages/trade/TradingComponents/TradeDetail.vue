@@ -79,9 +79,9 @@
           <!-- 付款方名 -->
           <q-item style="min-height: 32px">
             <q-item-section class="text-grey-6 text-caption">
-              {{ $t('transaction.payer')
-              }}{{
-                $t('transaction_history.label.history_detail.account_name')
+              {{
+                `${$t('transaction.payer')}
+                ${$t('transaction_history.戶名')}`
               }}
             </q-item-section>
             <q-item-section avatar>

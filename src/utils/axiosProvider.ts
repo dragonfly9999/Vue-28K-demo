@@ -3,7 +3,8 @@ import { useStorage } from 'vue3-storage';
 
 const storage = useStorage();
 const axiosProvider = axios.create({
-  baseURL: import.meta.env.DEV ? '/j' : `https://${window.location.hostname}/j`
+  // baseURL: 'https://demo.k100u.com/j',
+  baseURL: import.meta.env.DEV ? '/j' : `https://${window.location.hostname}/j`,
 });
 
 

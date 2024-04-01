@@ -30,10 +30,10 @@
                 v-model="countryCode"
                 emit-value
                 :options="
-                  ['886', '852', '65', '86', '84', '63']?.map((code) => ({
+                  (['886', '852', '65', '86', '84', '63']?.map((code) => ({
                     label: $t(`countryCode.${code}`),
                     value: code,
-                  }))
+                  })))
                 "
                 :label="t('auth.國碼')"
                 style="min-width: 100px"
@@ -88,47 +88,55 @@
       </q-form>
       <div class="flex justify-between q-px-md items-center">
         <div class="q-gutter-sm">
-          <q-btn
-            dense
-            size="small"
-            v-if="isTest"
-            @click="
-              () => {
-                countryCode = 86;
-                phone_number = 938265860;
-                password = '123456';
-              }
-            "
-            color="orange"
-            :outline="
-              countryCode !== 86 &&
-              phone_number !== 938265860 &&
-              password !== '123456'
-            "
+          <span
+            v-for="(memberInfo, index) in [
+              {
+                countryCode: 86,
+                phone: 938265860,
+                password: '123456',
+                label: '會員',
+                color: 'orange',
+              },
+              {
+                countryCode: 886,
+                phone: 9809806674,
+                password: '000000',
+                label: '代理A',
+                color: 'blue',
+              },
+              {
+                countryCode: 86,
+                phone: 15507564971,
+                password: '123456',
+                label: '代理B',
+                color: 'green',
+              },
+            ]"
+            :key="index"
           >
-            會員
-          </q-btn>
-          <q-btn
-            dense
-            size="small"
-            v-if="isTest"
-            @click="
-              () => {
-                countryCode = 886;
-                phone_number = 9809806674;
-                password = '000000';
-              }
-            "
-            color="blue"
-            :outline="
-              countryCode !== 886 &&
-              phone_number !== 9809806674 &&
-              password !== '000000'
-            "
-          >
-            代理
-          </q-btn>
+            <q-btn
+              dense
+              size="small"
+              v-if="isTest"
+              @click="
+                () => {
+                  countryCode = memberInfo.countryCode;
+                  phone_number = memberInfo.phone;
+                  password = memberInfo.password;
+                }
+              "
+              :color="memberInfo.color"
+              :outline="
+                countryCode !== memberInfo.countryCode ||
+                phone_number !== memberInfo.phone ||
+                password !== memberInfo.password
+              "
+            >
+              {{ memberInfo.label }}
+            </q-btn>
+          </span>
         </div>
+
         <div class="q-gutter-md">
           <!-- <router-link to="register_master" class="text-blue">
             <q-btn dense unelevated> {{ $t('auth.註冊') }} </q-btn>

@@ -13,7 +13,7 @@
         :key="index"
         :class="type.color"
         :name="type.value"
-        :label="$t(`transaction_history.label.transaction_type.${type.value}`)"
+        :label="$t(`transaction_history.transaction_type.${type.value}`)"
       />
     </q-tabs>
     <q-tab-panels

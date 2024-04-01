@@ -20,15 +20,13 @@
     <div class="text-left bg-step q-pa-md">
       <!-- 數量 -->
       <div class="flex items-center">
-        <div class="text-grey-6">
-          {{ $t('transaction_history.label.quantity') }}：
-        </div>
+        <div class="text-grey-6">{{ $t('transaction_history.數量') }}：</div>
         <div>{{ thousandTool(order?.['UsdtAmt'], 'USDT') }} USDT</div>
       </div>
       <!-- 訂單建立時間 -->
       <div class="flex items-center">
         <div class="text-grey-6">
-          {{ $t('transaction_history.label.order_time') }}：
+          {{ $t('transaction_history.訂單建立時間') }}：
         </div>
         <div>
           {{ dayjs(order?.['CreateDate']).format('YYYY-MM-DD HH:mm:ss') }}

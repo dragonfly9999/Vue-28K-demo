@@ -2,7 +2,7 @@ import numbro from 'numbro';
 
 type NumOptions = string | number | null | undefined;
 
-type DigitTypes = 'USDT' | 'CNY';
+export type DigitTypes = 'USDT' | 'CNY';
 
 const thousandTool = (num?: NumOptions, digits?: DigitTypes): string => {
   if (!num) return '0';

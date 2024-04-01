@@ -110,7 +110,7 @@ import { useRoute } from 'vue-router';
 const quasar = useQuasar();
 const props = defineProps<{
   order: LiveOrder;
-  isInstant: boolean;
+  isInstant: boolean; // 區分是出現在`等待列表`的即時訂單還是`進行中`的訂單
   isCleanCount?: boolean;
 }>();
 
