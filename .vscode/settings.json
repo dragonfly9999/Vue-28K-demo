@@ -21,5 +21,6 @@
   },
   "[jsonc]": {
     "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
-  }
+  },
+  "files.autoSave": "afterDelay"
 }
