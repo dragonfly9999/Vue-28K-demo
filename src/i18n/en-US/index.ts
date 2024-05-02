@@ -34,6 +34,7 @@ export default {
   連線中: 'Connecting',
   返回: 'Back',
   確認: 'Confirm',
+  沒有訂單: 'No Orders',
   kyc,
   auth,
   dashboard,

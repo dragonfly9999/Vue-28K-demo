@@ -1,49 +1,50 @@
 <template>
-  <q-btn-dropdown
+  <div class="nav">
+    <q-btn-dropdown
     v-if="!isAgent"
     flat
     no-caps
     icon="attach_money"
     style="text-decoration: none"
     :label="t('交易')"
-  >
+    >
     <q-list>
       <q-item
-        clickable
-        v-close-popup
-        @click="
+      clickable
+      v-close-popup
+      @click="
           () =>
-            router.push({
-              name: 'trade',
+          router.push({
+            name: 'trade',
               query: { type: 'buy', action: 'create' },
             })
-        "
+            "
       >
-        <q-item-section>
-          <q-item-label class="q-px-md">{{ t('購買') }}</q-item-label>
-        </q-item-section>
-      </q-item>
-
-      <q-item
-        clickable
-        v-close-popup
-        @click="
+      <q-item-section>
+        <q-item-label class="q-px-md">{{ t('購買') }}</q-item-label>
+      </q-item-section>
+    </q-item>
+    
+    <q-item
+    clickable
+    v-close-popup
+    @click="
           () =>
             router.push({
               name: 'trade',
               query: { type: 'sell', action: 'create' },
             })
-        "
+            "
       >
-        <q-item-section>
-          <q-item-label class="q-px-md">{{ t('出售') }}</q-item-label>
-        </q-item-section>
-      </q-item>
-    </q-list>
-  </q-btn-dropdown>
-  <q-btn
-    v-for="(feature, index) in features"
-    :key="index"
+      <q-item-section>
+        <q-item-label class="q-px-md">{{ t('出售') }}</q-item-label>
+      </q-item-section>
+    </q-item>
+  </q-list>
+</q-btn-dropdown>
+<q-btn
+v-for="(feature, index) in features"
+:key="index"
     flat
     no-caps
     :icon="feature['icon']"
@@ -53,15 +54,16 @@
     {{ t(`label.${feature.name}`) }}
   </q-btn>
   <q-btn
-    v-if="isAgent"
+  v-if="isAgent"
     flat
     no-caps
     icon="credit_card"
     style="text-decoration: none"
     @click="() => router.push({ name: 'account' })"
-  >
+    >
     {{ t(`label.account`) }}
   </q-btn>
+</div>
 </template>
 
 <script setup lang="ts">
@@ -89,4 +91,8 @@ const features = computed(() => [
 ]);
 </script>
 
-<style scoped></style>
+<style scoped>
+.nav{
+  display: flex;
+}
+</style>

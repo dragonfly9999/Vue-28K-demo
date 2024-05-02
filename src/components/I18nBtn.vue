@@ -8,6 +8,10 @@
           v-for="(item, index) in langs"
           :key="index"
           @click="() => ($i18n.locale = item.locale)"
+          :style="{
+            backgroundColor:
+              $i18n.locale === item.locale ? 'orange' : 'inherit',
+          }"
         >
           <q-item-section>
             {{ item?.name }}
@@ -21,5 +25,4 @@
 <script setup lang="ts">
 import langs from 'src/i18n';
 </script>
-
 <style lang="scss" scoped></style>
