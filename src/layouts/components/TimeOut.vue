@@ -26,8 +26,8 @@ const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
       {{
         (order?.MasterType === MasterTypeNum.Sell && isAgent) ||
         (!isAgent && order?.MasterType === MasterTypeNum.Buy)
-          ? t('label.buy')
-          : t('label.sell')
+          ? t('buy.buy')
+          : t('sell.sell')
       }}
       USDT/ {{ order?.Currency }}
     </div>
@@ -72,7 +72,7 @@ const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
         @click="() => (appealWarn = true)"
         class="full-width"
         color="blue-13"
-        :label="$t('label.appeal')"
+        :label="$t('main.appeal')"
       />
       <!-- 返回主頁btn -->
       <q-btn

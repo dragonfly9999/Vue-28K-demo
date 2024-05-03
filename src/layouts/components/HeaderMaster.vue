@@ -27,7 +27,7 @@
           <q-icon name="account_circle" size="md" class="q-mr-xs" />
           <div>
             <div class="text-caption text-no-wrap">
-              {{ `${$t('label.welcome')} !` }}
+              {{ `${$t('auth.welcome')} !` }}
             </div>
             <div class="text-caption">
               {{ storage.getStorageSync('phone') }}
@@ -38,7 +38,7 @@
           flat
           class="text-no-wrap"
           style="text-decoration: none"
-          :label="t('layout.登出')"
+          :label="t('auth.登出')"
           @click="logout"
         />
 
@@ -114,7 +114,7 @@
         <q-expansion-item
           no-separator
           icon="attach_money"
-          :label="t('交易')"
+          :label="t('dashboard.交易')"
           default-closed
           v-if="!isAgent"
         >
@@ -132,7 +132,7 @@
               "
             >
               <q-item-section>
-                <q-item-label class="q-px-md">{{ t('購買') }}</q-item-label>
+                <q-item-label class="q-px-md">{{ t('buy.購買') }}</q-item-label>
               </q-item-section>
             </q-item>
 
@@ -148,7 +148,7 @@
               "
             >
               <q-item-section>
-                <q-item-label class="q-px-md">{{ t('出售') }}</q-item-label>
+                <q-item-label class="q-px-md">{{ t('sell.出售') }}</q-item-label>
               </q-item-section>
             </q-item>
           </q-list>
@@ -182,7 +182,7 @@
             <q-icon :name="item.icon" />
           </q-item-section>
           <q-item-section>
-            {{ t(`label.${item.name}`) }}
+            {{ t(`wallet.${item.name}`) }}
           </q-item-section>
         </q-item>
 
@@ -202,7 +202,7 @@
             <q-icon name="credit_card" />
           </q-item-section>
           <q-item-section>
-            {{ t(`label.account`) }}
+            {{ t(`account.account`) }}
           </q-item-section>
         </q-item>
 
@@ -210,7 +210,7 @@
         <q-expansion-item
           no-separator
           icon="language"
-          :label="t('label.language')"
+          :label="t('main.language')"
           default-closed
         >
           <q-item
@@ -245,14 +245,14 @@
           <div class="flex items-end q-gutter-x-md">
             <!-- 歡迎登入 -->
             <div>
-              <div>{{ t('label.welcome') }}</div>
+              <div>{{ t('auth.welcome') }}</div>
               <div class="text-weight-bold text-body1">
                 {{ storage.getStorageSync('phone') }}
               </div>
             </div>
 
             <!-- 登出btn -->
-            <q-btn @click="logout" :label="$t('label.logout')" icon="logout" />
+            <q-btn @click="logout" :label="$t('auth.登出')" icon="logout" />
           </div>
         </div>
       </div>
@@ -271,7 +271,6 @@ import { useStorage } from 'vue3-storage';
 import RateBar from 'src/components/RateBar.vue';
 import NavBar from 'src/components/NavBar.vue';
 import logo from 'src/assets/logo_easy.png';
-import api from '../api';
 
 const router = useRouter();
 const { t } = useI18n();

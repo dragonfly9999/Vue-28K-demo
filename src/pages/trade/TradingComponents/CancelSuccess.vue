@@ -10,7 +10,7 @@
 
     <!-- order title -->
     <div class="text-left text-subtitle1 text-blue-13 q-mt-lg">
-      {{ $t(`label.${route.query.type as string}`) }}
+      {{ $t(`buy.${route.query.type as string}`) }}
       USDT/ {{ order?.Currency }}
     </div>
     <!-- order info -->

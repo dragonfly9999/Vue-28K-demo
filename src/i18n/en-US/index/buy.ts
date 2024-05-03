@@ -1,5 +1,7 @@
 export default {
   //buy step
+  buy: 'Buy',
+  購買: 'Buy',
   step_hint_buy_title_1: 'Submit Order',
   step_hint_buy_text_1: 'Please fill in the order details',
   step_hint_buy_title_2: 'Make Payment',

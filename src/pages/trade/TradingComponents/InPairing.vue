@@ -49,7 +49,7 @@
 
         <q-card-actions align="right" class="text-primary">
           <!-- 返回btn -->
-          <q-btn v-close-popup outline color="primary" :label="$t('返回')" />
+          <q-btn v-close-popup outline color="primary" :label="$t('main.返回')" />
           <!-- 確認btn -->
           <q-btn
             :loading="loading"

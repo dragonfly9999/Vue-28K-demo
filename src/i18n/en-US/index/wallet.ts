@@ -1,5 +1,8 @@
 export default {
   title: 'Wallet',
+  wallet: 'Wallet',
+  transfer: 'Transfer',
+  history: 'Transaction History',
   label: {
     warning_title: 'Please Confirm the Agreement Type You Have Selected',
     warning_text_1: 'Please ensure that the selected agreement type matches the agreement type of the receiving wallet or exchange.',

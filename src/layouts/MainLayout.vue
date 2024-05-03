@@ -14,7 +14,7 @@
           >
             <div class="flex items-center justify-end">
               <div class="text-caption q-mr-xs">
-                {{ $t('label.real_balance') }}:
+                {{ $t('transaction.real_balance') }}:
               </div>
               <div class="flex items-center">
                 <q-spinner-ios
@@ -30,7 +30,7 @@
             </div>
             <div class="flex items-center justify-end">
               <div class="text-caption q-mr-xs">
-                {{ $t('label.avb_balance') }}:
+                {{ $t('transaction.avb_balance') }}:
               </div>
               <div class="flex items-center">
                 <q-spinner-ios

@@ -16,12 +16,12 @@ const { t } = useI18n();
     <div>{{ t('warn.cancel') }}</div>
     <q-card-actions align="right" class="text-blue-13">
       <!-- 返回btn -->
-      <q-btn outline color="blue-13" :label="t('label.back')" v-close-popup />
+      <q-btn outline color="blue-13" :label="t('main.back')" v-close-popup />
       <!-- 確認btn -->
       <q-btn
         color="blue-13"
         unelevated
-        :label="t('label.confirm')"
+        :label="t('main.confirm')"
         @click="() => emit('confirm')"
       />
     </q-card-actions>

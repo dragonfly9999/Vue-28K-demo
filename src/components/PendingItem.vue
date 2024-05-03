@@ -77,7 +77,7 @@
         <!-- 狀態  Order_StatusID: 32=> 等待配對中, 33 => 等待付款, 34 => 等待確認中, 35 => 申訴,-->
         <div class="q-gutter-sm">
           <div class="q-gutter-sm column items-end justify-end">
-            <q-badge :label="$t('訊息') + ': ' + getCount(order?.token)" />
+            <q-badge :label="$t('transaction.訊息') + ': ' + getCount(order?.token)" />
             <status-master :order="fakeLiveOrder" />
           </div>
         </div>
@@ -107,11 +107,11 @@ const { getCount } = useThirdStore();
 const orderInfo = (order: PendingOrder) => {
   switch (order.MasterType) {
     case MasterTypeNum.Buy:
-      return { label: t('label.buy'), color: 'blue-13' };
+      return { label: t('buy.buy'), color: 'blue-13' };
     case MasterTypeNum.Sell:
-      return { label: t('label.sell'), color: 'red' };
+      return { label: t('sell.sell'), color: 'red' };
     default: {
-      return { label: t('label.undefined'), color: 'purple' };
+      return { label: t('main.undefined'), color: 'purple' };
     }
   }
 };

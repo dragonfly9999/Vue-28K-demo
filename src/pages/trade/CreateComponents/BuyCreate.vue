@@ -7,7 +7,7 @@
           flat
           color="primary"
           @click="$router.back()"
-          :label="$t('返回')"
+          :label="$t('main.返回')"
         />
       </div>
       <div class="col flex justify-center text-h6 text-weight-bold">

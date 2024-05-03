@@ -12,7 +12,7 @@
 
     <q-item v-if="pendingInstant.data?.length === 0">
       <div class="q-pa-md text-capitalize text-weight-medium text-blue-14">
-        {{ $t('沒有訂單') }}
+        {{ $t('main.沒有訂單') }}
       </div>
     </q-item>
   </q-list>

@@ -21,7 +21,7 @@
               }
             }
           "
-          :label-set="$t('label.confirm')"
+          :label-set="$t('main.confirm')"
           :label-cancel="$t('transaction.cancel')"
         >
           <q-input
@@ -63,7 +63,7 @@
               }
             }
           "
-          :label-set="$t('label.confirm')"
+          :label-set="$t('main.confirm')"
           :label-cancel="$t('transaction.cancel')"
         >
           <q-input
@@ -104,7 +104,7 @@
               }
             }
           "
-          :label-set="$t('label.confirm')"
+          :label-set="$t('main.confirm')"
           :label-cancel="$t('transaction.cancel')"
         >
           <q-input
@@ -145,7 +145,7 @@
               }
             }
           "
-          :label-set="$t('label.confirm')"
+          :label-set="$t('main.confirm')"
           :label-cancel="$t('transaction.cancel')"
         >
           <q-input
@@ -191,7 +191,7 @@
               }
             }
           "
-          :label-set="$t('label.confirm')"
+          :label-set="$t('main.confirm')"
           :label-cancel="$t('transaction.cancel')"
         >
           <q-select
@@ -267,7 +267,6 @@
 <script setup lang="ts">
 import { watch, reactive } from 'vue';
 import { AccNum, type AccRes } from '../api/useAccHistory';
-
 
 const props = defineProps<{
   accInfo: AccRes;

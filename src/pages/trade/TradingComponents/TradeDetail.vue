@@ -184,7 +184,7 @@
           unelevated
           rounded
           color="blue-13"
-          :label="t('label.close')"
+          :label="t('main.close')"
           v-close-popup
         />
         <div class="flex justify-center">
@@ -251,9 +251,9 @@ const usdtFormat = computed(() => {
 const orderInfo = computed(() => {
   switch (detail.value?.MasterType) {
     case useNum.value.Buy:
-      return { label: t('label.buy'), color: 'blue-13' };
+      return { label: t('buy.buy'), color: 'blue-13' };
     case useNum.value.Sell:
-      return { label: t('label.sell'), color: 'red' };
+      return { label: t('sell.sell'), color: 'red' };
     default: {
       return { label: t('label.undefined'), color: 'purple' };
     }

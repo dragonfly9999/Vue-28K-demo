@@ -42,7 +42,7 @@
           <!-- 結餘 -->
           <q-item style="min-height: 32px" v-if="'Balance' in record">
             <q-item-section class="text-grey-6 text-caption">
-              {{ $t('label.real_balance') }}(USDT)</q-item-section
+              {{ $t('transaction.real_balance') }}(USDT)</q-item-section
             >
             <q-item-section avatar>
               {{ thousandTool(record?.Balance, 'USDT') }}
@@ -204,7 +204,7 @@
           unelevated
           rounded
           color="blue-13"
-          :label="t('label.close')"
+          :label="t('main.close')"
           v-close-popup
         />
         <!--交易對話紀錄btn -->
@@ -262,9 +262,9 @@ const recordInfo = computed(() => {
   if (props.isExpired && useStorage().getStorageSync('isAgent')) {
     switch (props.record?.MasterType) {
       case MasterTypeNum.Sell:
-        return { label: t('label.buy'), color: 'blue-13' };
+        return { label: t('buy.buy'), color: 'blue-13' };
       case MasterTypeNum.Buy:
-        return { label: t('label.sell'), color: 'red' };
+        return { label: t('sell.sell'), color: 'red' };
       case MasterTypeNum.TransIn:
         return {
           label: t(
@@ -286,9 +286,9 @@ const recordInfo = computed(() => {
   }
   switch (props.record?.MasterType) {
     case MasterTypeNum.Buy:
-      return { label: t('label.buy'), color: 'blue-13' };
+      return { label: t('buy.buy'), color: 'blue-13' };
     case MasterTypeNum.Sell:
-      return { label: t('label.sell'), color: 'red' };
+      return { label: t('sell.sell'), color: 'red' };
     case MasterTypeNum.TransIn:
       return {
         label: t(

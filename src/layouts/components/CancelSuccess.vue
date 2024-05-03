@@ -8,7 +8,7 @@
 
     <!-- order title -->
     <div class="text-left text-subtitle1 text-blue-13 q-mt-lg">
-      {{ $t(`label.${route.name as string}`) }}
+      {{ $t(`wallet.${route.name as string}`) }}
       USDT/ {{ order?.Currency }}
     </div>
     <!-- order info -->

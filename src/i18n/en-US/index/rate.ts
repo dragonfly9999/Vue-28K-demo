@@ -4,4 +4,5 @@ export default {
     buy: 'Buy',
     sell: 'Sell',
     exchange: 'Exchange Rate',
+    匯率: 'exchange rate',
 }

@@ -14,7 +14,7 @@
           dense
           class="q-mr-md"
           color="blue-13"
-          :label="$t('label.notify')"
+          :label="$t('main.notify')"
           left-label
           checked-icon="notifications"
           unchecked-icon="notifications_off"
@@ -22,7 +22,7 @@
           disable
         >
           <q-tooltip>
-            {{ $t('label.notify_hint') }}
+            {{ $t('main.notify_hint') }}
           </q-tooltip>
         </q-toggle>
         <!-- 提示音 -->
@@ -30,7 +30,7 @@
           dense
           class="q-mr-md"
           color="blue-13"
-          :label="$t('label.beep')"
+          :label="$t('main.beep')"
           left-label
           checked-icon="volume_up"
           unchecked-icon="volume_off"
@@ -38,13 +38,13 @@
         >
           <!-- hint -->
           <q-tooltip>
-            {{ $t('label.beep_hint') }}
+            {{ $t('main.beep_hint') }}
           </q-tooltip>
         </q-toggle>
         <!-- 自動接單 -->
         <q-toggle
           dense
-          :label="$t('label.auto')"
+          :label="$t('main.auto')"
           color="blue-13"
           left-label
           icon="hdr_auto"
@@ -59,7 +59,7 @@
         >
           <!-- hint -->
           <q-tooltip>
-            {{ $t('label.auto_hint') }}
+            {{ $t('main.auto_hint') }}
           </q-tooltip>
         </q-toggle>
         <q-spinner v-else />

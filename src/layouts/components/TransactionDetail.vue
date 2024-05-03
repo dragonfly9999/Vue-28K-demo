@@ -68,8 +68,7 @@
         <!-- 付款方名 -->
         <q-item style="min-height: 32px">
           <q-item-section class="text-grey-6 text-caption">
-            {{ $t('transaction.payer')
-            }}{{ $t('transaction_history.戶名') }}
+            {{ $t('transaction.payer') }}{{ $t('transaction_history.戶名') }}
           </q-item-section>
           <q-item-section avatar>
             {{ detail?.P5?.split('|')?.[0] }}
@@ -165,7 +164,7 @@
         unelevated
         rounded
         color="blue-13"
-        :label="t('label.close')"
+        :label="t('main.close')"
         v-close-popup
       />
       <div class="flex justify-center">
@@ -221,9 +220,9 @@ const usdtFormat = computed(() => {
 const orderInfo = computed(() => {
   switch (detail.value?.MasterType) {
     case useNum.value.Buy:
-      return { label: t('label.buy'), color: 'blue-13' };
+      return { label: t('buy.buy'), color: 'blue-13' };
     case useNum.value.Sell:
-      return { label: t('label.sell'), color: 'red' };
+      return { label: t('sell.sell'), color: 'red' };
     default: {
       return { label: t('label.undefined'), color: 'purple' };
     }

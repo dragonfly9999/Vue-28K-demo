@@ -10,6 +10,7 @@ export default {
   數量: '數量',
   時間: '時間',
   訂單建立時間: '訂單建立時間',
+  order_number: '訂單號',
   transaction_type: {
     5: '全部',
     [MasterTypeNum.Buy]: '購買',

@@ -1,4 +1,10 @@
+import { AccNum } from 'src/pages/account/api';
 export default {
+  account: '帳戶管理',
+  add_account: '新增帳戶',
+  新增帳戶: '新增帳戶',
+  title_add_account: '新增帳戶',
+  del_hint: '是否要刪除帳戶',
   頻道: '頻道',
   success: '資料提交成功',
   銀行戶名: '銀行戶名',
@@ -26,5 +32,14 @@ export default {
   replaceConfirm: {
     1: '接受並重設',
     2: '帳戶'
-  }
+  },
+  preset_hint: '是否要設為預設帳戶',
+  preset_hint2: '設為預設帳戶：以此做為交易時的 收款帳戶',
+  CNY: {
+    [AccNum.Account]: '銀行帳號',
+    [AccNum.Name]: '銀行戶名',
+    [AccNum.BankID]: '銀行名稱',
+    [AccNum.Branch]: '所在省市',
+    account: '人民幣CNY帳戶',
+  },
 };

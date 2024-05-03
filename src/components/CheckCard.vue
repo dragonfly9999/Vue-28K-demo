@@ -14,7 +14,7 @@
           color="blue-13"
           @click="() => emit('confirm')"
         >
-          {{ $t('label.confirm') }}
+          {{ $t('main.confirm') }}
         </q-btn>
 
         <q-btn
@@ -23,7 +23,7 @@
           color="blue-13"
           @click="() => emit('close')"
         >
-          {{ $t('label.back') }}
+          {{ $t('main.back') }}
         </q-btn>
       </q-card-actions>
     </q-card>

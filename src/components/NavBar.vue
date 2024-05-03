@@ -6,7 +6,7 @@
       no-caps
       icon="attach_money"
       style="text-decoration: none"
-      :label="t('交易')"
+      :label="t('dashboard.交易')"
     >
       <q-list>
         <q-item
@@ -21,7 +21,7 @@
           "
         >
           <q-item-section>
-            <q-item-label class="q-px-md">{{ t('購買') }}</q-item-label>
+            <q-item-label class="q-px-md">{{ t('buy.購買') }}</q-item-label>
           </q-item-section>
         </q-item>
 
@@ -37,7 +37,7 @@
           "
         >
           <q-item-section>
-            <q-item-label class="q-px-md">{{ t('出售') }}</q-item-label>
+            <q-item-label class="q-px-md">{{ t('sell.出售') }}</q-item-label>
           </q-item-section>
         </q-item>
       </q-list>
@@ -52,7 +52,7 @@
       style="text-decoration: none"
       @click="() => router.push({ name: feature.name })"
     >
-      {{ t(`label.${feature.name}`) }}
+      {{ t(`wallet.${feature.name}`) }}
     </q-btn>
     <q-btn
       v-if="isAgent"
@@ -62,7 +62,7 @@
       style="text-decoration: none"
       @click="() => router.push({ name: 'account' })"
     >
-      {{ t(`label.account`) }}
+      {{ t(`account.account`) }}
     </q-btn>
   </div>
 </template>

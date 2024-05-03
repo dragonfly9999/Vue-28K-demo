@@ -87,7 +87,7 @@ const drawerRight = ref(true);
           <q-item-section avatar>
             <q-icon name="account_balance_wallet" />
           </q-item-section>
-          <q-item-section> {{ t('label.wallet') }} </q-item-section>
+          <q-item-section> {{ t('wallet.wallet') }} </q-item-section>
         </q-item>
         <!-- 紀錄 -->
         <q-item
@@ -119,14 +119,14 @@ const drawerRight = ref(true);
           <q-item-section avatar>
             <q-icon name="credit_card" />
           </q-item-section>
-          <q-item-section>{{ t('label.account') }}</q-item-section>
+          <q-item-section>{{ t('account.account') }}</q-item-section>
         </q-item>
 
         <!-- 語言 -->
         <q-expansion-item
           no-separator
           icon="language"
-          :label="t('label.language')"
+          :label="t('main.language')"
           default-closed
         >
           <q-item
@@ -160,7 +160,7 @@ const drawerRight = ref(true);
           <div class="flex items-end q-gutter-x-md">
             <div>
               <!-- 歡迎登入 -->
-              <div>{{ t('label.welcome') }}</div>
+              <div>{{ t('auth.welcome') }}</div>
               <div class="text-weight-bold text-body1">
                 {{ storage.getStorageSync('phone') }}
               </div>
@@ -172,7 +172,7 @@ const drawerRight = ref(true);
                   router.push({ name: 'login' });
                 }
               "
-              :label="$t('label.logout')"
+              :label="$t('auth.登出')"
               icon="logout"
             />
           </div>

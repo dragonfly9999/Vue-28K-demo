@@ -13,11 +13,11 @@
         <q-icon name="warning_amber" size="sm" color="orange-9" />
         <!-- title -->
         <div class="text-h6 text-orange-9 text-weight-bold">
-          {{ $t('cancel.title') }}
+          {{ $t('main.title') }}
         </div>
       </div>
       <!-- 取消驗證注意事項 -->
-      <div>{{ $t('cancel.content') }}</div>
+      <div>{{ $t('main.content') }}</div>
       <q-card-actions align="right" class="text-primary">
         <!-- 返回btn -->
         <q-btn
@@ -30,7 +30,7 @@
         <q-btn
           color="primary"
           glossy
-          :label="$t('確認')"
+          :label="$t('main.確認')"
           @click="$emit('confirm')"
         />
       </q-card-actions>

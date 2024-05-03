@@ -7,7 +7,7 @@
         flat
         dense
         color="blue-13"
-        :label="t('label.back')"
+        :label="t('main.back')"
         @click="() => router.back()"
       />
     </div>
@@ -29,7 +29,7 @@
           <q-banner>
             <div class="flex items-center q-mb-md">
               <q-icon name="paid" color="blue-13" class="q-mr-sm" />
-              <div>{{ $t('transfer.label.premium') }}</div>
+              <div>{{ $t('transfer.account.premium') }}</div>
             </div>
 
             <div class="flex items-center">

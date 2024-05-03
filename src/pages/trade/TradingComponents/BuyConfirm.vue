@@ -67,7 +67,7 @@
           class="col-12 col-md q-mt-md"
           unelevated
           color="blue-13"
-          :label="$t('label.upload_image')"
+          :label="$t('main.upload_image')"
           @click="() => $emit('upload')"
         />
         <!-- 略過btn_進入下一個步驟 -->
@@ -75,7 +75,7 @@
           class="col-12 col-md q-mt-md"
           outline
           color="blue-13"
-          :label="$t('label.skip')"
+          :label="$t('main.skip')"
           @click="() => $emit('skip')"
         />
       </q-card-actions>

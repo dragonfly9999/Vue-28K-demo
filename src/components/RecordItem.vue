@@ -35,7 +35,7 @@
         <!-- 結餘 -->
         <div class="items-center text-right" v-if="'Balance' in order">
           <div class="text-caption text-grey-6">
-            {{ $t('label.real_balance') }}(USDT)
+            {{ $t('transaction.real_balance') }}(USDT)
           </div>
           <div class="text-body1 text-green-9">
             {{ thousandTool(order?.Balance, 'USDT') }}

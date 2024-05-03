@@ -25,6 +25,8 @@ export default {
   payer: '付款方',
   beneficiary: '收款方',
   bank_name: '銀行名稱',
+  real_balance: '結餘',
+  avb_balance: '可提',
   code: {
     TWD: '銀行代碼',
     CNY: '所在省市',

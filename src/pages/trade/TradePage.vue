@@ -58,7 +58,7 @@ watch(
     if (newValue.token === undefined) return;
     if (!chatWS.value || !orderStatus.value) {
       q.loading.show({
-        message: t('連線中'),
+        message: t('dashboard.連線中'),
       });
       if (!chatWS.value) {
         setWebSockets(newValue.token);

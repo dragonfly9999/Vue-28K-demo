@@ -2,7 +2,7 @@
   <!-- 步驟 -->
   <StepperMaster :order="order" />
   <div>
-    <div class="text-overline">{{ $t('label.sell') }} USDT</div>
+    <div class="text-overline">{{ $t('sell.sell') }} USDT</div>
     <PriceInfo :order="order" />
     <!-- hint -->
     <div class="flex items-start text-grey-8 q-my-md no-wrap">

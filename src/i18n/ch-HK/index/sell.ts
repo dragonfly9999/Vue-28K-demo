@@ -1,5 +1,7 @@
 export default {
      //buy step
+     sell: '出售',
+     出售: '出售',
      step_hint_sell_title_1: '提交訂單',
      step_hint_sell_text_1: '請填寫訂單資料',
      step_hint_sell_title_2: '等待付款',

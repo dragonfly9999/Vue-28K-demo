@@ -25,6 +25,8 @@ export default {
   payer: 'Payer',
   beneficiary: 'Beneficiary',
   bank_name: 'Bank Name',
+  real_balance: 'Real Balance',
+  avb_balance: 'Available Balance',
   code: {
     TWD: 'Bank Code',
     CNY: 'Province/City',

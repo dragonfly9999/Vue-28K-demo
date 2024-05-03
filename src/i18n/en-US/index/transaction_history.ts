@@ -9,6 +9,7 @@ export default {
   數量: 'Quantity',
   時間: 'Time',
   訂單建立時間: 'Order Creation Time',
+  order_number: 'Order Number',
   transaction_type: {
     5: 'All',
     [MasterTypeNum.Buy]: 'Buy',

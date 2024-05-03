@@ -46,7 +46,7 @@
         outline
         color="blue-13"
         class="full-width q-mt-md"
-        :label="$t('label.close')"
+        :label="$t('main.close')"
         v-close-popup
       />
     </q-card-actions>

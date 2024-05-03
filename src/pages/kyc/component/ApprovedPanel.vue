@@ -20,7 +20,7 @@
         @click="() => $router.push({ name: 'kyc_create' })"
         no-caps
       >
-        {{ $t('新增帳戶') }}
+        {{ $t('account.新增帳戶') }}
       </q-btn>
     </div>
   </div>

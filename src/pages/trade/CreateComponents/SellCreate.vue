@@ -5,7 +5,7 @@
         <q-btn
           flat
           color="primary"
-          :label="$t('返回')"
+          :label="$t('main.返回')"
           @click="$router.back()"
         />
       </div>

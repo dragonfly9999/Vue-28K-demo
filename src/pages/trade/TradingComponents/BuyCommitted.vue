@@ -9,7 +9,7 @@
       </div>
 
       <div class="text-body-1 text-grey-8">
-        {{ $t('label.order_number') }}
+        {{ $t('transaction_history.order_number') }}
       </div>
       <PunctuationMaster :label="order?.Tx_HASH" />
     </div>

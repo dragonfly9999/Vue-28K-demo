@@ -1,4 +1,10 @@
+import { AccNum } from 'src/pages/account/api';
 export default {
+  account: 'Account Management',
+  add_account: 'Add Account',
+  新增帳戶: 'Add Account',
+  title_add_account: 'Add Account',
+  del_hint: 'Are you sure you want to delete the account?',
   頻道: 'Channel',
   success: 'Data submitted successfully',
   銀行戶名: 'Bank Account Name',
@@ -26,6 +32,15 @@ export default {
   replaceConfirm: {
     1: 'Accept and Reset',
     2: 'Account'
-  }
+  },
+  preset_hint: 'Do you want to set as default account?',
+  preset_hint2: 'Set as default account: Use this account for transactions as the receiving account.',
+  CNY: {
+    [AccNum.Account]: 'Bank Account Number',
+    [AccNum.Name]: 'Bank Account Name',
+    [AccNum.BankID]: 'Bank Name',
+    [AccNum.Branch]: 'Province/City',
+    account: 'CNY Account',
+  },
 };
 

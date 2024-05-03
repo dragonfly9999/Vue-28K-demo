@@ -5,7 +5,7 @@
 
     <q-card-actions align="right" class="text-blue-13">
       <!-- 返回btn -->
-      <q-btn v-close-popup outline color="blue-13" :label="$t('label.close')" />
+      <q-btn v-close-popup outline color="blue-13" :label="$t('main.close')" />
       <!-- 確認btn -->
       <q-btn
         v-close-popup
@@ -17,7 +17,7 @@
         "
         unelevated
         color="blue-13"
-        :label="$t('label.confirm')"
+        :label="$t('main.confirm')"
       />
     </q-card-actions>
   </q-card>

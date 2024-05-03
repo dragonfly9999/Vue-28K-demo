@@ -1,5 +1,7 @@
 export default {
  //buy step
+ buy: '購買',
+ 購買: '購買',
  step_hint_buy_title_1: '提交訂單',
  step_hint_buy_text_1: '請填寫訂單資料',
  step_hint_buy_title_2: '請付款',

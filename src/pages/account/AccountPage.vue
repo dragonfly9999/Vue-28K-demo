@@ -6,7 +6,7 @@
         <q-btn
           flat
           color="blue-13"
-          :label="$t('label.back')"
+          :label="$t('main.back')"
           @click="() => router.back()"
         />
       </div>
@@ -84,7 +84,7 @@
                     @click="() => router.push({ name: 'account_create' })"
                     no-caps
                   >
-                    {{ $t('label.add_account') }}
+                    {{ $t('account.add_account') }}
                   </q-btn>
                 </div>
               </div>
@@ -98,7 +98,7 @@
       @confirm="handleMutiDel"
       @close="() => (delID = undefined)"
       :visible="delID !== undefined"
-      :message="$t('label.del_hint')"
+      :message="$t('account.del_hint')"
     />
     <!-- 沒有預設帳號 -->
     <components.NoDefaultWarn v-model:visible="isNoDefaultWarn" />

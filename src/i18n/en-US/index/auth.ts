@@ -1,6 +1,8 @@
 export default {
   登入: 'Login',
+  登出: 'LOGOUT',
   註冊: 'Register',
+  welcome: 'Welcome',
   warn: {
     login: 'Please confirm you are visiting k100u.com',
     register:
@@ -34,4 +36,5 @@ export default {
   此手機尚未註冊: 'This phone number has not been registered',
   請輸入新密碼: 'Please enter a new password',
   重設密碼: 'Reset Password',
+  bank_info: 'Fill in Bank Information',
 };

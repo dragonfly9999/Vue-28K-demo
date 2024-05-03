@@ -1,5 +1,8 @@
 export default {
   title: '我的錢包',
+  wallet: '錢包',
+  transfer: '轉帳',
+  history: '交易紀錄',
   label: {
     warning_title: '請確認您所選擇的協議種類',
     warning_text_1: '請確保所選協議種類與接收錢包或交易所的協議種類相符。',

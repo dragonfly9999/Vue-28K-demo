@@ -7,7 +7,7 @@
           <q-btn
             flat
             color="blue-13"
-            :label="t('label.back')"
+            :label="t('main.back')"
             @click="() => router.back()"
           />
         </div>

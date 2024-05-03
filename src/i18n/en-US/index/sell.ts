@@ -1,5 +1,7 @@
 export default {
      // Purchase step
+     sell: 'Sell',
+     出售: 'Sell',
      step_hint_sell_title_1: 'Submit Order',
      step_hint_sell_text_1: 'Please fill in the order information',
      step_hint_sell_title_2: 'Waiting for Payment',

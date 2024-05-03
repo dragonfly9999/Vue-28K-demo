@@ -19,16 +19,16 @@
               flat
               dense
               color="blue-13"
-              :label="t('label.back')"
+              :label="t('main.back')"
               @click="() => (visible.warn = true)"
             />
           </div>
           <!-- title帳戶驗證 -->
           <div class="col text-center text-h6 text-weight-bold">
-            {{ $t('label.title_add_account') }}
+            {{ $t('account.title_add_account') }}
             <!-- ()帳戶 -->
             <div class="text-overline text-blue-13">
-              {{ $t('label.CNY.account') }}
+              {{ $t('account.CNY.account') }}
             </div>
           </div>
           <div class="col-2 flex justify-end"></div>
@@ -42,7 +42,7 @@
               class="q-mt-lg bg-blue-grey-1 q-pa-sm"
               style="border-bottom-right-radius: 15px"
             >
-              <div>{{ $t('label.bank_info') }}</div>
+              <div>{{ $t('back.bank_info') }}</div>
               <div>
                 <!-- hint -->
                 {{ $t('warn.bank_hint') }}
@@ -51,7 +51,7 @@
 
             <div>
               <!-- 銀行戶名 -->
-              <div>{{ $t(`label.CNY.${AccNum.Name}`) }}</div>
+              <div>{{ $t(`account.CNY.${AccNum.Name}`) }}</div>
               <q-input
                 outlined
                 v-model="formData[AccNum.Name]"
@@ -63,7 +63,7 @@
             </div>
             <!-- 銀行帳號 -->
             <div>
-              <div>{{ $t(`label.CNY.${AccNum.Account}`) }}</div>
+              <div>{{ $t(`account.CNY.${AccNum.Account}`) }}</div>
               <q-input
                 outlined
                 v-model="formData[AccNum.Account]"
@@ -75,7 +75,7 @@
             </div>
             <!-- 銀行名稱 -->
             <div>
-              <div>{{ $t(`label.CNY.${AccNum.BankID}`) }}</div>
+              <div>{{ $t(`account.CNY.${AccNum.BankID}`) }}</div>
               <q-input
                 outlined
                 v-model="formData[AccNum.BankID]"
@@ -87,7 +87,7 @@
             </div>
             <!-- 所在省市 -->
             <div>
-              <div>{{ $t(`label.CNY.${AccNum.Branch}`) }}</div>
+              <div>{{ $t(`account.CNY.${AccNum.Branch}`) }}</div>
               <q-input
                 outlined
                 v-model="formData[AccNum.Branch]"
@@ -116,7 +116,7 @@
               <q-btn
                 color="blue-13"
                 unelevated
-                :label="t('label.confirm')"
+                :label="t('main.confirm')"
                 type="submit"
               />
             </div>
@@ -133,7 +133,7 @@
       <div class="text-h6 text-weight-bold">{{ $t('account.success') }}</div>
       <div class="flex justify-center q-gutter-x-sm q-mt-lg text-grey-5">
         <!-- 等待跳轉 -->
-        <div>{{ $t('label.jump') }}</div>
+        <div>{{ $t('main.jump') }}</div>
         <q-spinner-dots size="1.5em" />
         <div>{{ time }}</div>
       </div>

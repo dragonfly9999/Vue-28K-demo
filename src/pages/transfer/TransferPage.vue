@@ -284,7 +284,7 @@
       <div class="text-h6 text-weight-bold">{{ $t('account.success') }}</div>
       <div class="flex justify-center q-gutter-x-sm q-mt-lg text-grey-5">
         <!-- 等待跳轉 -->
-        <div>{{ $t('label.jump') }}</div>
+        <div>{{ $t('main.jump') }}</div>
         <q-spinner-dots size="1.5em" />
         <div>{{ 5 - duration }}</div>
       </div>

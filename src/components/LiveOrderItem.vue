@@ -145,11 +145,11 @@ const channelLabel = computed(() => {
 const orderInfo = computed(() => {
   switch (props.order.MType) {
     case MtTypeNum.Buy:
-      return { label: t('label.buy'), color: 'blue-13' };
+      return { label: t('buy.buy'), color: 'blue-13' };
     case MtTypeNum.Sell:
-      return { label: t('label.sell'), color: 'red' };
+      return { label: t('sell.sell'), color: 'red' };
     case MtTypeNum.CantTake:
-      return { label: t('label.sell'), color: 'grey' };
+      return { label: t('sell.sell'), color: 'grey' };
     default: {
       return { label: t('label.undefined'), color: 'purple' };
     }

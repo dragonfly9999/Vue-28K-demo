@@ -2,7 +2,7 @@
   <!-- 步驟 -->
   <StepperMaster :order="order" />
   <div>
-    <div class="text-overline">{{ $t('label.sell') }} USDT</div>
+    <div class="text-overline">{{ $t('sell.sell') }} USDT</div>
     <PriceInfo :order="order" />
     <!-- hint -->
     <div class="flex items-center text-grey-8 q-my-md no-wrap">
@@ -113,7 +113,7 @@
         flat
         color="blue-13"
         @click="() => (visible.appeal = true)"
-        :label="$t('label.appeal')"
+        :label="$t('main.appeal')"
       />
     </div>
 

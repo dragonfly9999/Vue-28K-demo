@@ -1,5 +1,5 @@
 <template>
-  <div id="background">
+ <div id="background">
     <div class="row">
       <div class="col-12 q-px-md test_dotted" v-if="!orderStatus">
         <div class="column items-center test_dotted">
@@ -35,8 +35,8 @@
             ].includes(orderStatus?.Order_StatusID)
           "
         >
-          <ChatBox />
-        </q-card>
+      <ChatBox />
+      </q-card>
       </div>
     </div>
     <!-- Transaction Status -->
@@ -108,7 +108,7 @@ watch(
     if (newValue) {
       if (!chatWS.value || !orderStatus.value) {
         q.loading.show({
-          message: t('連線中'),
+          message: t('dashboard.連線中'),
         });
         if (!chatWS.value) {
           setWebSockets(newValue);
