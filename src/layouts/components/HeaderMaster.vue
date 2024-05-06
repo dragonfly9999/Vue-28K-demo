@@ -148,7 +148,9 @@
               "
             >
               <q-item-section>
-                <q-item-label class="q-px-md">{{ t('sell.出售') }}</q-item-label>
+                <q-item-label class="q-px-md">{{
+                  t('sell.出售')
+                }}</q-item-label>
               </q-item-section>
             </q-item>
           </q-list>
@@ -218,12 +220,7 @@
             :key="index"
             clickable
             v-ripple
-            @click="
-              () => {
-                drawerRight = false;
-                i18n.locale.value = lang.locale;
-              }
-            "
+            @click="() => handlerSwitchLang(lang.locale)"
           >
             <q-item-section class="q-px-md"> {{ lang.name }} </q-item-section>
           </q-item>
@@ -286,7 +283,13 @@ const logout = () => {
   router.push({ name: 'login' });
 };
 const keyStore = useKeyStore();
-// const { run: logout } = api.useLogout({});
+
+// handler
+const handlerSwitchLang = (locale: string) => {
+  drawerRight.value = false;
+  storage.setStorageSync('K100I18nInit', locale);
+  i18n.locale.value = locale;
+};
 </script>
 
 <style scoped></style>
