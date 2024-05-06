@@ -7,7 +7,7 @@
           v-close-popup
           v-for="(item, index) in langs"
           :key="index"
-          @click="() => ($i18n.locale = item.locale)"
+          @click="() => handleSwitch(item.locale)"
           :style="{
             backgroundColor:
               $i18n.locale === item.locale ? 'orange' : 'inherit',
@@ -24,5 +24,15 @@
 
 <script setup lang="ts">
 import langs from 'src/i18n';
+import { useI18n } from 'vue-i18n';
+import { useStorage } from 'vue3-storage';
+
+const storage = useStorage();
+const i18n = useI18n();
+
+const handleSwitch = (locale: string) => {
+  storage.setStorageSync('K100I18nInit', locale);
+  i18n.locale.value = locale;
+};
 </script>
 <style lang="scss" scoped></style>
