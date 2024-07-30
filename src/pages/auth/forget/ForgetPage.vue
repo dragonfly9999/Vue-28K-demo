@@ -26,7 +26,7 @@
       <!-- 驗證手機 -->
       <verify-phone
         v-model:country-code="countryCode"
-        @success="(token) => (resetToken = token)"
+        @success="(token: string) => (resetToken = token)"
       />
 
       <!-- 輸入新密碼 -->
@@ -52,6 +52,7 @@
           lazy-rules
           :rules="[(val) => !!val || $t('error.input.empty')]"
           :loading="underReset"
+          aria-autocomplete="none"
         />
 
         <q-btn
@@ -82,7 +83,7 @@ const router = useRouter();
 const { t } = useI18n();
 // Dom
 const countryCode = ref<number>();
-const resetToken = ref<string>();
+const resetToken = ref<string>(import.meta.env.DEV ? 'test' : '');
 const newPassword = ref<string>();
 // vue request;
 const { loading: underReset, run: reset } = api.useReset({

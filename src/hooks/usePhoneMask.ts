@@ -9,6 +9,8 @@ export default (code: Ref<string | undefined | null | number>) => {
         return '#'.repeat(8);
       case 65:
         return '#'.repeat(8);
+      case 63:
+          return '#'.repeat(10);
       case 86:
         return '#'.repeat(9);
       case 84:

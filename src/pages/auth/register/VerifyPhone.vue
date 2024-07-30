@@ -33,6 +33,7 @@
           :options="countryCodeOptions"
           :label="$t('auth.國碼')"
           :rules="[(val) => !!val || $t('error.input.countryCode')]"
+          :display-value="countryCode ? `+${countryCode}` : undefined"
         />
       </div>
       <div class="col">
@@ -45,7 +46,6 @@
               (!!val && val.length === mask.length) || $t('error.input.phone'),
           ]"
           :model-value="phone"
-          :mask="mask"
           outlined
           :label="$t('auth.手機')"
           @update:model-value="
@@ -54,6 +54,8 @@
               phone = value?.toString() ?? '';
             }
           "
+          autocomplete="off"
+          inputmode="numeric"
         />
       </div>
     </div>
@@ -80,6 +82,8 @@
             }
           }
         "
+        autocomplete="off"
+        inputmode="numeric"
       />
     </div>
 

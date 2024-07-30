@@ -29,28 +29,25 @@
                 outlined
                 v-model="countryCode"
                 emit-value
-                :options="
-                  (['886', '852', '65', '86', '84', '63']?.map((code) => ({
-                    label: $t(`countryCode.${code}`),
-                    value: code,
-                  })))
-                "
+                :options="countryCodeOptions"
                 :label="t('auth.國碼')"
                 style="min-width: 100px"
                 :rules="[(val) => !!val]"
                 lazy-rules
+                :display-value="countryCode ? `+${countryCode}` : undefined"
                 :error-message="t('error.country_code')"
               />
             </div>
             <div class="col">
               <q-input
                 outlined
-                autocomplete="tel-national"
+                autocomplete="tel"
                 v-model="phone_number"
                 :label="t('auth.手機')"
                 :rules="[(val) => !!val]"
                 lazy-rules
                 :error-message="t('error.phone')"
+                inputmode="numeric"
               />
             </div>
           </div>
@@ -156,10 +153,12 @@ import { ref } from 'vue';
 import { useLogin } from './api';
 import { useRouter } from 'vue-router';
 import { useStorage } from 'vue3-storage';
+import hooks from 'src/hooks';
 
 const { t } = useI18n();
 const router = useRouter();
 const storage = useStorage();
+const countryCodeOptions = hooks.useCountryCodeOptions();
 
 // DOM
 const isTest = import.meta.env.DEV;

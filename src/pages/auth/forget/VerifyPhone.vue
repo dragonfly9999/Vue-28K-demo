@@ -2,12 +2,11 @@
   <q-form
     @submit="
       () => {
-        if (countryCode && phone && mask?.length === phone.length) {
-          checkExsist({
-            reg_countrycode: countryCode.toString(),
-            reg_tel: phone.replace(/^0/, ''),
-          });
-        }
+        if (!countryCode || !phone || mask?.length !== phone.length) return;
+        checkExsist({
+          reg_countrycode: countryCode.toString(),
+          reg_tel: phone.replace(/^0/, ''),
+        });
       }
     "
   >
@@ -33,6 +32,7 @@
           :options="countryCodeOptions"
           :label="$t('auth.國碼')"
           :rules="[(val) => !!val || $t('error.input.countryCode')]"
+          :display-value="countryCode ? `+${countryCode}` : undefined"
         />
       </div>
       <div class="col">
@@ -47,6 +47,8 @@
           :model-value="phone"
           :mask="mask"
           outlined
+          inputmode="decimal"
+          aria-autocomplete="none"
           :label="$t('auth.手機')"
           @update:model-value="
             (value) => {
@@ -69,6 +71,8 @@
         v-model="verification"
         outlined
         :label="$t('auth.驗證碼')"
+        inputmode="decimal"
+        aria-autocomplete="none"
         @update:model-value="
           (value) => {
             if (value?.toString().length === 6) {

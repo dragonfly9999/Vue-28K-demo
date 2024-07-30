@@ -8,7 +8,9 @@ type SendProps = {
   reg_tel: string;
 };
 
-export default ({ ...useProps }: UseProps) => {
+export default (useProps: UseProps) => {
+  const { ...config } = useProps;
+
   const vueRequest = requestProvider<SendRes, SendProps>((props) => {
     const request = axiosProvider
       .post('Req_Fpwd_oneTimePwd.aspx', props)
@@ -16,7 +18,7 @@ export default ({ ...useProps }: UseProps) => {
     return request;
   },{
     manual: true,
-    ...useProps
+    ...config
   }, {
     noFeedback: true,
   });

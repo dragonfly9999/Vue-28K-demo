@@ -50,9 +50,10 @@
             :loading="underRegister"
             lazy-rules
             class="q-mt-md full-width"
-            :rules="[(val) => !!val || $t('error.input.password')]"
+            :rules="[(val: string | number) => !!val || $t('error.input.password')]"
             v-model:model-value="password"
             :label="$t('auth.設定密碼')"
+            autocomplete="off"
           />
 
           <!-- password check -->
@@ -60,11 +61,12 @@
             :loading="underRegister"
             class="full-width"
             :rules="[
-              (val) => !!val || $t('error.input.password'),
-              (val) => val === password || $t('error.input.re_password'),
+              (val : string | number) => !!val || $t('error.input.password'),
+              (val : string | number) => val === password || $t('error.input.re_password'),
             ]"
             v-model:model-value="rePassword"
             :label="$t('auth.檢查密碼')"
+            autocomplete="off"
           />
 
           <!-- 是否已滿20歲 -->
