@@ -37,4 +37,6 @@ export default {
   請輸入新密碼: 'Please enter a new password',
   重設密碼: 'Reset Password',
   bank_info: 'Fill in Bank Information',
+  密碼已重設: 'Password has been reset',
+
 };

@@ -20,10 +20,8 @@ export default class WebSocketClient {
 
   constructor(url: string, options: WebsocketOptions) {
     const login_session = useStorage().getStorageSync('login_session');
-    const OrderURL = import.meta.env.DEV
-      ? 'wss://demo.k100u.com/j'
-      : `wss://${window.location.hostname}/j`;
-    const ChatURL = 'wss://chat.u28exchange.com';
+    const OrderURL = import.meta.env.VITE_ORDER_WS
+    const ChatURL = import.meta.env.VITE_CHAT_WS
     const baseURL = options.isChat ? ChatURL : OrderURL;
     this.url = options.order_token
       ? `${baseURL}${url}?login_session=${login_session}&order_token=${options.order_token}`

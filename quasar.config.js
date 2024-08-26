@@ -98,13 +98,25 @@ module.exports = configure(function (/* ctx */) {
           target: 'https://demo.k100u.com/',
           changeOrigin: true
         },
-        '/chat': {
-          target: 'wss://chat.demo.k100u.com/',
+        '/order': {
+          target: 'https://demo.k100u.com/j',
+          ws: true,
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/chat/, '')
+          rewrite: (path) => {
+            const newPath =  path.replace(/^\/order/, '')
+            return  newPath
+          },
+        },
+        '/chat': {
+          target: 'wss://chat.k100u.com',
+          ws: true,
+          changeOrigin: true,
+          rewrite: (path) => {
+            const newPath = path.replace(/^\/chat/, '')
+            return newPath
+          },
         }
       },
-      https: false,
       port: 8082,
       open: false,
       https: true

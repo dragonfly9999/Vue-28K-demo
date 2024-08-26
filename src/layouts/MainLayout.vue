@@ -103,6 +103,7 @@ const matchAudio = ref<HTMLAudioElement>();
 const paymentAudio = ref<HTMLAudioElement>();
 const appealAudio = ref<HTMLAudioElement>();
 const noHintWarn = ref(false);
+// handlers
 const handleResetSound = () => {
   if (instantAudio?.value) {
     instantAudio.value?.pause();

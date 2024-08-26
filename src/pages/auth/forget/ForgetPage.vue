@@ -83,12 +83,12 @@ const router = useRouter();
 const { t } = useI18n();
 // Dom
 const countryCode = ref<number>();
-const resetToken = ref<string>(import.meta.env.DEV ? 'test' : '');
+const resetToken = ref<string>(import.meta.env.DEV ? '' : '');
 const newPassword = ref<string>();
 // vue request;
 const { loading: underReset, run: reset } = api.useReset({
   onSuccess: () => {
-    hooks.useSuccessNotify(t('auth.註冊成功'));
+    hooks.useSuccessNotify(t('auth.密碼已重設'));
     vueStorage.clearStorageSync();
     router.push({ name: 'login' });
   },

@@ -39,6 +39,7 @@ export const useOrderStore = defineStore('order', () => {
     };
     webSockets.value[token] = orderWs;
   };
+
   // 將已完成的交易的狀態WS斷開 並且回傳斷開的交易有哪些
   const removeOrder = (besidesToken?: string) => {
     const tokens = Object.entries(orderStatusObj.value)

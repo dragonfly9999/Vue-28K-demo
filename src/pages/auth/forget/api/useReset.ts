@@ -11,7 +11,8 @@ type ResetProps = {
   reg_token: string;
 };
 
-export default ({ ...useProps }: UseProps) => {
+export default (useProps: UseProps) => {
+  const { ...config } = useProps;
   const vueRequest = requestProvider<ResetRes, ResetProps>((props) => {
     const vueStorage = useStorage();
     const forgetInfoStorage = vueStorage.getStorageSync<{
@@ -21,13 +22,15 @@ export default ({ ...useProps }: UseProps) => {
     const request = axiosProvider
       .post('Req_ForgotPwd.aspx', {
         ...props,
-        reg_tel: forgetInfoStorage?.phone
+        reg_tel: forgetInfoStorage?.phone.replace(/^0/, '')
       })
       .then(({ data }) => data);
     return request;
   },{
     manual: true,
-    ...useProps
+    ...config
+  }, {
+    noFeedback: true,
   });
 
   return vueRequest;

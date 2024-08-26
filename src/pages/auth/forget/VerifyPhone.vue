@@ -5,7 +5,7 @@
         if (!countryCode || !phone || mask?.length !== phone.length) return;
         checkExsist({
           reg_countrycode: countryCode.toString(),
-          reg_tel: phone.replace(/^0/, ''),
+          reg_tel: purePhone,
         });
       }
     "
@@ -78,7 +78,7 @@
             if (value?.toString().length === 6) {
               checkVerification({
                 reg_countrycode: countryCode?.toString() as string,
-                reg_tel: phone,
+                reg_tel: purePhone,
                 OneTimePwd: value?.toString(),
               });
             }
@@ -126,6 +126,8 @@ const verification = ref('');
 const isLockerSender = ref(false);
 const disableVerifyInputer = ref(true);
 const isSuccess = ref(false);
+// compute
+const purePhone = computed(() => phone.value.replace(/^0/, ''));
 // vue request
 const { run: checkVerification, loading: checkingVerification } = api.useVerify(
   {
@@ -169,7 +171,7 @@ const { run: checkExsist, loading: checking } = api.useCheckExists({
       });
       sendVerification({
         reg_countrycode: props.countryCode?.toString() as string,
-        reg_tel: phone.value.replace(/^0/, ''),
+        reg_tel: purePhone.value,
       });
     } else {
       vueStorage.clearStorageSync();
