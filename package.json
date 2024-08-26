@@ -17,6 +17,7 @@
     "@types/qrcode": "^1.5.0",
     "axios": "^1.2.1",
     "dayjs": "^1.11.8",
+    "demok100": "file:",
     "events": "^3.3.0",
     "numbro": "^2.4.0",
     "pinia": "^2.0.11",

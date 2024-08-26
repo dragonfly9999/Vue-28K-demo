@@ -99,7 +99,7 @@ module.exports = configure(function (/* ctx */) {
           changeOrigin: true
         },
         '/order': {
-          target: 'https://demo.k100u.com/j',
+          target: 'wss://demo.k100u.com/j',
           ws: true,
           changeOrigin: true,
           rewrite: (path) => {
