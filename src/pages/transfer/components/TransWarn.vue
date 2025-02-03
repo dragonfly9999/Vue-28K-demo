@@ -24,8 +24,8 @@
         </div>
       </div>
     </div>
-    <!-- content -->
-    <div class="q-ma-md">
+
+    <main>
       <q-list>
         <!-- 協議種類 -->
         <q-item>
@@ -69,42 +69,25 @@
             {{ transAmt }}
           </q-item-section>
         </q-item>
-        <!-- 手續費 -->
-        <!-- <q-item>
-          <q-item-section class="text-grey-6">
-            {{ $t('transfer.check.premium') }}
-          </q-item-section>
-          <q-item-section avatar>
-            {{ premium }}
-          </q-item-section>
-        </q-item>
-        <q-separator />
-        預計到帳
-        <q-item>
-          <q-item-section class="text-grey-6">
-            {{ $t('transfer.check.expect') }}
-          </q-item-section>
-          <q-item-section avatar class="text-weight-bold">
-            {{
-              thousandTool(numberTool(transAmt) - numberTool(premium), 'USDT')
-            }}
-          </q-item-section>
-        </q-item> -->
+
         <!-- 輸入密碼 -->
-        <q-item>
-          <q-item-section class="text-grey-6">
+        <q-item class="flex justify-between items-baseline">
+          <section class="text-grey-6">
             {{ $t('transfer.label.verify_password') }}
-          </q-item-section>
-          <q-item-section avatar class="text-weight-bold">
+          </section>
+          <section class="text-weight-bold">
             <q-input
+              dense
+              outlined
               v-model="password"
               @keyup.enter="handleVerifyPassword"
               :type="isPassword ? 'password' : 'text'"
-              class="q-mb-lg"
-              style="max-width: 160px"
+              :style="{
+                'max-width': '160px',
+              }"
               @update:model-value="() => (isPasswordError = false)"
               @blur="() => (isPasswordError = false)"
-              :error="isPasswordError"
+              :error="isPasswordError ? true : undefined"
               :error-message="t('error.password')"
             >
               <template v-slot:append>
@@ -114,14 +97,41 @@
                   dense
                   rounded
                   unelevated
+                  size="small"
                 />
               </template>
             </q-input>
-          </q-item-section>
+          </section>
+        </q-item>
+
+        <!-- 輸入2FA -->
+        <q-item
+          v-if="isEnabled"
+          class="flex justify-between items-baseline q-mb-sm"
+        >
+          <section class="text-grey-6">2FA:</section>
+          <section class="text-weight-bold">
+            <q-input
+              dense
+              outlined
+              v-model="twoFa"
+              @keyup.enter="handleVerifyPassword"
+              :style="{
+                'max-width': '160px',
+              }"
+              :error="!!twoFaErrorMessage ? true : undefined"
+              :error-message="twoFaErrorMessage"
+              @update:model-value="() => (twoFaErrorMessage = undefined)"
+              @blur="() => (twoFaErrorMessage = undefined)"
+            />
+          </section>
         </q-item>
       </q-list>
 
-      <q-card-actions align="right" class="text-blue-13">
+      <div
+        class="flex text-blue-13 justify-end q-px-md"
+        :style="{ gap: '6px' }"
+      >
         <!-- 取消btn -->
         <q-btn
           :loading="loadingTransErc || loadingTransTrc"
@@ -129,7 +139,7 @@
           color="blue-13"
           :label="t('btn.cancel')"
           v-close-popup
-          style="min-width: 100px"
+          style="min-width: 80px"
         />
         <!-- 確認轉出btn -->
         <q-btn
@@ -139,10 +149,10 @@
           color="blue-13"
           :label="t('btn.confirm_transfer')"
           @click="handleVerifyPassword"
-          style="min-width: 100px"
+          style="min-width: 80px"
         />
-      </q-card-actions>
-    </div>
+      </div>
+    </main>
   </q-card>
 </template>
 
@@ -150,10 +160,12 @@
 import { numberTool } from 'src/utils/NumberTool';
 import { addressOptions } from '../data';
 import { useI18n } from 'vue-i18n';
-import { ref } from 'vue';
+import { ref, toRefs } from 'vue';
 import { useStorage } from 'vue3-storage';
 import api from '../api';
-import { useStateStore } from 'src/stores';
+import { use2faStore, useStateStore } from 'src/stores';
+
+// Definition
 const emits = defineEmits(['success']);
 const props = defineProps<{
   agreement?: string;
@@ -164,6 +176,8 @@ const props = defineProps<{
 }>();
 //
 const { t } = useI18n();
+
+// Queries
 const onSuccess = () => {
   useStateStore().balanceRequest.refresh();
   emits('success');
@@ -174,10 +188,16 @@ const { run: transTrc, loading: loadingTransTrc } = api.useTransTrc({
 const { run: transErc, loading: loadingTransErc } = api.useTransErc({
   onSuccess,
 });
+
 // DOM
 const password = ref();
 const isPassword = ref(true);
 const isPasswordError = ref(false);
+const twoFa = ref();
+const twoFaErrorMessage = ref<string>();
+const { isEnabled } = toRefs(use2faStore());
+
+// handlers
 const handleVerifyPassword = () => {
   if (
     !password.value ||
@@ -191,6 +211,8 @@ const handleVerifyPassword = () => {
       transTrc({
         ToAddress: props.address as string,
         UsdtAmt: numberTool(props.transAmt),
+        OTP: isEnabled.value ? twoFa.value : undefined,
+        ClientRemark: props.remark,
       });
       break;
     }
@@ -198,6 +220,8 @@ const handleVerifyPassword = () => {
       transErc({
         ToAddress: props.address as string,
         UsdtAmt: numberTool(props.transAmt),
+        OTP: isEnabled.value ? twoFa.value : undefined,
+        ClientRemark: props.remark,
       });
       break;
     }

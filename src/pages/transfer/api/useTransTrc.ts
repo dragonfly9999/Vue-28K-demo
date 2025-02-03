@@ -5,6 +5,8 @@ type TransRes = unknown;
 type TransProps = {
   ToAddress: string;
   UsdtAmt: number;
+  OTP?: number;
+  ClientRemark?: string
 };
 
 export default ({ ...useProps }: UseProps<TransRes, TransProps>) => {

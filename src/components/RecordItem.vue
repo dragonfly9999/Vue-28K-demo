@@ -42,7 +42,9 @@
           </div>
         </div>
       </div>
-      <div class="flex no-wrap q-py-sm">
+
+      <div class="flex no-wrap q-py-sm justify-between">
+        <!-- Left -->
         <div class="q-gutter-xs">
           <!-- 匯率 -->
           <div class="flex" v-show="!!order?.D1">
@@ -62,6 +64,20 @@
               {{ thousandTool(order?.D2, 'CNY') }}
             </div>
           </div>
+
+          <!-- 時間 -->
+          <div class="flex">
+            <div class="text-caption text-grey-6 q-mr-xs">
+              {{ $t('transaction.time') }}
+            </div>
+            <div class="text-caption">
+              {{ date }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Right -->
+        <div class="q-gutter-xs" style="min-width: 160px">
           <!-- 交易方姓名 -->
           <div
             class="flex"
@@ -83,13 +99,12 @@
               }}
             </div>
           </div>
-          <!-- 時間 -->
+
+          <!--備註 -->
           <div class="flex">
-            <div class="text-caption text-grey-6 q-mr-xs">
-              {{ $t('transaction.time') }}
-            </div>
+            <div class="text-caption text-grey-6 q-mr-xs">備註</div>
             <div class="text-caption">
-              {{ date }}
+              {{ order?.P6 || '--' }}
             </div>
           </div>
         </div>

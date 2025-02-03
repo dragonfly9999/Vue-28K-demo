@@ -5,6 +5,15 @@
     <q-page-container style="margin: auto">
       <q-page-sticky expand position="top" style="z-index: 5">
         <q-toolbar class="bg-white myshadow justify-end">
+          <q-btn
+            @click="() => (open2fa = true)"
+            rounded
+            class="q-mr-sm"
+            size="sm"
+            type="primary"
+          >
+            2FA 設定
+          </q-btn>
           <ProgressBtn />
           <div
             style="border-radius: 15px"
@@ -68,6 +77,9 @@
 
     <NoHintWarn v-model:visible="noHintWarn" />
   </q-layout>
+
+  <!-- Dialogue -->
+  <TwoFa v-model="open2fa" />
 </template>
 
 <script setup lang="ts">
@@ -75,14 +87,8 @@ import NoHintWarn from './components/NoHintWarn.vue';
 import { useRouter } from 'vue-router';
 import ProgressBtn from './components/ProgressBtn.vue';
 import HeaderMaster from './components/HeaderMaster.vue';
-import {
-  onBeforeUnmount,
-  onErrorCaptured,
-  onMounted,
-  ref,
-  toRefs,
-  watch,
-} from 'vue';
+// prettier-ignore
+import { onBeforeUnmount, onErrorCaptured, onMounted, ref, toRefs, watch, } from 'vue';
 import { useLiveStore, useStateStore, useThirdStore } from 'src/stores';
 import instantSound from 'src/assets/sound/instants5.mp3';
 import matchSound from 'src/assets/sound/match.mp3';
@@ -92,17 +98,19 @@ import { MtTypeNum, OrderStatusNum } from 'src/stores/live';
 import { useStorage } from 'vue3-storage';
 import { useKeyStore } from 'src/stores/key';
 import hooks from 'src/hooks';
+import TwoFa from './components/TwoFa';
 
 //
-
 const router = useRouter();
 const vueStorage = useStorage();
+
 // DOM
 const instantAudio = ref<HTMLAudioElement>();
 const matchAudio = ref<HTMLAudioElement>();
 const paymentAudio = ref<HTMLAudioElement>();
 const appealAudio = ref<HTMLAudioElement>();
 const noHintWarn = ref(false);
+const open2fa = ref(false);
 // handlers
 const handleResetSound = () => {
   if (instantAudio?.value) {

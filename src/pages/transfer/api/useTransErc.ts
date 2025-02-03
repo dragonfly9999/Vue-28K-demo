@@ -6,6 +6,8 @@ type TransRes = unknown;
 type TransProps = {
   ToAddress: string;
   UsdtAmt: number;
+  OTP?: number;
+  ClientRemark?: string
 };
 
 

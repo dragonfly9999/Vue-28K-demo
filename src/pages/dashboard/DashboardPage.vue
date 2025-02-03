@@ -118,6 +118,8 @@
 
     <RecentHistory />
   </div>
+
+  <!-- Dialogues -->
 </template>
 
 <script setup lang="ts">
@@ -137,6 +139,7 @@ const liveStore = useLiveStore();
 const tab = ref('instant');
 const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
 const { liveOrders } = useLiveStore();
+
 // Life cycle
 onMounted(() => {
   if (balanceRequest.data) balanceRequest.refresh();

@@ -4,7 +4,6 @@ import { AxiosError } from 'axios';
 import { useI18n } from 'vue-i18n';
 import hooks from 'src/hooks';
 
-
 type CustomProps = {
   noFeedback?: boolean;
   noTempData?: boolean;

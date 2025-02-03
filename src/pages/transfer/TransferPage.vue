@@ -1,6 +1,6 @@
 <template>
-  <div class="width480">
-    <q-card class="q-pa-sm q-ma-sm q-mb-xl myshadow">
+  <div class="width480 q-pb-xl">
+    <q-card class="q-pa-sm q-ma-sm myshadow">
       <TransferTitle />
       <!-- Content -->
       <q-form
@@ -77,7 +77,12 @@
               </div>
               <div>
                 <!-- 地址簿 -->
-                <!-- <q-btn :label="$t('transfer.label.nav')" flat color="blue-13" /> -->
+                <q-btn
+                  @click="() => (walletListOpen = true)"
+                  :label="$t('transfer.label.nav')"
+                  flat
+                  color="blue-13"
+                />
                 <q-btn
                   rounded
                   dense
@@ -89,6 +94,7 @@
                 />
               </div>
             </div>
+
             <!-- 錢包地址 -->
             <q-input
               hide-hint
@@ -175,6 +181,7 @@
                 "
               />
             </q-btn-group>
+
             <!-- 我要轉出 -->
             <q-input
               outlined
@@ -245,6 +252,7 @@
               />
             </div>
           </div>
+
           <!-- 下一步btn -->
           <q-btn
             :disable="!isPassTwenty"
@@ -261,6 +269,7 @@
     </q-card>
   </div>
 
+  <!-- Dialogues -->
   <q-dialog
     @update:model-value="(val) => (address.verify = val)"
     :model-value="address.verify && duration === 0"
@@ -292,6 +301,16 @@
   </q-dialog>
 
   <QrReader v-model="visible.scanner" @on-scan="handleSetAddress" />
+
+  <WalletListDia
+    @set="
+      (newWallet) => {
+        address.value = newWallet;
+        walletListOpen = false;
+      }
+    "
+    v-model:open="walletListOpen"
+  />
 </template>
 
 <script setup lang="ts">
@@ -306,6 +325,7 @@ import api from './api';
 import TransWarn from './components/TransWarn.vue';
 import { useRouter } from 'vue-router';
 import methods from 'src/utils/methods';
+import WalletListDia from './WalletListDia';
 
 const router = useRouter();
 // DOM
@@ -325,6 +345,7 @@ const visible = reactive({
   scanner: false,
   readyLeave: false,
 });
+const walletListOpen = ref(false);
 
 // query
 const { ratesRequest, balanceRequest, formatBalances } = useStateStore();

@@ -50,7 +50,7 @@
           outlined
           :label="$t('auth.請輸入新密碼')"
           lazy-rules
-          :rules="[(val) => !!val || $t('error.input.empty')]"
+          :rules="[(val: string) => !!val || $t('error.input.empty')]"
           :loading="underReset"
           aria-autocomplete="none"
         />

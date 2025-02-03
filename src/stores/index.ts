@@ -39,3 +39,4 @@ export { useStateStore } from './state';
 export { usePendingStore } from './pending';
 export { useAccountStore, channelOptions } from './account';
 export { useDetailsStore } from './details';
+export { use2faStore } from './2fa';

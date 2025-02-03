@@ -69,6 +69,7 @@
               {{ thousandTool(record?.D1, 'CNY') }}
             </q-item-section>
           </q-item>
+
           <!-- 手續費 -->
           <q-item style="min-height: 32px">
             <q-item-section class="text-grey-6 text-caption">
@@ -81,7 +82,22 @@
               <q-spinner v-else />
             </q-item-section>
           </q-item>
+
+          <!-- 備註 -->
+          <q-item style="min-height: 32px">
+            <q-item-section class="text-grey-6 text-caption">
+              備註
+            </q-item-section>
+            <q-item-section avatar>
+              <div v-if="!!detail">
+                {{ detail?.P6 || '--' }}
+              </div>
+              <q-spinner v-else />
+            </q-item-section>
+          </q-item>
+
           <q-separator v-if="'P2' in record && !!record?.P2" />
+
           <!-- 付款方名 -->
           <q-item
             style="min-height: 32px"
@@ -200,7 +216,7 @@
         </q-list>
         <!--關閉btn -->
         <q-btn
-          class="full-width q-my-md"
+          class="full-width q-mt-md"
           unelevated
           rounded
           color="blue-13"
@@ -244,6 +260,8 @@ import CopyButton from './CopyButton.vue';
 import { useRouter } from 'vue-router';
 import { useStorage } from 'vue3-storage';
 import tradeApi from 'src/pages/trade/api';
+
+// Definition
 const props = defineProps<{
   visible: boolean;
   record: OrderRecord | ExpiredOrder;

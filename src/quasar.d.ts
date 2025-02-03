@@ -56,6 +56,7 @@ interface OrderRecord {
   P3: string; // 銀行名稱
   P4: string; // 所在省市
   P5: string; // 會員資訊
+  P6: string; // 備註
   token: string;
 }
 

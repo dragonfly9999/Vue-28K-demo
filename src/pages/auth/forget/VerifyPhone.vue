@@ -74,7 +74,7 @@
         inputmode="decimal"
         aria-autocomplete="none"
         @update:model-value="
-          (value) => {
+          (value: string|undefined) => {
             if (value?.toString().length === 6) {
               checkVerification({
                 reg_countrycode: countryCode?.toString() as string,
