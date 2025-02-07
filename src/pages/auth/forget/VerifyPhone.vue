@@ -108,16 +108,15 @@ import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import api from './api';
 import ButtonLocker from 'src/components/ButtonLocker.vue';
-import { useStorage } from 'vue3-storage';
 import { AxiosError } from 'axios';
 import { Notify } from 'quasar';
 import { useRouter } from 'vue-router';
+import { storageHelper } from 'src/utils/foragePkg';
 
 const props = defineProps<{ countryCode: number | undefined }>();
 const emits = defineEmits(['success', 'update:countryCode']);
 const { t } = useI18n();
 const countryCodeOptions = hooks.useCountryCodeOptions();
-const vueStorage = useStorage();
 const router = useRouter();
 // DOM
 const mask = hooks.usePhoneMask(computed(() => props.countryCode));
@@ -132,9 +131,10 @@ const purePhone = computed(() => phone.value.replace(/^0/, ''));
 const { run: checkVerification, loading: checkingVerification } = api.useVerify(
   {
     onSuccess: (res) => {
+      if (!res) return;
       isSuccess.value = true;
       hooks.useSuccessNotify(t('auth.驗證成功'));
-      vueStorage.setStorageSync('reset_token', res?.data);
+      storageHelper('reset_token').setItem(res.data);
       emits('success', res?.data);
     },
   }
@@ -142,7 +142,7 @@ const { run: checkVerification, loading: checkingVerification } = api.useVerify(
 // step: 2 => 發送驗證碼
 const { run: sendVerification, loading: sending } = api.useSendVerification({
   onSuccess: () => {
-    vueStorage.setStorageSync('verify_locker', true);
+    storageHelper<boolean>('verify_locker').setItem(true);
     disableVerifyInputer.value = false;
     isLockerSender.value = true;
     hooks.useSuccessNotify(t('auth.已發送驗證碼'));
@@ -165,7 +165,9 @@ const { run: checkExsist, loading: checking } = api.useCheckExists({
   onError: (e) => {
     const virgilError = e as AxiosError<VirgilRes<string>>;
     if (Number(virgilError.response?.data.code) === 11) {
-      vueStorage.setStorageSync('forget_Info', {
+      storageHelper<{ phone: string; countryCode?: number }>(
+        'forget_Info'
+      ).setItem({
         phone: phone.value,
         countryCode: props.countryCode,
       });
@@ -174,7 +176,7 @@ const { run: checkExsist, loading: checking } = api.useCheckExists({
         reg_tel: purePhone.value,
       });
     } else {
-      vueStorage.clearStorageSync();
+      hooks.useKickOut.clean();
       phone.value = '';
       emits('update:countryCode', undefined);
     }
@@ -183,15 +185,15 @@ const { run: checkExsist, loading: checking } = api.useCheckExists({
 
 // life cycle
 onMounted(() => {
-  const isLockVerify = vueStorage.getStorageSync<boolean>('verify_locker');
+  const isLockVerify = storageHelper<boolean>('verify_locker').getItem();
   if (isLockVerify) {
     disableVerifyInputer.value = false;
     isLockerSender.value = true;
   }
-  const forgetInfoStorage = vueStorage.getStorageSync<{
+  const forgetInfoStorage = storageHelper<{
     phone: string;
     countryCode: number;
-  }>('forget_Info');
+  }>('forget_Info').getItem();
   emits(
     'update:countryCode',
     forgetInfoStorage?.countryCode
@@ -200,7 +202,7 @@ onMounted(() => {
   );
   phone.value = forgetInfoStorage?.phone ?? '';
 
-  const resetTokenStore = vueStorage.getStorageSync<string>('reset_token');
+  const resetTokenStore = storageHelper('reset_token').getItem();
   if (resetTokenStore) {
     disableVerifyInputer.value = false;
     isSuccess.value = true;
@@ -209,7 +211,7 @@ onMounted(() => {
 });
 
 const handleUnLock = () => {
-  vueStorage.setStorageSync('verify_locker', false);
+  storageHelper<boolean>('verify_locker').setItem(false);
   isLockerSender.value = false;
 };
 </script>

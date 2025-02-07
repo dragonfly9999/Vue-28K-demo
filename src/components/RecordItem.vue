@@ -126,19 +126,19 @@ import { useI18n } from 'vue-i18n';
 import dayjs from 'dayjs';
 import RecordDetail from './RecordDetail.vue';
 import { useStateStore } from 'src/stores';
-import { useStorage } from 'vue3-storage';
+import { storageHelper } from 'src/utils/foragePkg';
+
+// Definition
 const props = defineProps<{
   order: OrderRecord | ExpiredOrder;
   isExpired?: boolean;
 }>();
-
-//
 const { t } = useI18n();
 const { currency } = useStateStore();
 
 // DOM
 const detailVisible = ref(false);
-const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
+const isAgent = ref(storageHelper<boolean>('isAgent').getItem());
 const recordInfo = computed(() => {
   if (isAgent.value && props.isExpired) {
     switch (props.order.MasterType) {

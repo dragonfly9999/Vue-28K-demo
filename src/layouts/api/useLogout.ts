@@ -1,18 +1,17 @@
+import { storageHelper } from 'src/utils/foragePkg';
 import { useQuasar } from 'quasar';
 import hooks from 'src/hooks';
 import { axiosProvider } from 'src/utils/axiosProvider';
 import { requestProvider } from 'src/utils/requestProvider';
-import { useStorage } from 'vue3-storage';
 
 type LogoutRes = unknown;
-
 type LogoutProps = unknown;
 
 export default ({ ...useProps }: UseProps<LogoutRes, LogoutProps>) => {
   const q = useQuasar();
 
   const vueRequest = requestProvider((props) => {
-    if (useStorage().getStorageSync('isAgent')) {
+    if (storageHelper<boolean>('isAgent').getItem()) {
       const closeAuto = axiosProvider.post('/Req_AutoPick.aspx', {
         mode: 0
       }).then(() => {

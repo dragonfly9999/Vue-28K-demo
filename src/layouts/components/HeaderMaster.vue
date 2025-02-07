@@ -30,7 +30,7 @@
               {{ `${$t('auth.welcome')} !` }}
             </div>
             <div class="text-caption">
-              {{ storage.getStorageSync('phone') }}
+              {{ phone }}
             </div>
           </div>
         </div>
@@ -244,12 +244,17 @@
             <div>
               <div>{{ t('auth.welcome') }}</div>
               <div class="text-weight-bold text-body1">
-                {{ storage.getStorageSync('phone') }}
+                {{ phone }}
               </div>
             </div>
 
             <!-- 登出btn -->
-            <q-btn @click="logout" :label="$t('auth.登出')" icon="logout" />
+            <q-btn
+              @click="logout"
+              :loading="loading"
+              :label="$t('auth.登出')"
+              icon="logout"
+            />
           </div>
         </div>
       </div>
@@ -261,33 +266,32 @@
 import langs from 'src/i18n';
 import I18nBtn from 'src/components/I18nBtn.vue';
 import { useKeyStore, useStateStore } from 'src/stores';
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import { useStorage } from 'vue3-storage';
 import RateBar from 'src/components/RateBar.vue';
 import NavBar from 'src/components/NavBar.vue';
 import logo from 'src/assets/logo_easy.png';
+import { storageHelper } from 'src/utils/foragePkg';
+import api from '../api';
 
 const router = useRouter();
 const { t } = useI18n();
-const storage = useStorage();
 const i18n = useI18n();
 // DOM
 const { formatRates } = useStateStore();
-const isAgent = computed(() => storage.getStorageSync('isAgent'));
+const isAgent = ref(storageHelper('isAgent').getItem());
+const phone = ref(storageHelper('phone').getItem());
 const drawerRight = ref(false);
-
-// request
-const logout = () => {
-  router.push({ name: 'login' });
-};
 const keyStore = useKeyStore();
+
+// queries
+const { run: logout, loading } = api.useLogout({});
 
 // handler
 const handlerSwitchLang = (locale: string) => {
   drawerRight.value = false;
-  storage.setStorageSync('K100I18nInit', locale);
+  storageHelper('locale').setItem(locale);
   i18n.locale.value = locale;
 };
 </script>

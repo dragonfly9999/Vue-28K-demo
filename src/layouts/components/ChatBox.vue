@@ -137,13 +137,15 @@
 <script setup lang="ts">
 import { useThirdStore } from 'src/stores';
 import { VNodeRef, computed, onBeforeUnmount, onMounted, ref } from 'vue';
-import { useStorage } from 'vue3-storage';
 import { handleBoforeUpload } from 'src/utils/ImageManager';
 import messageSound from 'src/assets/sound/message2.mp3';
 import dayjs from 'dayjs';
 import ImageMaster from 'src/components/ImageMaster.vue';
 import hooks from 'src/hooks';
 import { useI18n } from 'vue-i18n';
+import { storageHelper } from 'src/utils/foragePkg';
+
+// Definition
 const props = withDefaults(
   defineProps<{
     token: string | undefined;
@@ -153,12 +155,16 @@ const props = withDefaults(
   { breakPoint: 600 }
 );
 const { t } = useI18n();
+
 // DOM
 const windowClientWidth = ref<number>();
 const btnIcon = ref<'arrow_drop_down' | 'arrow_drop_up'>('arrow_drop_up');
 const text = ref('');
 const hint = ref(false);
 const file = ref<File>();
+const isAgent = ref(storageHelper<boolean>('isAgent').getItem());
+
+// Compute
 const showTip = computed(() => {
   if (props.tip) return props.tip;
   if (btnIcon.value === 'arrow_drop_down') return t('chat.縮小');
@@ -172,8 +178,8 @@ const {
   getCount,
   resetOnMessage,
 } = useThirdStore();
-const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
 const chatList = computed(() => getChatList(props.token));
+
 // handlers
 const handleSwitch = () => {
   handleResetCount(props.token);
@@ -254,10 +260,8 @@ onMounted(() => {
         messageAudioRef.value.currentTime = 0;
         if (
           hint.value &&
-          ((useStorage().getStorageSync('isAgent') &&
-            msg?.Message_Role !== 3) ||
-            (!useStorage().getStorageSync('isAgent') &&
-              msg?.Message_Role !== 1))
+          ((isAgent.value && msg?.Message_Role !== 3) ||
+            (!isAgent.value && msg?.Message_Role !== 1))
         ) {
           messageAudioRef.value?.play();
         }

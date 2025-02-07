@@ -9,7 +9,7 @@ type VerifyProps = {
   OneTimePwd: string;
 };
 
-export default ({ ...useProps }: UseProps) => {
+export default ({ ...useProps }: UseProps<VerifyRes, VerifyProps>) => {
   const vueRequest = requestProvider<VerifyRes, VerifyProps>((props) => {
     const request = axiosProvider
       .post('ChkoneTimePwd.aspx', props)

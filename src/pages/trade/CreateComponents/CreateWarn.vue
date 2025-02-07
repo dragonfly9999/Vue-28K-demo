@@ -19,7 +19,7 @@
         {{ $t('transaction.createWarn.hint') }}
       </div>
       <q-card-actions align="right" class="text-primary">
-        <q-btn v-close-popup outline color="blue-13" :label="$t('')" />
+        <q-btn v-close-popup outline color="blue-13" :label="$t('main.返回')" />
         <!-- 確認btn -->
         <q-btn
           :loading="loading"

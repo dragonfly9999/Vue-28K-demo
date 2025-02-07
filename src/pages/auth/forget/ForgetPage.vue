@@ -72,15 +72,16 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import VerifyPhone from './VerifyPhone.vue';
-import { useStorage } from 'vue3-storage';
 import api from './api';
 import hooks from 'src/hooks';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
+import { storageHelper } from 'src/utils/foragePkg';
 
-const vueStorage = useStorage();
+// Definition
 const router = useRouter();
 const { t } = useI18n();
+
 // Dom
 const countryCode = ref<number>();
 const resetToken = ref<string>(import.meta.env.DEV ? '' : '');
@@ -89,17 +90,15 @@ const newPassword = ref<string>();
 const { loading: underReset, run: reset } = api.useReset({
   onSuccess: () => {
     hooks.useSuccessNotify(t('auth.密碼已重設'));
-    vueStorage.clearStorageSync();
+    hooks.useKickOut.clean();
     router.push({ name: 'login' });
   },
 });
 
 // life cycle
 onMounted(() => {
-  const storeResetToken = vueStorage.getStorageSync<string>('reset_token');
-  if (storeResetToken) {
-    resetToken.value = storeResetToken;
-  }
+  const storeResetToken = storageHelper('reset_token').getItem();
+  resetToken.value = !!storeResetToken ? storeResetToken : resetToken.value;
 });
 </script>
 <style scoped></style>

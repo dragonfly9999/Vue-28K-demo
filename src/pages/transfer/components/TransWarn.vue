@@ -52,7 +52,7 @@
           </q-item-section>
         </q-item>
         <!-- 地址備註 -->
-        <q-item v-if="useStorage().getStorageSync('isAgent')">
+        <q-item v-if="isAgent">
           <q-item-section class="text-grey-6">
             {{ $t('transfer.check.remark') }}
           </q-item-section>
@@ -161,12 +161,12 @@ import { numberTool } from 'src/utils/NumberTool';
 import { addressOptions } from '../data';
 import { useI18n } from 'vue-i18n';
 import { ref, toRefs } from 'vue';
-import { useStorage } from 'vue3-storage';
 import api from '../api';
 import { use2faStore, useStateStore } from 'src/stores';
+import { storageHelper } from 'src/utils/foragePkg';
 
 // Definition
-const emits = defineEmits(['success']);
+const { t } = useI18n();
 const props = defineProps<{
   agreement?: string;
   address?: string;
@@ -174,8 +174,16 @@ const props = defineProps<{
   transAmt?: string;
   premium?: string;
 }>();
-//
-const { t } = useI18n();
+const emits = defineEmits(['success']);
+
+// DOM
+const isPassword = ref(true);
+const isPasswordError = ref(false);
+const twoFa = ref();
+const twoFaErrorMessage = ref<string>();
+const { isEnabled } = toRefs(use2faStore());
+const isAgent = ref(storageHelper<boolean>('isAgent').getItem());
+const password = ref<string>();
 
 // Queries
 const onSuccess = () => {
@@ -189,20 +197,10 @@ const { run: transErc, loading: loadingTransErc } = api.useTransErc({
   onSuccess,
 });
 
-// DOM
-const password = ref();
-const isPassword = ref(true);
-const isPasswordError = ref(false);
-const twoFa = ref();
-const twoFaErrorMessage = ref<string>();
-const { isEnabled } = toRefs(use2faStore());
-
 // handlers
 const handleVerifyPassword = () => {
-  if (
-    !password.value ||
-    password.value !== useStorage().getStorageSync('password')
-  ) {
+  const pswStore = storageHelper('password').getItem();
+  if (!password.value || password.value !== pswStore) {
     isPasswordError.value = true;
     return;
   }

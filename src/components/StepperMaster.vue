@@ -115,11 +115,14 @@
 <script setup lang="ts">
 import { OrderStatusNum } from 'src/stores/live';
 import { MasterTypeNum, thousandInput } from 'src/utils/NumberTool';
-import { computed } from 'vue';
-import { useStorage } from 'vue3-storage';
+import { computed, ref } from 'vue';
+import { storageHelper } from 'src/utils/foragePkg';
+
+// Definition
 const props = defineProps<{ order?: OrderStatus }>();
-//
-const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
+
+// DOM
+const isAgent = ref(storageHelper<boolean>('isAgent').getItem());
 const stepFormat = computed(() => {
   switch (props.order?.Order_StatusID) {
     case undefined:

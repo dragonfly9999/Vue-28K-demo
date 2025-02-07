@@ -164,7 +164,7 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue';
+import { onBeforeUnmount, onMounted, reactive, ref } from 'vue';
 import { getLeaseTime } from 'src/utils/TimeMaster';
 import { thousandTool } from 'src/utils/NumberTool';
 import { OrderStatusNum } from 'src/stores/live';
@@ -177,15 +177,16 @@ import CancelConfirm from 'src/components/CancelConfirm.vue';
 import { handleBoforeUpload } from 'src/utils/ImageManager';
 import { useKeyStore, useThirdStore } from 'src/stores';
 import PunctuationMaster from 'src/components/PunctuationMaster.vue';
-import { useStorage } from 'vue3-storage';
 import CopyButton from 'src/components/CopyButton.vue';
+import { storageHelper } from 'src/utils/foragePkg';
 
+// Definition
 defineProps<{ order: OrderStatus }>();
 const route = useRoute();
 const { t } = useI18n();
 
 // DOM
-const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
+const isAgent = ref(storageHelper('isAgent').getItem());
 let TimeInterval: NodeJS.Timeout;
 const deltaTime = ref(0);
 const filePicker = ref();

@@ -183,32 +183,30 @@
 <script setup lang="ts">
 import { OrderStatusNum } from 'src/stores/live';
 import { MasterTypeNum, thousandTool } from 'src/utils/NumberTool';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
 import { AccNum } from 'src/pages/account/api';
 import api from '../api';
 import { useRoute } from 'vue-router';
-import { useStorage } from 'vue3-storage';
 import CopyButton from 'src/components/CopyButton.vue';
-//
-const { t } = useI18n();
+import { storageHelper } from 'src/utils/foragePkg';
 
-// DOM
+// Definition
+const { t } = useI18n();
 enum ClientNum {
   Buy = MasterTypeNum.Sell,
   Sell = MasterTypeNum.Buy,
 }
-
+// DOM
+const isAgent = ref(storageHelper('isAgent').getItem());
 // query
 const { data: detail, loading } = api.useDetail({
   Token: useRoute()?.query?.token as string,
 });
 
 // compute
-const useNum = computed(() =>
-  useStorage().getStorageSync('isAgent') ? ClientNum : MasterTypeNum
-);
+const useNum = computed(() => (isAgent.value ? ClientNum : MasterTypeNum));
 
 const usdtFormat = computed(() => {
   if (!detail.value) return '0';

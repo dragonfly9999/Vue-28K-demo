@@ -78,6 +78,7 @@
               <div>
                 <!-- 地址簿 -->
                 <q-btn
+                  v-if="isDev"
                   @click="() => (walletListOpen = true)"
                   :label="$t('transfer.label.nav')"
                   flat
@@ -130,7 +131,7 @@
           </div>
 
           <!-- 地址備註 -->
-          <div class="q-mt-lg" v-if="useStorage().getStorageSync('isAgent')">
+          <div class="q-mt-lg">
             <div class="q-my-sm text-subtitle1">
               {{ $t('transfer.label.remark') }}
             </div>
@@ -318,7 +319,6 @@ import { addressOptions } from './data';
 import { useStateStore } from 'src/stores';
 import { numberTool, thousandInput, thousandTool } from 'src/utils/NumberTool';
 import { computed, onMounted, reactive, ref } from 'vue';
-import { useStorage } from 'vue3-storage';
 import TransferTitle from './components/TransferTitle.vue';
 import QrReader from 'src/components/QrReader.vue';
 import api from './api';
@@ -326,6 +326,7 @@ import TransWarn from './components/TransWarn.vue';
 import { useRouter } from 'vue-router';
 import methods from 'src/utils/methods';
 import WalletListDia from './WalletListDia';
+import { storageHelper } from 'src/utils/foragePkg';
 
 const router = useRouter();
 // DOM
@@ -346,6 +347,8 @@ const visible = reactive({
   readyLeave: false,
 });
 const walletListOpen = ref(false);
+const isAgent = ref(storageHelper<boolean>('isAgent').getItem());
+const isDev = ref(import.meta.env.DEV);
 
 // query
 const { ratesRequest, balanceRequest, formatBalances } = useStateStore();
@@ -446,9 +449,9 @@ const handleTransInputBlur = () => {
 // life cycle
 onMounted(() => {
   const isTest = true;
-  if (import.meta.env.DEV && isTest) {
+  if (isDev.value && isTest) {
     agreement.value = 'trc';
-    address.value = useStorage().getStorageSync('isAgent')
+    address.value = isAgent.value
       ? 'TEZPF9NrUh9xQXqkNSyo7ngqoyfu8AmjQi'
       : 'TYQY8Pw3D2U85CntfNp32Sgk91d4RHRb2f';
     transAmt.value = '100';

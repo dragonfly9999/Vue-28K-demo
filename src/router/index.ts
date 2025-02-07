@@ -1,4 +1,5 @@
 import { route } from 'quasar/wrappers';
+import { storageHelper } from 'src/utils/foragePkg';
 import {
   createMemoryHistory,
   createRouter,
@@ -7,7 +8,6 @@ import {
 } from 'vue-router';
 
 import routes from './routes';
-import { useStorage } from 'vue3-storage';
 
 export default route(function (/* { store, ssrContext } */) {
   const createHistory = process.env.SERVER
@@ -23,11 +23,8 @@ export default route(function (/* { store, ssrContext } */) {
   });
 
   Router.beforeEach((to, _, next) => {
-    const vueStorage = useStorage();
-
     if (to.meta.requiresAuth) {
-      const loginSession = vueStorage?.getStorageSync('login_session');
-
+      const loginSession = storageHelper('login_session').getItem()
       if (!!loginSession) {
         next();
       } else {

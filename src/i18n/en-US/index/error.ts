@@ -25,6 +25,7 @@ export default {
     33: 'Test account blocked', // When selling Usdt and the quantity exceeds the available amount for withdrawal
     35: 'Account information not set',
     41: 'Single transaction quantity exceeds member level limit',
+    43: 'OTP validation failed',
     90: 'Login verification not provided',
     91: 'Session expired, please login again', // This generally happens when user's login session expires. All Get APIs validate user's login status
     92: 'Invalid user' // BUY / SEll Agent

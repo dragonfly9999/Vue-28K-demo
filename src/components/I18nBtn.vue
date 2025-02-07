@@ -25,13 +25,12 @@
 <script setup lang="ts">
 import langs from 'src/i18n';
 import { useI18n } from 'vue-i18n';
-import { useStorage } from 'vue3-storage';
+import { storageHelper } from 'src/utils/foragePkg';
 
-const storage = useStorage();
 const i18n = useI18n();
 
 const handleSwitch = (locale: string) => {
-  storage.setStorageSync('K100I18nInit', locale);
+  storageHelper('locale').setItem(locale);
   i18n.locale.value = locale;
 };
 </script>

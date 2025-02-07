@@ -68,14 +68,15 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import { useStorage } from 'vue3-storage';
+import { storageHelper } from 'src/utils/foragePkg';
 
 const router = useRouter();
 const { t } = useI18n();
-const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
+// DOM
+const isAgent = ref(storageHelper<boolean>('isAgent').getItem());
 const features = computed(() => [
   {
     name: 'transfer',

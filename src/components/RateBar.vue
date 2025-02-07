@@ -25,13 +25,12 @@
 
 <script setup lang="ts">
 import { useStateStore } from 'src/stores';
-import { computed } from 'vue';
-import { useStorage } from 'vue3-storage';
+import { ref } from 'vue';
+import { storageHelper } from 'src/utils/foragePkg';
 
-const vueStorage = useStorage();
 // states
 const { formatRates } = useStateStore();
-const isAgent = computed(() => vueStorage.getStorageSync('isAgent'));
+const isAgent = ref(storageHelper<boolean>('isAgent').getItem());
 </script>
 
 <style scoped></style>

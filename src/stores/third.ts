@@ -2,9 +2,9 @@ import { defineStore } from 'pinia';
 import WebSocketClient from 'src/utils/WebsocketClient';
 import { ref } from 'vue';
 import messageSound from 'src/assets/sound/message2.mp3';
-import { useStorage } from 'vue3-storage';
 import { useOrderStore } from './order';
 import hooks from 'src/hooks';
+import { storageHelper } from 'src/utils/foragePkg';
 
 
 export const useThirdStore = defineStore('third', () => {
@@ -13,18 +13,19 @@ export const useThirdStore = defineStore('third', () => {
   const chatListObj = ref<{ [key: string]: Array<ChatRes> }>({});
   const webSockets = ref<{ [key: string]: WebSocketClient }>({});
   const onMessages = ref<{ [key: string]: (args: ChatRes) => void }>({});
+  const isAgent = ref(storageHelper<boolean>('isAgent').getItem());
 
+  // Handlers
   const setOnMessage = (token: string, fn: (args?: ChatRes) => void) => {
     onMessages.value[token] = fn;
   };
   const resetOnMessage = (token: string) => {
-    const isAgent = useStorage().getStorageSync('isAgent');
 
     setOnMessage(token, (msg?: ChatRes) => {
       if (hint.value) {
         if (
-          (isAgent && msg?.Message_Role !== 3) ||
-          (!isAgent && msg?.Message_Role === 3)
+          (isAgent.value && msg?.Message_Role !== 3) ||
+          (!isAgent.value && msg?.Message_Role === 3)
         ) {
           const messageAudio = new Audio(messageSound);
           messageAudio.play();
@@ -33,7 +34,6 @@ export const useThirdStore = defineStore('third', () => {
     });
   };
   const setWebSockets = (token: string, onOpen?: () => void) => {
-    const isAgent = useStorage().getStorageSync('isAgent');
 
     if (token in webSockets.value && [0, 1].includes(webSockets.value[token].instance?.readyState ?? -1)) return;
     // set on message
@@ -42,7 +42,7 @@ export const useThirdStore = defineStore('third', () => {
       resetOnMessage(token);
     }
     // WS
-    const chatURL = isAgent ? '/ws_ChatOrder3.ashx' : '/WS_ChatOrder.ashx';
+    const chatURL = isAgent.value ? '/ws_ChatOrder3.ashx' : '/WS_ChatOrder.ashx';
     const chatWS = new WebSocketClient(chatURL, {
       reconnectEnabled: true,
       reconnectInterval: 2000,
@@ -59,8 +59,8 @@ export const useThirdStore = defineStore('third', () => {
           chatListObj.value[token].push(newList);
           if (onMessages?.value?.[token]) onMessages?.value?.[token](newList);
           if (
-            (isAgent && newList?.Message_Role !== 3) ||
-            (!isAgent && newList.Message_Role === 3)
+            (isAgent.value && newList?.Message_Role !== 3) ||
+            (!isAgent.value && newList.Message_Role === 3)
           )
             unReadCount.value[token] = unReadCount.value[token]
               ? unReadCount.value[token] + 1
@@ -75,6 +75,7 @@ export const useThirdStore = defineStore('third', () => {
     };
     webSockets.value[token] = chatWS;
   };
+
   //
   const handleResetCount = (token: string | undefined) => {
     if(token &&  token in unReadCount.value ) unReadCount.value[token] = 0

@@ -91,22 +91,18 @@
 
 <script setup lang="ts">
 import { thousandTool } from 'src/utils/NumberTool';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import { useStorage } from 'vue3-storage';
 import dayjs from 'dayjs';
 import { MtTypeNum } from 'src/stores/live';
 import api from './api';
-import {
-  useKeyStore,
-  useOrderStore,
-  useStateStore,
-  useThirdStore,
-} from 'src/stores';
+// prettier-ignore
+import { useKeyStore, useOrderStore, useStateStore, useThirdStore, } from 'src/stores';
 import { copyToClipboard, useQuasar } from 'quasar';
 import StatusMaster from 'src/pages/trade/TradingComponents/StatusMaster.vue';
 import { useRoute } from 'vue-router';
+import { storageHelper } from 'src/utils/foragePkg';
 const quasar = useQuasar();
 const props = defineProps<{
   order: LiveOrder;
@@ -114,18 +110,19 @@ const props = defineProps<{
   isCleanCount?: boolean;
 }>();
 
-//
-const { currency } = useStateStore();
-const { pressing } = useKeyStore();
+// Definition
 const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
-const storage = useStorage();
+
+// DOM
+const isAgent = ref<boolean | null>(storageHelper<boolean>('isAgent').getItem());
+const { currency } = useStateStore();
+const { pressing } = useKeyStore();
 const { setOrderWs } = useOrderStore();
 const { setWebSockets, getCount, handleResetCount } = useThirdStore();
 
-// dom
-const isAgent = computed(() => storage.getStorageSync('isAgent'));
+// Compute
 const channelLabel = computed(() => {
   if (!props.order.Channel) return '';
   if (props.order.Channel === -1) return 'All';
@@ -174,6 +171,7 @@ const { run: matchSell, loading: loadingSell } = api.useSellMatch({
     setOrderWs(props.order.token);
   },
 });
+
 // handler
 const handleMatch = () => {
   if (props.order.MType === MtTypeNum.Sell) {
@@ -234,6 +232,8 @@ const handleClickItem = () => {
     });
   }
 };
+
+// Init
 </script>
 
 <style scoped lang="scss">

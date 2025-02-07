@@ -124,20 +124,20 @@
 
 <script setup lang="ts">
 import { useLiveStore, useStateStore, useThirdStore } from 'src/stores';
-import { type Component, computed, onMounted, ref, toRefs } from 'vue';
+import { type Component, onMounted, ref, toRefs } from 'vue';
 import InstantOrders from './components/InstantOrders.vue';
 import ProgressOrders from './components/ProgressOrders.vue';
 import RecentHistory from './components/RecentHistory.vue';
 import progressPng from 'src/assets/in-progress.png';
-import { useStorage } from 'vue3-storage';
 import PendingOrders from './components/PendingOrders.vue';
+import { storageHelper } from 'src/utils/foragePkg';
 
 const { hint } = toRefs(useThirdStore());
 const { balanceRequest, autoModeRequest } = useStateStore();
 const liveStore = useLiveStore();
 // DOM
 const tab = ref('instant');
-const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
+const isAgent = ref(storageHelper<boolean>('isAgent').getItem());
 const { liveOrders } = useLiveStore();
 
 // Life cycle

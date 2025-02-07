@@ -3,15 +3,19 @@ import AppealConfirm from 'src/components/AppealConfirm.vue';
 import PunctuationMaster from 'src/components/PunctuationMaster.vue';
 import dayjs from 'dayjs';
 import { MasterTypeNum, thousandTool } from 'src/utils/NumberTool';
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import { useStorage } from 'vue3-storage';
+import { storageHelper } from 'src/utils/foragePkg';
+
+// Definition
 defineProps<{ order: OrderStatus | undefined }>();
 const { t } = useI18n();
 const router = useRouter();
+
+// DOM
 const appealWarn = ref(false);
-const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
+const isAgetn = ref(storageHelper('isAgent').getItem());
 </script>
 <template>
   <q-card class="width600 text-center">

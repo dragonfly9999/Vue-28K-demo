@@ -13,3 +13,10 @@ declare namespace NodeJS {
     VUE_ROUTER_BASE: string | undefined;
   }
 }
+
+type ValueOf<T> = T[keyof T];
+type NOU = null | undefined;
+type DevProps = {
+  isTest?: boolean;
+};
+

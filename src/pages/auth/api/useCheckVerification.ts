@@ -1,6 +1,6 @@
 import { axiosProvider } from 'src/utils/axiosProvider';
+import { storageHelper } from 'src/utils/foragePkg';
 import { requestProvider } from 'src/utils/requestProvider';
-import { useStorage } from 'vue3-storage';
 
 type CheckRes = string;
 
@@ -12,11 +12,10 @@ type CheckProps = {
 
 export default ({ ...useProps }: UseProps) => {
   const vueRequest = requestProvider<CheckRes, CheckProps>((props) => {
-    const vueStorage = useStorage();
-    const registerStorage = vueStorage.getStorageSync<{
+    const registerStorage = storageHelper<{
       countryCode: number;
       phone: string;
-    }>('register');
+    }>('register').getItem();
     const reg_countrycode =
       registerStorage?.countryCode ?? props.reg_countrycode;
     const usePhone = registerStorage?.phone ?? props.reg_tel;
@@ -30,15 +29,21 @@ export default ({ ...useProps }: UseProps) => {
     manual: true,
     ...useProps,
     onSuccess: (res) => {
-      const vueStorage = useStorage();
-      const registerStorage = vueStorage.getStorageSync<{
-        countryCode: number;
-        phone: string;
-      }>('register');
-      vueStorage.setStorageSync('register', {
-        ...registerStorage,
-        token: res?.data
-      });
+      if (res) {
+        const registerStorage = storageHelper<{
+          countryCode: number;
+          phone: string;
+        }>('register').getItem();
+        storageHelper<{
+          countryCode?: number;
+          phone?: string;
+          token: string
+        }>('register').setItem( {
+          ...(registerStorage ||{}),
+          token: res.data
+        });
+      }
+
       if (useProps.onSuccess) useProps.onSuccess(res);
     },
   }, {

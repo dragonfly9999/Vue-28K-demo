@@ -1,6 +1,6 @@
 import { axiosProvider } from 'src/utils/axiosProvider';
+import { storageHelper } from 'src/utils/foragePkg';
 import { requestProvider } from 'src/utils/requestProvider';
-import { useStorage } from 'vue3-storage';
 
 type RegisterRes = string;
 type RegisterProps = {
@@ -9,12 +9,11 @@ type RegisterProps = {
 
 export default ({ ...useProps }: UseProps) => {
   const vueRequest = requestProvider<RegisterRes, RegisterProps>((props) => {
-    const vueStorage = useStorage();
-    const registerStorage = vueStorage.getStorageSync<{
+    const registerStorage = storageHelper<{
       phone: string;
       countryCode: number;
       token: string;
-    }>('register');
+    }>('register').getItem();
     const request = axiosProvider
       .post('/req_RegClient.aspx', {
         ...props,

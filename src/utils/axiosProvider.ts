@@ -1,14 +1,13 @@
 import axios from 'axios';
-import { useStorage } from 'vue3-storage';
+import { storageHelper } from './foragePkg';
 
-const storage = useStorage();
 const axiosProvider = axios.create({
   baseURL: import.meta.env.VITE_API_BASE
 });
 
 
 axiosProvider.interceptors.request.use((config) => {
-  const loginSession = storage.getStorageSync('login_session');
+  const loginSession = storageHelper('login_session').getItem();
   if (loginSession) {
     config.headers['login_session'] = `${loginSession}`;
   }

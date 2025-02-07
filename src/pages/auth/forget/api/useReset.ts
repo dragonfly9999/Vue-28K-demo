@@ -1,6 +1,6 @@
 import { axiosProvider } from 'src/utils/axiosProvider';
+import { storageHelper } from 'src/utils/foragePkg';
 import { requestProvider } from 'src/utils/requestProvider';
-import { useStorage } from 'vue3-storage';
 
 type ResetRes = string;
 
@@ -14,11 +14,10 @@ type ResetProps = {
 export default (useProps: UseProps) => {
   const { ...config } = useProps;
   const vueRequest = requestProvider<ResetRes, ResetProps>((props) => {
-    const vueStorage = useStorage();
-    const forgetInfoStorage = vueStorage.getStorageSync<{
+    const forgetInfoStorage = storageHelper<{
       phone: string;
       countryCode: number;
-    }>('forget_Info');
+    }>('forget_Info').getItem();
     const request = axiosProvider
       .post('Req_ForgotPwd.aspx', {
         ...props,

@@ -95,14 +95,13 @@ import matchSound from 'src/assets/sound/match.mp3';
 import paymentSound from 'src/assets/sound/payment2.mp3';
 import appealSound from 'src/assets/sound/owl.mp3';
 import { MtTypeNum, OrderStatusNum } from 'src/stores/live';
-import { useStorage } from 'vue3-storage';
 import { useKeyStore } from 'src/stores/key';
 import hooks from 'src/hooks';
 import TwoFa from './components/TwoFa';
+import { storageHelper } from 'src/utils/foragePkg';
 
 //
 const router = useRouter();
-const vueStorage = useStorage();
 
 // DOM
 const instantAudio = ref<HTMLAudioElement>();
@@ -142,7 +141,7 @@ onMounted(() => {
   setPendingOrderWs();
 
   // hint
-  const isAgent = vueStorage.getStorageSync('isAgent');
+  const isAgent = ref(storageHelper<boolean>('isAgent').getItem());
   if (!hint.value && isAgent && import.meta.env.PROD) {
     noHintWarn.value = true;
   }

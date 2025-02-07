@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia';
 import hooks from 'src/hooks';
+import { storageHelper } from 'src/utils/foragePkg';
 import WebSocketClient from 'src/utils/WebsocketClient';
 import { reactive } from 'vue';
-import { useStorage } from 'vue3-storage';
 import { useThirdStore } from './third';
 
 enum MtTypeNum {
@@ -58,7 +58,7 @@ export const useLiveStore = defineStore('live', () => {
     progress: false
   });
   const setLiveOrderWs = () => {
-    const isAgent = useStorage().getStorageSync('isAgent');
+    const isAgent = storageHelper<boolean>('isAgent').getItem();
     if (!isAgent) return;
     if (
       liveWs.instant &&

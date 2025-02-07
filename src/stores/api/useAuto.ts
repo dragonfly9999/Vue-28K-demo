@@ -1,7 +1,7 @@
 import { axiosProvider } from 'src/utils/axiosProvider';
+import { storageHelper } from 'src/utils/foragePkg';
 import { requestProvider } from 'src/utils/requestProvider';
 import { computed } from 'vue';
-import { useStorage } from 'vue3-storage';
 
 type AutoProps = number ;
 
@@ -22,7 +22,7 @@ export const useAuto = ({ ...useProps }: UseProps) => {
     manual: false,
     pollingInterval: -1,
     refreshOnWindowFocus: false,
-    ready: computed(() => !!useStorage().getStorageSync('isAgent')),
+    ready: computed(() => !!storageHelper('isAgent').getItem()),
   }, {
     noFeedback: true,
     noTempData: true,

@@ -140,9 +140,9 @@ import DateMasterOne from 'src/components/DateMasterOne.vue';
 import dayjs from 'dayjs';
 import HistoryList from './components/HistoryList.vue';
 import { MasterTypeNum } from 'src/utils/NumberTool';
-import { useStorage } from 'vue3-storage';
 import { useLiveStore } from 'src/stores/live';
 import LiveOrderItem from 'src/components/LiveOrderItem.vue';
+import { storageHelper } from 'src/utils/foragePkg';
 
 const { t } = useI18n();
 const router = useRouter();
@@ -155,7 +155,7 @@ const dateRange = reactive({
 const current = ref(1);
 const type = ref(5);
 const tab = ref('finish');
-const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
+const isAgent = ref(storageHelper<boolean>('isAgent').getItem());
 const { liveOrders } = useLiveStore();
 const agentOrders = computed(() => {
   const pureOrders = liveOrders.progress.slice();
@@ -192,7 +192,7 @@ const {
 } = useExpired();
 
 const filterOrders = computed(() => {
-  const useOrders = () => {
+  const tabOrders = (() => {
     switch (tab.value) {
       case 'finish':
         return history.value;
@@ -203,11 +203,10 @@ const filterOrders = computed(() => {
       default:
         return [];
     }
-  };
-  const pureOrder = useOrders();
-  if (!pureOrder) return [];
-
-  const result = pureOrder
+  })();
+  if (!tabOrders) return [];
+  const pureOrders = tabOrders as Array<OrderRecord>;
+  const result = pureOrders
     .filter((order) => {
       const date = dayjs(order?.Date);
       const from = dateRange.from.format('YYYY-MM-DD HH:mm');
@@ -220,7 +219,7 @@ const filterOrders = computed(() => {
     })
     .filter((record) => {
       if (type.value === 5) return true;
-      if (tab.value === 'fail' && useStorage().getStorageSync('isAgent')) {
+      if (tab.value === 'fail' && isAgent.value) {
         switch (type.value) {
           case MasterTypeNum.Buy:
             return record.MasterType === MasterTypeNum.Sell;

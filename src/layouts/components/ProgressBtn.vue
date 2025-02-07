@@ -70,17 +70,20 @@
 import LiveOrderItem from 'src/components/LiveOrderItem.vue';
 import { useI18n } from 'vue-i18n';
 import { useLiveStore, usePendingStore } from 'src/stores';
-import { computed } from 'vue';
-import { useStorage } from 'vue3-storage';
+import { computed, ref } from 'vue';
 import PendingItem from 'src/components/PendingItem.vue';
 import dayjs from 'dayjs';
+import { storageHelper } from 'src/utils/foragePkg';
 
+// Definition
 const { liveOrders } = useLiveStore();
 const { pendingInstant } = usePendingStore();
 const { t } = useI18n();
 // DOM
+const isAgent = ref(storageHelper('isAgent').getItem());
+
+// Compute
 const pendingOrders = computed(() => pendingInstant.data);
-const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
 const isDisable = computed(() => {
   if (isAgent.value) {
     return liveOrders.progress.length === 0;

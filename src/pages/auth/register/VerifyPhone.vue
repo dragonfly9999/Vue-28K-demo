@@ -108,13 +108,12 @@ import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import api from '../api';
 import ButtonLocker from 'src/components/ButtonLocker.vue';
-import { useStorage } from 'vue3-storage';
+import { storageHelper } from 'src/utils/foragePkg';
 
 const props = defineProps<{ countryCode: number | undefined }>();
 const emits = defineEmits(['success', 'update:countryCode']);
 const { t } = useI18n();
 const countryCodeOptions = hooks.useCountryCodeOptions();
-const vueStorage = useStorage();
 // DOM
 const mask = hooks.usePhoneMask(computed(() => props.countryCode));
 const phone = ref('');
@@ -133,7 +132,7 @@ const { run: checkVerification, loading: checkingVerification } =
   });
 const { run: sendVerification, loading: sending } = api.useSendVerification({
   onSuccess: () => {
-    vueStorage.setStorageSync('verify_locker', true);
+    storageHelper<boolean>('verify_locker').setItem(true);
     disableVerifyInputer.value = false;
     isLockerSender.value = true;
     hooks.useSuccessNotify(t('auth.已發送驗證碼'));
@@ -142,7 +141,7 @@ const { run: sendVerification, loading: sending } = api.useSendVerification({
 const { run: checkExsist, loading: checking } = api.useCheckExists({
   // 確認是否已註冊
   onSuccess: () => {
-    vueStorage.setStorageSync('register', {
+    storageHelper<{ phone: string; countryCode?: number }>('register').setItem({
       phone: phone.value,
       countryCode: props.countryCode,
     });
@@ -152,23 +151,23 @@ const { run: checkExsist, loading: checking } = api.useCheckExists({
     });
   },
   onError: () => {
-    vueStorage.clearStorageSync();
+    hooks.useKickOut.clean();
     phone.value = '';
     emits('update:countryCode', undefined);
   },
 });
 
 onMounted(() => {
-  const isLockVerify = vueStorage.getStorageSync<boolean>('verify_locker');
+  const isLockVerify = storageHelper<boolean>('verify_locker').getItem();
   if (isLockVerify) {
     disableVerifyInputer.value = false;
     isLockerSender.value = true;
   }
-  const registerInfoStorage = vueStorage.getStorageSync<{
+  const registerInfoStorage = storageHelper<{
     phone: string;
     countryCode: number;
     token: string;
-  }>('register');
+  }>('register').getItem();
   emits(
     'update:countryCode',
     registerInfoStorage?.countryCode
@@ -186,7 +185,7 @@ onMounted(() => {
 });
 
 const handleUnLock = () => {
-  vueStorage.setStorageSync('verify_locker', false);
+  storageHelper<boolean>('verify_locker').setItem(false);
   isLockerSender.value = false;
 };
 </script>

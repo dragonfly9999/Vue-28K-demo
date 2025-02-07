@@ -1,4 +1,4 @@
-import { useStorage } from 'vue3-storage';
+import { storageHelper } from './foragePkg';
 
 export type WebsocketOptions = {
   reconnectEnabled?: boolean;
@@ -19,7 +19,7 @@ export default class WebSocketClient {
   onError: ((evt: Event) => void) | null = null;
 
   constructor(url: string, options: WebsocketOptions) {
-    const login_session = useStorage().getStorageSync('login_session');
+    const login_session = storageHelper('login_session').getItem();
     const OrderURL = import.meta.env.VITE_ORDER_WS
     const ChatURL = import.meta.env.VITE_CHAT_WS
     const baseURL = options.isChat ? ChatURL : OrderURL;

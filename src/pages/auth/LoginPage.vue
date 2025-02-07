@@ -152,12 +152,12 @@ import { useI18n } from 'vue-i18n';
 import { ref } from 'vue';
 import { useLogin } from './api';
 import { useRouter } from 'vue-router';
-import { useStorage } from 'vue3-storage';
 import hooks from 'src/hooks';
+import { storageHelper } from 'src/utils/foragePkg';
 
+// Definition
 const { t } = useI18n();
 const router = useRouter();
-const storage = useStorage();
 const countryCodeOptions = hooks.useCountryCodeOptions();
 
 // DOM
@@ -170,8 +170,8 @@ const isVisibleSetting = ref(false);
 // mutation
 const { run: login, loading } = useLogin({
   onSuccess: () => {
-    storage.setStorageSync('phone', phone_number.value);
-    storage.setStorageSync('password', password.value);
+    storageHelper<number | null>('phone').setItem(phone_number.value);
+    storageHelper<string | null>('password').setItem(password.value);
     router.push({ name: 'dashboard' });
   },
 });

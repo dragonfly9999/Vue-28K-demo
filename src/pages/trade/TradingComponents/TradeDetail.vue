@@ -204,24 +204,26 @@
 <script setup lang="ts">
 import { OrderStatusNum } from 'src/stores/live';
 import { MasterTypeNum, thousandTool } from 'src/utils/NumberTool';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
 import { AccNum } from 'src/pages/account/api';
 import api from '../api';
-import { useStorage } from 'vue3-storage';
 import CopyButton from 'src/components/CopyButton.vue';
 import { useRoute } from 'vue-router';
+import { storageHelper } from 'src/utils/foragePkg';
+
+// Definition
 const { t } = useI18n();
 const route = useRoute();
 const props = defineProps<{ visible: boolean }>();
 defineEmits(['update:visible']);
-
-// DOM
 enum ClientNum {
   Buy = MasterTypeNum.Sell,
   Sell = MasterTypeNum.Buy,
 }
+// DOM
+const isAgent = ref(storageHelper<boolean>('isAgent').getItem());
 
 // query
 const {
@@ -237,9 +239,7 @@ const {
 });
 
 // compute
-const useNum = computed(() =>
-  useStorage().getStorageSync('isAgent') ? ClientNum : MasterTypeNum
-);
+const useNum = computed(() => (isAgent.value ? ClientNum : MasterTypeNum));
 
 const usdtFormat = computed(() => {
   if (!detail.value) return '0';

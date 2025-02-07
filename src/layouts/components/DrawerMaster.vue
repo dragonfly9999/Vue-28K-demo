@@ -1,15 +1,18 @@
 <script setup lang="ts">
 import langs from 'src/i18n';
 import { useStateStore } from 'src/stores';
+import { storageHelper } from 'src/utils/foragePkg';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import { useStorage } from 'vue3-storage';
+// Definition
 const router = useRouter();
 const i18n = useI18n();
 const { t } = useI18n();
+// DOM
+const phone = ref(storageHelper('phone').getItem());
 const { formatRates } = useStateStore();
-const storage = useStorage();
+
 // DOM
 const drawerRight = ref(true);
 </script>
@@ -162,7 +165,7 @@ const drawerRight = ref(true);
               <!-- 歡迎登入 -->
               <div>{{ t('auth.welcome') }}</div>
               <div class="text-weight-bold text-body1">
-                {{ storage.getStorageSync('phone') }}
+                {{ phone }}
               </div>
             </div>
             <!-- 登出btn -->

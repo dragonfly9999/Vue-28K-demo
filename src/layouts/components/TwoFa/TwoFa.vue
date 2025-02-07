@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { toRefs } from 'vue';
+import { computed, ref, toRefs } from 'vue';
 import api from '../../api';
 import { use2faStore } from '../../../stores';
 
@@ -7,15 +7,17 @@ const props = defineProps<{
   model_value: boolean;
 }>();
 const emit = defineEmits(['update:model_value']);
+// DOM
 const { model_value } = toRefs(props);
-
+const isDev = ref(import.meta.env.DEV);
 // queries
-const { loading, refresh, isEnabled, qrSrc } = toRefs(use2faStore());
-const { run, loading: running } = api.use2faCreate({
+const { loading, refresh, isEnabled } = toRefs(use2faStore());
+const twoFaCreate = api.use2faCreate({
   onSuccess: () => {
     refresh.value();
   },
 });
+const { data, run, loading: running } = twoFaCreate;
 const { run: del, loading: deling } = api.use2faDel({
   onSuccess: () => {
     refresh.value();
@@ -23,6 +25,9 @@ const { run: del, loading: deling } = api.use2faDel({
 });
 
 // computes
+const qrSrc = computed(() =>
+  !!data.value ? `data:image/png;base64,${data.value?.Qr_img}` : undefined
+);
 </script>
 <template>
   <q-dialog
@@ -43,10 +48,13 @@ const { run: del, loading: deling } = api.use2faDel({
       <main>
         <q-img
           :loading="loading || running || deling"
-          v-if="isEnabled"
+          v-if="!!qrSrc && isEnabled"
           :src="qrSrc"
           alt="2FA QR"
         />
+        <div v-if="!qrSrc && isEnabled" class="text-warning">
+          若綁定失敗，請聯繫客服
+        </div>
       </main>
 
       <footer class="flex justify-end" :style="{ gap: '4px' }">
@@ -60,7 +68,7 @@ const { run: del, loading: deling } = api.use2faDel({
           啟動
         </q-btn>
         <q-btn
-          v-if="isEnabled"
+          v-if="isEnabled && false"
           :loading="running || deling"
           size="small"
           color="warning"
@@ -69,7 +77,7 @@ const { run: del, loading: deling } = api.use2faDel({
           重設
         </q-btn>
         <q-btn
-          v-if="isEnabled"
+          v-if="isEnabled && isDev"
           :loading="running || deling"
           size="small"
           color="red"

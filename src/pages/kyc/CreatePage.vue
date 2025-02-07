@@ -209,7 +209,7 @@
     @close="
       () => {
         isSuccess = false;
-        useStorage().setStorageSync('to', '');
+        storageHelper('to').setItem('');
       }
     "
   />
@@ -223,8 +223,8 @@ import PickImg from 'src/components/PickImg.vue';
 import { reactive, ref } from 'vue';
 import api from './api';
 import CreateSuccess from './component/CreateSuccess.vue';
-import { useStorage } from 'vue3-storage';
 import { useRouter } from 'vue-router';
+import { storageHelper } from 'src/utils/foragePkg';
 
 const router = useRouter();
 //
@@ -252,7 +252,7 @@ const isSuccess = ref(false);
 const { run: create, loading } = api.useCreate({
   onSuccess: () => {
     isSuccess.value = true;
-    useStorage().setStorageSync('to', 'kyc');
+    storageHelper('to').setItem('kyc');
   },
 });
 const handleCreate = () => {
@@ -369,9 +369,9 @@ if (import.meta.env.DEV && isTest) {
   imgs.img4 = data.img;
 }
 // 重新載入時，如果有已成功提交就導回
-const to = useStorage().getStorageSync('to');
+const to = storageHelper('to').getItem();
 if (to) {
-  useStorage().setStorageSync('to', '');
+  storageHelper('to').setItem('');
   router.push({ name: to });
 }
 // 回填資料 沒有

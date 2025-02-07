@@ -55,17 +55,19 @@
 
 <script setup lang="ts">
 import { useSellConfirm } from 'src/components/api/useSellConfirm';
+import { storageHelper } from 'src/utils/foragePkg';
 import { thousandTool } from 'src/utils/NumberTool';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 import api from '../api';
-import { useStorage } from 'vue3-storage';
+
 const props = defineProps<{ order: OrderStatus | undefined }>();
 const { t } = useI18n();
 const route = useRoute();
+
 // DOM
-const isAgent = computed(() => useStorage().getStorageSync('isAgent'));
+const isAgent = ref(storageHelper('isAgent').getItem());
 // const remark = ref<string>();
 const informations = computed(() => [
   {

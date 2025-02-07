@@ -1,6 +1,6 @@
 import { axiosProvider } from 'src/utils/axiosProvider';
+import { storageHelper } from 'src/utils/foragePkg';
 import { requestProvider } from 'src/utils/requestProvider';
-import { useStorage } from 'vue3-storage';
 
 type LoginProps = {
   Login_countrycode: string;
@@ -13,7 +13,6 @@ type LoginRes = {
   isAgent: boolean;
 };
 
-const storage = useStorage();
 
 export const useLogin = ({ ...useProps }: UseProps) =>
   requestProvider<LoginRes, LoginProps>((props) => {
@@ -25,8 +24,8 @@ export const useLogin = ({ ...useProps }: UseProps) =>
     manual: true,
     ...useProps,
     onSuccess: (res) => {
-      storage.setStorageSync('isAgent', res?.data.isAgent);
-      storage.setStorageSync('login_session', res?.data.login_session);
+      storageHelper<boolean>('isAgent').setItem(res?.data.isAgent)
+      storageHelper('login_session').setItem(res?.data.login_session)
       if (useProps.onSuccess) useProps.onSuccess(res);
     }
   }, {

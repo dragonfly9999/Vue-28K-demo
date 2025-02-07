@@ -1,7 +1,7 @@
 import { requestProvider } from 'src/utils/requestProvider';
 import { axiosProvider } from 'src/utils/axiosProvider';
 import { computed } from 'vue';
-import { useStorage } from 'vue3-storage';
+import { storageHelper } from 'src/utils/foragePkg';
 
 export default ({...useProps}: UseProps<Array<PendingOrder>>)=> {
   const vueRequest =  requestProvider<Array<PendingOrder>>(() =>{
@@ -9,7 +9,7 @@ export default ({...useProps}: UseProps<Array<PendingOrder>>)=> {
     return request
   }, {
     ...useProps,
-    ready: computed(() => !useStorage().getStorageSync('isAgent')),
+    ready: computed(() => !storageHelper('isAgent').getItem()),
     manual: false,
     refreshOnWindowFocus: true,
     pollingInterval: 1000 * 60 * 2,

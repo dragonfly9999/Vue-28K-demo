@@ -252,14 +252,14 @@
 <script setup lang="ts">
 import { OrderStatusNum } from 'src/stores/live';
 import { MasterTypeNum, thousandTool } from 'src/utils/NumberTool';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
 import { AccNum } from 'src/pages/account/api';
 import CopyButton from './CopyButton.vue';
 import { useRouter } from 'vue-router';
-import { useStorage } from 'vue3-storage';
 import tradeApi from 'src/pages/trade/api';
+import { storageHelper } from 'src/utils/foragePkg';
 
 // Definition
 const props = defineProps<{
@@ -276,8 +276,9 @@ const { data: detail } = tradeApi.useDetail({
   ready: computed(() => !!props.record.token && props.visible),
 });
 // DOM
+const isAgent = ref(storageHelper<boolean>('isAgent').getItem());
 const recordInfo = computed(() => {
-  if (props.isExpired && useStorage().getStorageSync('isAgent')) {
+  if (props.isExpired && isAgent) {
     switch (props.record?.MasterType) {
       case MasterTypeNum.Sell:
         return { label: t('buy.buy'), color: 'blue-13' };
@@ -328,7 +329,7 @@ const recordInfo = computed(() => {
 });
 const payerInfo = computed(() => {
   if ('P5' in props.record) {
-    if (props.isExpired && useStorage().getStorageSync('isAgent')) {
+    if (props.isExpired && isAgent) {
       switch (props.record?.MasterType) {
         case MasterTypeNum.Sell: {
           const name = props?.record?.P5;
@@ -387,7 +388,7 @@ const payerInfo = computed(() => {
 });
 
 const statusInfo = computed(() => {
-  if (props.isExpired && useStorage().getStorageSync('isAgent')) {
+  if (props.isExpired && isAgent) {
     switch (Number(detail?.value?.MasterType)) {
       case MasterTypeNum.Sell:
         switch (detail.value?.Order_StatusID) {
@@ -476,7 +477,7 @@ const statusInfo = computed(() => {
 });
 // 亡羊補牢
 const handleBackTrade = () => {
-  if (props.isExpired && useStorage().getStorageSync('isAgent')) {
+  if (props.isExpired && isAgent) {
     router.push({
       name: 'trade',
       query: {
