@@ -45,7 +45,7 @@
       </div>
     </div>
     <!-- 轉帳資訊 Body -->
-    <div class="mycolor1 q-pa-sm info td">
+    <div class="mycolor1 q-pa-sm info td q-mb-sm">
       <table class="q-pa-xs">
         <tr
           v-for="(information, index) in [
@@ -79,8 +79,12 @@
           <CopyButton :value="information.content" />
         </tr>
       </table>
+      <div className="text-warning q-pa-sm">
+        {{ $t('transfer.label.remark_warning') }}
+      </div>
     </div>
 
+    <!-- 付款方 -->
     <div class="text-h6 text-weight-bold q-mx-sm text-blue-13">
       {{ t('transaction.payer') }}
     </div>
