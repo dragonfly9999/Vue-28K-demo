@@ -77,7 +77,7 @@ const qrSrc = computed(() =>
           重設
         </q-btn>
         <q-btn
-          v-if="isEnabled && isDev"
+          v-if="(isEnabled && isDev) || true"
           :loading="running || deling"
           size="small"
           color="red"

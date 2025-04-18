@@ -23,7 +23,7 @@
       </q-item>
       <RecordItem
         v-for="(order, index) in showHistory"
-        :key="index"
+        :key="`${index}-${order.Tx_HASH}`"
         :order="order"
       />
     </q-list>
