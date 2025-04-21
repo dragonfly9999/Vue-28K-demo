@@ -14,7 +14,8 @@ const encryptData = <Data = unknown>(data: unknown): Data => {
       return { ...pre, [key]: encryptData<ValueOf<Data>>(value) };
     }, {} as Data);
   }
-  if (typeof data === 'string') return CryptoJS.RC4.encrypt(data, ENCRYPTION_KEY).toString() as Data;
+  if (typeof data === 'string')
+    return CryptoJS.RC4.encrypt(data, ENCRYPTION_KEY).toString() as Data;
   return data as Data;
 };
 
@@ -48,21 +49,29 @@ const forageKeys = {
   info: 'info',
 };
 type ForageKeys = keyof typeof forageKeys;
-type ForageCallback<Forage = unknown> = (err?: Error | null, value?: Forage | null) => void;
+type ForageCallback<Forage = unknown> = (
+  err?: Error | null,
+  value?: Forage | null
+) => void;
 const forage = <Forage = unknown>() => {
   return {
     ttlKey: (key: ForageKeys) => `${TTL_PREFIX}${key}`,
     getTTL: (key: ForageKeys, callback?: ForageCallback<number>) => {
-      return localforage.getItem<number>(forage().ttlKey(key), (err, ttlNum) => {
-        if (callback) callback(err, ttlNum);
-        if (err) logWarn({ Title: 'Get ttl number error', err });
-      });
+      return localforage.getItem<number>(
+        forage().ttlKey(key),
+        (err, ttlNum) => {
+          if (callback) callback(err, ttlNum);
+          if (err) logWarn({ Title: 'Get ttl number error', err });
+        }
+      );
     },
     getItem: (key: ForageKeys, callback?: ForageCallback<Forage>) => {
       return new Promise<Forage>((resolve) => {
         localforage.getItem<Forage>(key, (err, foragedValue) => {
           if (err) logWarn({ Title: 'Get item error', err });
-          const decryptedValue = decryptData(foragedValue as unknown as string) as Forage;
+          const decryptedValue = decryptData(
+            foragedValue as unknown as string
+          ) as Forage;
           // === normal return === //
           // if (callback) callback(err, decryptedValue);
           // return decryptedValue;
@@ -86,12 +95,21 @@ const forage = <Forage = unknown>() => {
         });
       });
     },
-    setItem: (key: ForageKeys, value: Forage, callback?: ForageCallback<Forage>, ttlInMinutes?: number) => {
+    setItem: (
+      key: ForageKeys,
+      value: Forage,
+      callback?: ForageCallback<Forage>,
+      ttlInMinutes?: number
+    ) => {
       const encryptedValue = encryptData(value);
       return localforage.setItem(key, encryptedValue, (err, foragedValue) => {
         if (err) logWarn({ Title: 'Set item error', err });
         // ttl
-        if (ttlInMinutes) localforage.setItem(forage().ttlKey(key), dayjs().add(ttlInMinutes, 'minute').valueOf());
+        if (ttlInMinutes)
+          localforage.setItem(
+            forage().ttlKey(key),
+            dayjs().add(ttlInMinutes, 'minute').valueOf()
+          );
 
         // forage value
         const decryptedValue = decryptData<Forage | null>(foragedValue);
@@ -117,7 +135,10 @@ const forage = <Forage = unknown>() => {
         if (callback) callback(err, numOfKeys);
       });
     },
-    key: (keyIndex: number, callback: (err: Error, key: ForageKeys) => void) => {
+    key: (
+      keyIndex: number,
+      callback: (err: Error, key: ForageKeys) => void
+    ) => {
       return localforage.key(keyIndex, (err, key) => {
         if (callback) callback(err, key as ForageKeys);
       });
@@ -128,16 +149,25 @@ const forage = <Forage = unknown>() => {
       });
     },
     iterate: (
-      iteratorCallback?: (value: Forage | null, key: ForageKeys, iterationNum: number) => void,
-      callback?: (err: Error, result: void) => void,
+      iteratorCallback?: (
+        value: Forage | null,
+        key: ForageKeys,
+        iterationNum: number
+      ) => void,
+      callback?: (err: Error, result: void) => void
     ) => {
       return localforage.iterate(
         (value, key, iterationNum) => {
-          if (iteratorCallback) iteratorCallback(value as Forage | null, key as ForageKeys, iterationNum);
+          if (iteratorCallback)
+            iteratorCallback(
+              value as Forage | null,
+              key as ForageKeys,
+              iterationNum
+            );
         },
         (err, result) => {
           if (callback) callback(err, result);
-        },
+        }
       );
     },
   };
