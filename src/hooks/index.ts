@@ -1,15 +1,9 @@
-import useCountryCodeOptions from './useCountryCodeOptions';
-import usePhoneMask from './usePhoneMask';
-import useSuccessNotify from './useSuccessNotify';
-import useErrorNotify from './useErrorNotify';
-import useInfoNotify from './useInfoNotify';
 import useKickOut from './useKickOut';
+import useErrNotify from './useErrNotify';
+import useSuccessNotify from './useSuccessNotify';
 
 export default {
-  useCountryCodeOptions,
-  usePhoneMask,
+  useErrNotify,
+  useKickOut,
   useSuccessNotify,
-  useErrorNotify,
-  useInfoNotify,
-  useKickOut
 };

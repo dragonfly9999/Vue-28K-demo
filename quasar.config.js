@@ -9,7 +9,7 @@ module.exports = configure(function (/* ctx */) {
       // exclude: [],
       // rawOptions: {},
       warnings: true,
-      errors: true
+      errors: true,
     },
 
     // https://v2.quasar.dev/quasar-cli-vite/prefetch-feature
@@ -34,14 +34,14 @@ module.exports = configure(function (/* ctx */) {
       // 'roboto-font-latin-ext', // this or either 'roboto-font', NEVER both!
 
       'roboto-font', // optional, you are not bound to it
-      'material-icons' // optional, you are not bound to it
+      'material-icons', // optional, you are not bound to it
     ],
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#build
     build: {
       target: {
         browser: ['es2019', 'edge88', 'firefox78', 'chrome87', 'safari13.1'],
-        node: 'node16'
+        node: 'node16',
       },
 
       vueRouterMode: 'hash', // available values: 'hash', 'history'
@@ -75,45 +75,47 @@ module.exports = configure(function (/* ctx */) {
             // runtimeOnly: false,
 
             // you need to set i18n resource including paths !
-            include: path.resolve(__dirname, './src/i18n/**')
-          }
-        ]
-      ]
+            include: path.resolve(__dirname, './src/i18n/**'),
+          },
+        ],
+      ],
     },
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#devServer
     devServer: {
       proxy: {
         '/j': {
-          target: 'https://demo.k100u.com/',
-          changeOrigin: true
+          target: 'https://demo.k28u.vn.com/',
+          changeOrigin: true,
         },
         '/order': {
-          target: 'wss://demo.k100u.com/j',
+          target: 'wss://demo.k28u.vn.com/j',
           ws: true,
           changeOrigin: true,
           rewrite: (path) => {
-            const newPath =  path.replace(/^\/order/, '')
-            return  newPath
+            const newPath = path.replace(/^\/order/, '');
+            return newPath;
           },
         },
         '/chat': {
-          target: 'wss://chat.k100u.com',
+          target: 'wss://chat.k28vn.com',
           ws: true,
           changeOrigin: true,
           rewrite: (path) => {
-            const newPath = path.replace(/^\/chat/, '')
-            return newPath
+            const newPath = path.replace(/^\/chat/, '');
+            return newPath;
           },
-        }
+        },
       },
       port: 8082,
       open: false,
-      https: false
+      https: false,
     },
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#framework
     framework: {
-      config: {},
+      config: {
+        dark: 'auto',
+      },
 
       // iconSet: 'material-icons', // Quasar icon set
       // lang: 'en-US', // Quasar language pack
@@ -126,7 +128,7 @@ module.exports = configure(function (/* ctx */) {
       // directives: [],
 
       // Quasar plugins
-      plugins: ['Notify','Loading']
+      plugins: ['Notify', 'Loading'],
     },
 
     // animations: 'all', // --- includes all animations
@@ -162,8 +164,8 @@ module.exports = configure(function (/* ctx */) {
       // (gets superseded if process.env.PORT is specified at runtime)
 
       middlewares: [
-        'render' // keep this as last one
-      ]
+        'render', // keep this as last one
+      ],
     },
 
     // https://v2.quasar.dev/quasar-cli-vite/developing-pwa/configuring-pwa
@@ -172,7 +174,7 @@ module.exports = configure(function (/* ctx */) {
       injectPwaMetaTags: true,
       swFilename: 'sw.js',
       manifestFilename: 'manifest.json',
-      useCredentialsForManifestTag: false
+      useCredentialsForManifestTag: false,
       // useFilenameHashes: true,
       // extendGenerateSWOptions (cfg) {}
       // extendInjectManifestOptions (cfg) {},
@@ -187,7 +189,7 @@ module.exports = configure(function (/* ctx */) {
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/developing-capacitor-apps/configuring-capacitor
     capacitor: {
-      hideSplashscreen: true
+      hideSplashscreen: true,
     },
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/developing-electron-apps/configuring-electron
@@ -213,16 +215,16 @@ module.exports = configure(function (/* ctx */) {
       builder: {
         // https://www.electron.build/configuration/configuration
 
-        appId: 'demok100'
-      }
+        appId: 'demok28',
+      },
     },
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/developing-browser-extensions/configuring-bex
     bex: {
-      contentScripts: ['my-content-script']
+      contentScripts: ['my-content-script'],
 
       // extendBexScriptsConf (esbuildConf) {}
       // extendBexManifestJson (json) {}
-    }
+    },
   };
 });

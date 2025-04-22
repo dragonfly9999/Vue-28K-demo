@@ -175,18 +175,14 @@ const forage = <Forage = unknown>() => {
 
 // localstorage
 const storageKey = {
-  locale: 'locale', // utils\enums\WebLanguageAbbsNum
+  locale: 'locale',
   isAgent: 'isAgent',
-  phone: 'phone',
-  password: 'password',
-  register: 'register',
   login_session: 'login_session',
-  reset_token: 'reset_token',
-  verify_locker: 'verify_locker',
-  forget_Info: 'forget_Info',
-  to: 'to',
-  codeFailedTimes: 'codeFailedTimes',
+  order_pay_token: 'payment_token',
   theme: 'theme',
+  isDark: 'isDark',
+  email: 'email',
+  pwd: 'pwd',
 };
 const storageHelper = <T = string>(key: keyof typeof storageKey) => {
   return {

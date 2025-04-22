@@ -12,5 +12,8 @@
   "[vue]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "files.autoSave": "off"
+  "files.autoSave": "off",
+  "[snippets]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  }
 }

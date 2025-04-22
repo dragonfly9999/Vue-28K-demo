@@ -1,9 +1,9 @@
 /* eslint-disable */
 
 interface ImportMetaEnv {
-  readonly VITE_API_BASE: string
-  readonly VITE_ORDER_WS: string
-  readonly VITE_CHAT_WS: string
+  readonly VITE_API_BASE: string;
+  readonly VITE_ORDER_K28: string;
+  readonly VITE_CHAT_K28: string;
 }
 
 declare namespace NodeJS {
@@ -19,4 +19,3 @@ type NOU = null | undefined;
 type DevProps = {
   isTest?: boolean;
 };
-

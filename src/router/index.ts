@@ -4,7 +4,7 @@ import {
   createMemoryHistory,
   createRouter,
   createWebHashHistory,
-  createWebHistory
+  createWebHistory,
 } from 'vue-router';
 
 import routes from './routes';
@@ -19,20 +19,21 @@ export default route(function (/* { store, ssrContext } */) {
   const Router = createRouter({
     scrollBehavior: () => ({ left: 0, top: 0 }),
     routes,
-    history: createHistory(process.env.VUE_ROUTER_BASE)
+    history: createHistory(process.env.VUE_ROUTER_BASE),
   });
 
   Router.beforeEach((to, _, next) => {
     if (to.meta.requiresAuth) {
-      const loginSession = storageHelper('login_session').getItem()
+      const loginSession = storageHelper('login_session').getItem();
       if (!!loginSession) {
         next();
       } else {
-        next({name: 'login'});
+        next({ name: 'login' });
       }
     } else {
       next();
     }
+    next();
   });
 
   return Router;

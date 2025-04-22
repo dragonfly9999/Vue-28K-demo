@@ -1,8 +1,8 @@
 {
-  "name": "demok100",
+  "name": "demok28",
   "version": "0.0.1",
-  "productName": "K100",
-  "author": "Alan",
+  "productName": "K28-demo",
+  "author": "Liam",
   "scripts": {
     "lint": "eslint --ext .js,.ts,.vue ./",
     "format": "prettier --write \"**/*.{js,ts,vue,scss,html,md,json}\" --ignore-path .gitignore",

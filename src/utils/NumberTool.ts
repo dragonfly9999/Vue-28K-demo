@@ -37,7 +37,7 @@ const thousandInput = (num: NumOptions): string => {
 
   if (isNaN(pureNumber)) return num as string;
   const result = numbro(pureNumber).format({ thousandSeparated: true });
-  return result
+  return result;
 };
 
 export enum MasterTypeNum {

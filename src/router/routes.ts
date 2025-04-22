@@ -1,4 +1,5 @@
 import { RouteRecordRaw } from 'vue-router';
+
 declare module 'vue-router' {
   interface RouteMeta {
     requiresAuth?: boolean;
@@ -8,104 +9,46 @@ declare module 'vue-router' {
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    redirect: '/main'
+    redirect: import.meta.env.DEV ? '/main' : '/auth/login',
   },
   {
     name: 'main',
     path: '/main',
-    component: () => import('layouts/MainLayout.vue'),
+    component: () => import('layouts/PrivateLayout.vue'),
+    meta: {
+      requiresAuth: true,
+    },
     children: [
       {
         path: '/main',
-        redirect: import.meta.env.DEV ? '/auth/login' : '/auth/login'
+        redirect: import.meta.env.DEV ? 'auth/login' : '/auth/login',
       },
       {
-        path: 'dashboard',
-        component: () => import('pages/dashboard/DashboardPage.vue'),
-        name: 'dashboard'
+        path: 'home',
+        name: 'home',
+        component: () => import('pages/home/HomePage.vue'),
       },
-      {
-        path: 'trade',
-        component: () => import('pages/trade/TradePage.vue'),
-        name: 'trade',
-      },
-      {
-        path: 'transfer',
-        component: () => import('pages/transfer/TransferPage.vue'),
-        name: 'transfer'
-      },
-      {
-        path: 'wallet',
-        component: () => import('pages/wallet/WalletPage.vue'),
-        name: 'wallet'
-      },
-      {
-        path: 'history',
-        component: () => import('pages/history/HistoryPage.vue'),
-        name: 'history'
-      },
-      {
-        path: 'account',
-        component: () => import('pages/account/AccountPage.vue'),
-        name: 'account'
-      },
-      {
-        path: 'account_create',
-        component: () => import('pages/account/CreatePage.vue'),
-        name: 'account_create'
-      },
-      {
-        path: 'kyc',
-        component: () => import('pages/kyc/IndexPage.vue'),
-        children: [
-          {
-            path: '',
-            component: () => import('pages/kyc/KycList.vue'),
-            name: 'kyc'
-          },
-          {
-            path: 'create',
-            component: () => import('pages/kyc/CreatePage.vue'),
-            name: 'kyc_create'
-          }
-        ]
-      }
     ],
-    meta: {
-      requiresAuth: true
-    }
   },
   {
     path: '/auth',
     component: () => import('layouts/AuthLayout.vue'),
-    name: 'auth',
     children: [
       {
         path: 'login',
+        name: 'login',
         component: () => import('pages/auth/LoginPage.vue'),
-        name: 'login'
-      },
-      {
-        path: 'register_master_secret_path',
-        component: () => import('pages/auth/register/RegisterPage.vue'),
-        name: 'register'
-      },
-      {
-        path: 'forget',
-        component: () => import('pages/auth/forget/ForgetPage.vue'),
-        name: 'forget'
       },
       {
         path: '/auth',
-        redirect: '/auth/login'
-      }
-    ]
+        redirect: '/auth/login',
+      },
+    ],
   },
-
   {
     path: '/:catchAll(.*)*',
-    component: () => import('pages/ErrorNotFound.vue')
-  }
+    component: () => import('pages/ErrorNotFound.vue'),
+  },
 ];
 
 export default routes;

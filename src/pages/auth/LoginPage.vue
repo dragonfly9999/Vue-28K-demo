@@ -1,190 +1,103 @@
 <template>
-  <div style="max-width: 420px; margin: auto; padding: 0 0.1rem">
-    <q-card class="q-pa-md q-mx-sm q-my-xl justify-center myshadow">
-      <!-- title -->
+  <div class="q-pa-xl flex flex-center">
+    <div class="text-h4 text-weight-bold text-primary">
+      {{ t('tit_check') }}
+    </div>
+  </div>
+  <q-form @submit="handleSubmit">
+    <div class="q-pa-md">
       <div class="row">
-        <div class="col-3"></div>
-
-        <div class="col flex justify-center text-h6 text-weight-bold">
-          {{ $t('auth.登入') }}
-        </div>
-        <div class="col-3"></div>
-      </div>
-
-      <q-separator spaced />
-
-      <!-- 警示語 -->
-      <div class="bg-step q-pa-sm flex items-start justify-center no-wrap">
-        <q-icon name="error_outline" color="orange-9" />
-        <div class="text-caption text-orange-8 q-ml-sm">
-          {{ $t('auth.warn.login') }}
-        </div>
-      </div>
-      <q-form @submit="handleSubmit">
-        <div class="q-pa-md">
-          <div class="row">
-            <div class="col-auto">
-              <q-select
-                class="q-mr-xs"
-                outlined
-                v-model="countryCode"
-                emit-value
-                :options="countryCodeOptions"
-                :label="t('auth.國碼')"
-                style="min-width: 100px"
-                :rules="[(val) => !!val]"
-                lazy-rules
-                :display-value="countryCode ? `+${countryCode}` : undefined"
-                :error-message="t('error.country_code')"
-              />
-            </div>
-            <div class="col">
-              <q-input
-                outlined
-                autocomplete="tel"
-                v-model="phone_number"
-                :label="t('auth.手機')"
-                :rules="[(val) => !!val]"
-                lazy-rules
-                :error-message="t('error.phone')"
-                inputmode="numeric"
-              />
-            </div>
-          </div>
-          <div class="col">
-            <q-input
-              outlined
-              v-model="password"
-              :type="isVisibleSetting ? 'text' : 'password'"
-              :label="t('auth.密碼')"
-              :rules="[(val) => !!val]"
-              lazy-rules
-              :error-message="t('error.password')"
-              autocomplete="current-password"
-            >
-              <template v-slot:append>
-                <q-icon
-                  :name="isVisibleSetting ? 'visibility' : 'visibility_off'"
-                  class="cursor-pointer"
-                  @click="() => (isVisibleSetting = !isVisibleSetting)"
-                />
-              </template>
-            </q-input>
-          </div>
-
-          <q-btn
-            class="full-width"
-            color="blue-13"
-            unelevated
-            rounded
-            type="submit"
-            :label="$t('auth.登入')"
-            :loading="loading"
+        <div class="col">
+          <q-input
+            outlined
+            autocomplete="off"
+            :label="t('email')"
+            v-model="email"
+            :rules="[(val) => !!val]"
+            lazy-rules
+            error-message="Please enter Email"
+            inputmode="email"
           />
         </div>
-      </q-form>
-      <div class="flex justify-between q-px-md items-center">
-        <div class="q-gutter-sm">
-          <span
-            v-for="(memberInfo, index) in [
-              {
-                countryCode: 86,
-                phone: 938265860,
-                password: '123456',
-                label: '會員',
-                color: 'orange',
-              },
-              {
-                countryCode: 886,
-                phone: 9809806674,
-                password: '000000',
-                label: '代理A',
-                color: 'blue',
-              },
-              {
-                countryCode: 86,
-                phone: 15507564971,
-                password: '123456',
-                label: '代理B',
-                color: 'green',
-              },
-            ]"
-            :key="index"
-          >
-            <q-btn
-              dense
-              size="small"
-              v-if="isTest"
-              @click="
-                () => {
-                  countryCode = memberInfo.countryCode;
-                  phone_number = memberInfo.phone;
-                  password = memberInfo.password;
-                }
-              "
-              :color="memberInfo.color"
-              :outline="
-                countryCode !== memberInfo.countryCode ||
-                phone_number !== memberInfo.phone ||
-                password !== memberInfo.password
-              "
-            >
-              {{ memberInfo.label }}
-            </q-btn>
-          </span>
-        </div>
-
-        <div class="q-gutter-md">
-          <!-- <router-link to="register_master" class="text-blue">
-            <q-btn dense unelevated> {{ $t('auth.註冊') }} </q-btn>
-          </router-link> -->
-          <router-link to="forget" class="text-blue">
-            <q-btn dense unelevated> {{ $t('auth.忘記密碼') }} </q-btn>
-          </router-link>
-        </div>
       </div>
-    </q-card>
-  </div>
+      <div class="col">
+        <q-input
+          outlined
+          v-model="pwd"
+          :type="isVisibleSetting ? 'text' : 'password'"
+          :label="t('pwd')"
+          :rules="[(val) => !!val]"
+          lazy-rules
+          error-message="Please enter password"
+          autocomplete="off"
+        >
+          <template v-slot:append>
+            <q-icon
+              :name="isVisibleSetting ? 'visibility' : 'visibility_off'"
+              class="cursor-pointer"
+              @click="() => (isVisibleSetting = !isVisibleSetting)"
+            />
+          </template>
+        </q-input>
+      </div>
+
+      <q-btn
+        class="full-width"
+        color="blue-13"
+        unelevated
+        rounded
+        type="submit"
+        label="Login"
+        :loading="isLoging"
+      />
+    </div>
+  </q-form>
 </template>
 
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import { ref } from 'vue';
-import { useLogin } from './api';
-import { useRouter } from 'vue-router';
-import hooks from 'src/hooks';
+import { useQuasar } from 'quasar';
 import { storageHelper } from 'src/utils/foragePkg';
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useLogin } from './api';
+import useSuccessNotify from 'src/hooks/useSuccessNotify';
+import { useI18n } from 'vue-i18n';
 
-// Definition
 const { t } = useI18n();
 const router = useRouter();
-const countryCodeOptions = hooks.useCountryCodeOptions();
+const name = ref('DevChecker');
+const $q = useQuasar();
+// demo
+function clickCheckName() {
+  $q.notify({
+    type: 'positive',
+    message: `Mike check ${name.value}`,
+    position: 'top',
+    icon: 'check',
+  });
+}
 
-// DOM
 const isTest = import.meta.env.DEV;
-const countryCode = ref(isTest ? 886 : null);
-const phone_number = ref(isTest ? 9809806674 : null);
-const password = ref(isTest ? '000000' : null);
+const email = ref(isTest ? 'K28@gmail.com' : null);
+const pwd = ref(isTest ? '123k28' : null);
 const isVisibleSetting = ref(false);
 
 // mutation
-const { run: login, loading } = useLogin({
+const { run: testLog, loading: isLoging } = useLogin({
   onSuccess: () => {
-    storageHelper<number | null>('phone').setItem(phone_number.value);
-    storageHelper<string | null>('password').setItem(password.value);
-    router.push({ name: 'dashboard' });
+    storageHelper<string | null>('email').setItem(email.value);
+    storageHelper<string | null>('pwd').setItem(pwd.value);
+    router.push({ name: 'home' });
+    useSuccessNotify('Login successfully');
   },
 });
 
 // handlers
+
 const handleSubmit = () => {
-  const purePhone = /^0/.test(phone_number.value?.toString() as string)
-    ? phone_number.value?.toString().slice(1)
-    : phone_number.value?.toString();
-  login({
-    Login_countrycode: countryCode?.value?.toString() as string,
-    Login_pwd: password.value?.toString() as string,
-    Login_tel: purePhone as string,
+  testLog({
+    Email: email?.value?.toString() as string,
+    Pwd: pwd?.value?.toString() as string,
   });
 };
 </script>

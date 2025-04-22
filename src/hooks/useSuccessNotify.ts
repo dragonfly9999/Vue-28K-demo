@@ -4,8 +4,8 @@ export default (message: string) => {
   Notify.create({
     type: 'info',
     message,
-    caption: 'K100U.com',
-    position: 'top-right',
-    timeout: 2000
+    caption: 'K28 New System',
+    position: 'top',
+    timeout: 2000,
   });
 };
