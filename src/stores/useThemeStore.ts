@@ -6,6 +6,8 @@ export const useThemeStore = defineStore('theme', () => {
   const defaultIsDark = storageHelper<boolean>('isDark').getItem() ?? false;
   const isDark = ref<boolean>(defaultIsDark);
 
+  document.body.classList.toggle('dark-mode', defaultIsDark);
+
   const toggleTheme = () => {
     isDark.value = !isDark.value;
   };
@@ -13,6 +15,7 @@ export const useThemeStore = defineStore('theme', () => {
   // set themes
   watch(isDark, (val) => {
     storageHelper<boolean>('isDark').setItem(val);
+    document.body.classList.toggle('dark-mode', val);
   });
 
   return {

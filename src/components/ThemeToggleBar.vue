@@ -3,10 +3,11 @@
     flat
     round
     dense
-    icon="dark_mode"
-    :color="themeStore.isDark ? 'yellow' : 'grey-8'"
+    :icon="themeStore.isDark ? 'wb_sunny' : 'nights_stay'"
+    :color="themeStore.isDark ? 'white' : 'deep-purple'"
     @click="toggleTheme"
     aria-label="check"
+    class="my-icon-btn"
   />
 </template>
 
@@ -20,3 +21,13 @@ const toggleTheme = () => {
   themeStore.toggleTheme();
 };
 </script>
+
+<style scoped>
+.my-icon-btn {
+  transition: background-color 0.3s ease;
+}
+
+.my-icon-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+</style>

@@ -5,11 +5,11 @@ declare module 'vue-router' {
     requiresAuth?: boolean;
   }
 }
-
+export const devEnv = import.meta.env.DEV;
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    redirect: import.meta.env.DEV ? '/main' : '/auth/login',
+    redirect: devEnv ? '/main' : '/auth/login',
   },
   {
     name: 'main',
@@ -21,7 +21,7 @@ const routes: RouteRecordRaw[] = [
     children: [
       {
         path: '/main',
-        redirect: import.meta.env.DEV ? 'auth/login' : '/auth/login',
+        redirect: devEnv ? 'auth/login' : '/auth/login',
       },
       {
         path: 'home',

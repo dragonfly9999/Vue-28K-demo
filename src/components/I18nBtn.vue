@@ -10,7 +10,7 @@
           @click="() => handleSwitch(item.locale)"
           :style="{
             backgroundColor:
-              $i18n.locale === item.locale ? 'orange' : 'inherit',
+              i18n.locale.value === item.locale ? '#7d3ffa' : 'inherit',
           }"
         >
           <q-item-section>

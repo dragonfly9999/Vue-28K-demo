@@ -1,29 +1,32 @@
 <template>
   <q-layout view="hHh lpr fff">
     <!-- header -->
-    <q-header reveal class="q-pa-md" style="background: #242e47">
+    <q-header
+      elevated
+      class="k28AuthHeader"
+      style="background-color: transparent; backdrop-filter: blur(12px)"
+    >
       <q-toolbar>
         <!-- left -->
-        <div class="flex q-gutter-x-xs">
-          <div
-            class="flex items-center cursor-pointer q-mr-md"
-            @click="() => router.push({ name: 'dashboard' })"
-          >
-            <q-img alt="test" :src="logo" width="122px" height="30px" />
-          </div>
-        </div>
+        <q-btn flat @click="() => router.push({ name: 'login' })">
+          <q-img
+            class="auth-logo"
+            :src="AuthLayoutLogo"
+            alt="Logo"
+            width="137px"
+            height="40px"
+          />
+        </q-btn>
 
+        <!-- space  -->
         <q-space />
 
         <!-- right -->
-        <div class="flex">
-          <div class="flex q-gutter-x-xs">
-            <div class="q-gutter-x-sm self-center">
-              <ThemeToggleBar />
-            </div>
-            <div class="q-gutter-x-sm self-center">
-              <I18nBtn />
-            </div>
+        <div class="toolArea flex">
+          <ThemeToggleBar />
+
+          <div>
+            <I18nBtn />
           </div>
         </div>
       </q-toolbar>
@@ -32,7 +35,7 @@
     <q-page-container
       :style="{
         height: '100vh',
-        background: themes.isDark ? '#121212' : '#f5f5f5',
+        background: themes.isDark ? 'rgba(33, 30, 54, 1)' : '#f5f5f5',
       }"
     >
       <router-view />
@@ -47,11 +50,24 @@ import I18nBtn from 'src/components/I18nBtn.vue';
 // import hooks from 'src/hooks';
 import ThemeToggleBar from 'src/components/ThemeToggleBar.vue';
 import { useThemeStore } from 'src/stores';
-import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import AuthLayoutLogo from 'src/assets/images/k28_authLayout_logo.png';
 
 const themes = useThemeStore();
 const router = useRouter();
 </script>
 
-<style scoped></style>
+<style scoped>
+.k28AuthHeader {
+  background-image: linear-gradient(
+    to right,
+    #250453 16%,
+    rgba(82, 9, 185, 0.3)
+  );
+}
+
+.toolArea div {
+  margin-right: 1rem;
+  margin-left: 0.8rem;
+}
+</style>
