@@ -28,6 +28,7 @@
       :loading="sending"
       @click="handleSubmit"
     />
+    <q-btn color="primary" icon="check" label="back" @click="handleBack" />
   </div>
 </template>
 
@@ -35,15 +36,20 @@
 import hooks from 'src/hooks';
 import { onMounted, ref } from 'vue';
 import api from '../api';
-import { SendCodeRes } from '../api/useSendCode';
+import { storageHelper } from 'src/utils/foragePkg';
 
-const emit = defineEmits<{ (e: 'tokenGot', token: string): void }>();
+const emit = defineEmits<{
+  (e: 'tokenGot', token: string): void;
+  (e: 'currMail', mail: string | null): void;
+}>();
+
 const otp = ref(Array(6).fill(''));
 const inputs = ref<HTMLInputElement[]>([]);
+const currentMail = ref<string | null>();
 
-// Auto focus input
 onMounted(() => {
   inputs.value[0]?.focus();
+  currentMail.value = storageHelper<string | null>('mail_vfy').getItem();
 });
 
 const { run: codeSend, loading: sending } = api.useSendCode({
@@ -68,6 +74,14 @@ const handleKeyup = (index: number, e: KeyboardEvent) => {
   } else if (key.match(/[0-9]/) && index < 5) {
     // Only number
     inputs.value[index + 1]?.focus();
+  }
+};
+
+// back addMail
+const handleBack = () => {
+  if (currentMail.value) {
+    emit('currMail', currentMail.value);
+    storageHelper<string>('mail_vfy').remove();
   }
 };
 

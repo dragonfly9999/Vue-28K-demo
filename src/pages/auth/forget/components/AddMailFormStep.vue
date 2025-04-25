@@ -26,16 +26,18 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import { useQuasar } from 'quasar';
-import api from '../api';
 import hooks from 'src/hooks';
-import { storageHelper } from 'src/utils/foragePkg';
 import { devEnv } from 'src/router/routes';
+import { storageHelper } from 'src/utils/foragePkg';
+import { computed, ref } from 'vue';
+import api from '../api';
 
 // setup funcs
 
 const emit = defineEmits(['mail-added']);
+const props = defineProps<{
+  letFillMail: string | null;
+}>();
 const handleSend = () => {
   if (mailVfy.value)
     send({
@@ -50,7 +52,9 @@ const { run: send, loading: checking } = api.useVfyMail({
   },
 });
 
-const email = ref<string | null>(devEnv ? 'getCode@gmail.com' : '');
+const email = ref<string | null>(
+  devEnv ? props.letFillMail ?? 'getCode@gmail.com' : props.letFillMail ?? ''
+);
 
 const mailVfy = computed(() => email.value);
 </script>

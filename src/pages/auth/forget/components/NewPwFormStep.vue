@@ -57,6 +57,7 @@ import { ref } from 'vue';
 import api from '../api';
 
 const props = defineProps<{ token: string }>();
+const emit = defineEmits(['show-notify']);
 
 // Refs & state
 const isVisibleSetting = ref(false);
@@ -78,7 +79,7 @@ const confirmPasswordRules = [
 
 // Submit handler
 const { run: set, loading: setting } = api.useSetPw({
-  onSuccess: () => console.log('ok'),
+  onSuccess: () => emit('show-notify'),
 });
 
 const handleSet = () => {
