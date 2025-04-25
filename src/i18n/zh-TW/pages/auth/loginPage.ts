@@ -9,4 +9,5 @@ export default {
   pwd_pls: '請輸入密碼',
   policyBy: '本頁面受 reCAPTCHA 機制保護，並遵守 K28',
   login_but: '登入',
+  linkToForget: '忘記密碼',
 };

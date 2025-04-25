@@ -36,6 +36,8 @@ export const requestProvider = <DATA, Params = unknown>(
       }
       if (useCode?.toString() === '91')
         Object.values(hooks.useKickOut).forEach((kickStep) => kickStep());
+      if (useCode?.toString() === '409')
+        hooks.useErrNotify('This email has not been verified!!');
       if (options.onError) options.onError(virgilError, params);
     },
   });

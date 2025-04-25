@@ -4,7 +4,8 @@
       <router-view />
     </template>
     <template #fallback>
-      <h1>Loading...</h1>
+      <q-spinner-gears color="primary" size="50px" />
+      <p>Đang tải...</p>
     </template>
   </suspense>
 </template>
@@ -13,7 +14,7 @@
 import { useQuasar } from 'quasar';
 import { onMounted, watch } from 'vue';
 import { useThemeStore } from './stores';
-
+import IconMini from 'src/assets/images/K28_Icon_mini.png';
 const $q = useQuasar();
 const themeStore = useThemeStore();
 // App run

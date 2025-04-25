@@ -40,6 +40,11 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/auth/LoginPage.vue'),
       },
       {
+        path: 'forget',
+        name: 'forget',
+        component: () => import('pages/auth/forget/ForgetPage.vue'),
+      },
+      {
         path: '/auth',
         redirect: '/auth/login',
       },

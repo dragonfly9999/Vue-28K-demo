@@ -23,29 +23,29 @@ import { ref, watch } from 'vue';
 import { useQuasar } from 'quasar';
 
 // props
-const pickPdf = defineProps<{
-  modelValue: boolean;
+const props = defineProps<{
+  showPdf: boolean;
   content: string;
   title?: string;
 }>();
 
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits(['update:showPdf']);
 
-const show = ref(pickPdf.modelValue);
+const show = ref(props.showPdf);
 
 watch(
-  () => pickPdf.modelValue,
+  () => props.showPdf,
   (val) => {
     show.value = val;
   }
 );
 watch(show, (val) => {
-  emit('update:modelValue', val);
+  emit('update:showPdf', val);
 });
 
 const close = () => {
   show.value = false;
-  emit('update:modelValue', false);
+  emit('update:showPdf', false);
 };
 </script>
 

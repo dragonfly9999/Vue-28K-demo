@@ -88,9 +88,18 @@
         />
       </div>
     </q-form>
+    <div class="forget_debounce">
+      <router-link to="forget" class="fg_link">
+        <q-btn dense unelevated> {{ t('linkToForget') }} </q-btn>
+      </router-link>
+    </div>
   </div>
 
-  <PdfViewer v-model="showPdf" :content="currentPdf" :title="currentPdfTit" />
+  <PdfViewer
+    v-model:showPdf="showPdf"
+    :content="currentPdf"
+    :title="currentPdfTit"
+  />
 </template>
 
 <script setup lang="ts">
@@ -176,6 +185,7 @@ const openPdf = (index: number) => {
 .q-form {
   max-width: 487px;
   margin: 0 auto;
+  margin-bottom: 20px;
 }
 
 .link-style {
@@ -224,5 +234,19 @@ body.dark-mode .custom-input >>> .q-field__control {
   align-items: center;
   margin-top: 0.5rem;
   margin-bottom: 1rem;
+}
+
+.forget_debounce {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.forget_debounce .fg_link {
+  color: rgba(2, 86, 240, 1);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 100%;
+  letter-spacing: 0%;
 }
 </style>

@@ -9,4 +9,5 @@ export default {
   pwd_pls: 'Please enter your password',
   policyBy: 'Page secured by reCAPTCHA & K28SYS',
   login_but: 'Login',
+  linkToForget: 'Forgot Password',
 };

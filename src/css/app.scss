@@ -1,9 +1,4 @@
 .q-layout {
-  background: linear-gradient(
-    180deg,
-    rgba(173, 181, 190, 0.144) 0%,
-    #f4f9ff 100%
-  );
 }
 
 div.d {
@@ -134,4 +129,38 @@ li {
 .width1024 {
   max-width: 1024px;
   margin: auto;
+}
+
+.k28-loading {
+  background-color: rgb(177, 149, 232);
+  .k28-loading-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .k28-loading-icon {
+    width: 60px;
+    height: 60px;
+    background-image: url('/src/assets/images/K28_Icon_mini.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    animation: spin 2s linear infinite;
+  }
+
+  .loading-text {
+    margin-top: 12px;
+    font-size: 18px;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }

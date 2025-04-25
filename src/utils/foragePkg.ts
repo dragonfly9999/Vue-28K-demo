@@ -182,7 +182,9 @@ const storageKey = {
   theme: 'theme',
   isDark: 'isDark',
   email: 'email',
+  mail_vfy: 'mail_vfy',
   pwd: 'pwd',
+  isCodeChecked: 'isCodeChecked',
 };
 const storageHelper = <T = string>(key: keyof typeof storageKey) => {
   return {

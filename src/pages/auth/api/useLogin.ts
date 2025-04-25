@@ -1,9 +1,8 @@
 import { messages } from 'src/i18n';
+import { devEnv } from 'src/router/routes';
 import { axiosProvider } from 'src/utils/axiosProvider';
 import { storageHelper } from 'src/utils/foragePkg';
 import { requestProvider } from 'src/utils/requestProvider';
-
-const isDev = import.meta.env.DEV;
 
 type LoginProps = {
   Email: string;
@@ -18,7 +17,7 @@ type LoginRes = {
 export const useLogin = ({ ...useProps }: UseProps) =>
   requestProvider<LoginRes, LoginProps>(
     (props) => {
-      if (isDev) {
+      if (devEnv) {
         const devResTest = {
           code: 200,
           msg: 'Login Session successfully',
