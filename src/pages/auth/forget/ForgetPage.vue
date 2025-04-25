@@ -21,6 +21,7 @@
     :addedMail="addedMail"
     @remake="resetAll"
     @reLogin="resetAll"
+    @countdown="resetAll"
   />
 </template>
 
